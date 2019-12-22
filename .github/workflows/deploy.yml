@@ -43,8 +43,8 @@ jobs:
       run: pip install -r requirements.txt
     - name: Build static version
       run: python src/freeze.py
-       env:
-         CNAME: soerface.de
+      env:
+        CNAME: soerface.de
     - name: Deploy to GitHub Pages
       env:
         # secrets.GITHUB_TOKEN is always available by default
