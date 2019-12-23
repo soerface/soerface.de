@@ -1,8 +1,19 @@
-{#<hr>#}
+<div class="row d-sm-none mt-2">
+    <div class="col">
+        {% for item in navigation %}
+            {% if not item.active %}
+            <a class="btn btn-lg btn-block btn-outline-light" href="{{ url_for(item.endpoint) }}">
+                {{ item.title }}
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<hr>
 <div class="row" id="pageFooter">
     <div class="col">
-{#        Last updated: {{ PAGE_LAST_UPDATED }} |#}
-{#        Impressum nicht nötig, solange privat #}
-{#        <a href="{{ url_for('impressum') }}">Impressum</a>#}
+        {#        Last updated: {{ PAGE_LAST_UPDATED }} |#}
+        {#        Impressum nicht nötig, solange privat #}
+        {#        <a href="{{ url_for('impressum') }}">Impressum</a>#}
     </div>
 </div>
