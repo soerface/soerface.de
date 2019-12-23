@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MyFlask</title>
+    <title>soerface</title>
+    <link href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-4.3.1.min.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% for k, v in meta.items() -%}
+        <meta name="{{ k }}" content="{{ v }}">
+    {% endfor -%}
     <meta charset="utf-8">
 
     {% include 'favicons.html' %}
@@ -14,12 +18,13 @@
     {% block head %}
     {% endblock %}
 </head>
-<body>
+<body class="bg-dark">
 
 {% include 'header.html' %}
 
 <div class="container" id="mainContent">
     {% block content %}
+    {{ raw_content }}
     {% endblock %}
     {% include 'footer.html' %}
 </div>

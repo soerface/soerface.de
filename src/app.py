@@ -1,19 +1,30 @@
 import os
 from datetime import datetime
 
-from flask import Flask, render_template, request, Blueprint
+from flask import Flask, render_template, request, Markup
 
-from fizzbuzz import fizzbuzz
+from sections import blog
+from markdown import markdown
 
-bp = Blueprint('main', __name__, template_folder='templates')
+blueprints = [
+    blog.bp,
+]
+
+github_repository = os.getenv('GITHUB_REPOSITORY')
+if github_repository and not os.getenv('CNAME'):
+    owner, sep, repo = github_repository.partition('/')
+    app = Flask(__name__, static_url_path=f'/{repo}/static')
+    for bp in blueprints:
+        app.register_blueprint(bp, url_prefix=f'/{repo}')
+else:
+    app = Flask(__name__)
+    for bp in blueprints:
+        app.register_blueprint(bp)
 
 
-@bp.context_processor
+@app.context_processor
 def add_navigation() -> dict:
-    endpoints = [
-        ('main.index', 'Home'),
-        ('main.about', 'About')
-    ]
+    endpoints = [(f'{bp.name}.index', bp.name.title()) for bp in blueprints]
     items = [{
         'active': request.endpoint == endpoint,
         'endpoint': endpoint,
@@ -25,7 +36,7 @@ def add_navigation() -> dict:
     }
 
 
-@bp.context_processor
+@app.context_processor
 def add_last_updated() -> dict:
     """
     Returns the date when the website was updated.
@@ -36,28 +47,39 @@ def add_last_updated() -> dict:
     }
 
 
-@bp.route('/')
+@app.context_processor
+def add_meta_tags() -> dict:
+    return {
+        'meta': {}
+    }
+
+
+@app.route('/')
 def index():
-    results = [{
-        'input': x,
-        'output': fizzbuzz(x),
-    } for x in range(25, 41)]
-    return render_template('index.html', results=results)
+    return render_template('index.html')
 
 
-@bp.route('/about/')
+@app.route('/about/')
 def about():
     return render_template('about.html')
 
 
-github_repository = os.getenv('GITHUB_REPOSITORY')
-if github_repository and not os.getenv('CNAME'):
-    owner, sep, repo = github_repository.partition('/')
-    app = Flask(__name__, static_url_path=f'/{repo}/static')
-    app.register_blueprint(bp, url_prefix=f'/{repo}')
-else:
-    app = Flask(__name__)
-    app.register_blueprint(bp)
+# @app.route('/impressum/')
+def impressum():
+    content = Markup(markdown("""
+# Impressum / Legal Notice
+
+Angaben gem. § 5 TMG: 
+
+Vorname Nachname  
+Straße Hausnr.  
+PLZ Ort
+
+E-Mail: me@example.com
+
+    """))
+    return render_template('base.html', meta={'robots': 'noindex, follow'}, raw_content=content)
+
 
 if __name__ == '__main__':
     app.run()

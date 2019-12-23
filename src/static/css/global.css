@@ -1,3 +1,41 @@
 #mainContent {
     margin-top: 1rem;
 }
+
+#pageFooter {
+    font-size: small;
+    color: #5a6268;
+}
+
+#pageFooter a {
+    color: #1d2124;
+}
+
+.btn.github:hover {
+    background-color: #000000;
+}
+
+.btn.stackoverflow:hover {
+    background-color: #f48024;
+    border-color: #9e5217;
+}
+
+.btn.gitlab:hover {
+    background-color: #fa7035;
+    border-color: #9e431c;
+}
+
+.btn.twitter:hover {
+    background-color: #1da1f2;
+    border-color: #0e6d99;
+}
+
+.btn.telegram:hover {
+    background-color: #0088cc;
+    border-color: #00699d;
+}
+
+.btn.linkedin:hover {
+    background-color: #0073b1;
+    border-color: #003c5d;
+}

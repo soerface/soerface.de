@@ -2,27 +2,24 @@
 
 {% block content %}
     <div class="row">
-        <div class="col">
-            <h1>Hello world!</h1>
-            <p>You have successfully run this app. On the right, you see the output of an awesomely tested function.</p>
-        </div>
-        <div class="col-2">
-            <table class="table table-sm">
-                <thead class="thead-dark">
-                <tr class="text-center">
-                    <th>x</th>
-                    <th>f(x)</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for row in results %}
-                    <tr>
-                        <td class="text-right">{{ row.input }}</td>
-                        <td>{{ row.output }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="col-lg-4 offset-lg-4 col-md-6 offset-md-3">
+            <div class="card">
+                <img src="{{ url_for('static', filename='img/profile_photo.jpg') }}" alt="Photo of Soeren Wegener"
+                     class="card-img-top">
+                <div class="card-body">
+                    <h2 class="card-title">Sören Wegener</h2>
+                    <p class="card-text">Yet another website from an average software engineer</p>
+                    <div class="d-flex justify-content-around flex-wrap">
+                        <a class="btn btn-lg btn-dark mb-2 mr-1 stackoverflow" target="_blank" href="https://stackoverflow.com/story/soeren.wegener"><i
+                                class="fab fa-stack-overflow"></i></a>
+                        <a class="btn btn-lg btn-dark mb-2 mr-1 github" target="_blank" href="https://github.com/soerface"><i class="fab fa-github"></i></a>
+                        <a class="btn btn-lg btn-dark mb-2 mr-1 gitlab" target="_blank" href="https://gitlab.com/soerface"><i class="fab fa-gitlab"></i></a>
+                        <a class="btn btn-lg btn-dark mb-2 mr-1 twitter" target="_blank" href="https://twitter.com/soerface"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-lg btn-dark mb-2 mr-1 telegram" target="_blank" href="https://t.me/soerface"><i class="fab fa-telegram-plane"></i></a>
+                        <a class="btn btn-lg btn-dark mb-2 mr-1 linkedin" target="_blank" href="https://www.linkedin.com/in/s%C3%B6ren-wegener-2b5099b5/"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
