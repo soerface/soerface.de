@@ -77,7 +77,7 @@ PLZ Ort
 
 E-Mail: me@example.com
 
-    """))
+    """))  # noqa: W291
     return render_template('base.html', meta={'robots': 'noindex, follow'}, raw_content=content)
 
 
