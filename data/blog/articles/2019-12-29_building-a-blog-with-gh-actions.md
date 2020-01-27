@@ -1,5 +1,5 @@
 ---
-devto_post_id: 12345
+devto_post_id: 0
 title: Hello world
 teaser: This is the teaser text
 ---
