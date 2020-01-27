@@ -23,5 +23,5 @@ def load_article(path: Path):
 def index():
     paths = Path('data/blog/articles/').glob('**/*.md')
     # event_list = [re.search(r'(\d+)/(.+).yml', str(p)).groups() for p in paths]
-    articles = [load_article(x) for x in paths]
+    articles = [load_article(x) for x in paths][::-1]
     return render_template('blog/index.html', article_list=articles)

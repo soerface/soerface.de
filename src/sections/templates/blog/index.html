@@ -9,15 +9,19 @@
             <div class="card-body">
                 <h2 class="card-title">{{ article.metadata.title }}</h2>
                 <p class="card-text">
-                    {{ article.content }}
-                    {{ article.metadata.date.year }}
-                    {{ article.metadata.date.month }}
-                    {{ article.metadata.date.day }}
+{#                    {{ article.content }}#}
+                    {{ article.metadata.teaser }}
+{#                    {{ article.metadata.date.year }}#}
+{#                    {{ article.metadata.date.month }}#}
+{#                    {{ article.metadata.date.day }}#}
                 </p>
             </div>
             <div class="card-footer">
-                asdf
+
             </div>
         </div>
+        {% if not loop.last %}
+        <hr />
+        {% endif %}
     {% endfor %}
 {% endblock %}
