@@ -7,21 +7,28 @@
                 <small class="text-muted">Published on: {{ article.metadata.date.strftime('%Y-%m-%d') }}</small>
             </div>
             <div class="card-body">
-                <h2 class="card-title">{{ article.metadata.title }}</h2>
+                <h1 class="card-title">
+                    <a href="{{ article.metadata.href }}">
+                        {{ article.metadata.title }}
+                    </a>
+                </h1>
+                {#                    {{ article.content }}#}
+                {{ article.metadata.teaser }}
+                {#                    {{ article.metadata.date.year }}#}
+                {#                    {{ article.metadata.date.month }}#}
+                {#                    {{ article.metadata.date.day }}#}
                 <p class="card-text">
-{#                    {{ article.content }}#}
-                    {{ article.metadata.teaser }}
-{#                    {{ article.metadata.date.year }}#}
-{#                    {{ article.metadata.date.month }}#}
-{#                    {{ article.metadata.date.day }}#}
+                    <a class="btn btn-sm btn-dark"
+                       href="{{ article.metadata.href }}">
+                        Continue reading <span class="fa fa-angle-right"></span>
+                    </a>
                 </p>
             </div>
             <div class="card-footer">
-
             </div>
         </div>
         {% if not loop.last %}
-        <hr />
+            <hr/>
         {% endif %}
     {% endfor %}
 {% endblock %}

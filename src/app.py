@@ -26,7 +26,7 @@ else:
 def add_navigation() -> dict:
     endpoints = [(f'{bp.name}.index', bp.name.title()) for bp in blueprints]
     items = [{
-        'active': request.endpoint == endpoint,
+        'active': request.endpoint.partition('.')[0] == endpoint.partition('.')[0],
         'endpoint': endpoint,
         'title': title,
     } for endpoint, title in endpoints]

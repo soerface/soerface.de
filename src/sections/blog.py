@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Blueprint, render_template, Markup, escape
+from flask import Blueprint, render_template, Markup, escape, url_for, abort
 from markdown import markdown
 import frontmatter
 from datetime import datetime
@@ -8,15 +8,33 @@ from datetime import datetime
 bp = Blueprint('blog', __name__, url_prefix='/blog', template_folder='templates')
 
 
+def add_class_to_tag(text, tag, class_name):
+    # TODO: poor mans replacing, add a proper html parser
+    return text.replace(f'<{tag}>', f'<{tag} class="{class_name}">')
+
+
 def load_article(path: Path):
     article = frontmatter.load(path)
-    date_string = path.name.partition('_')[0]
+    date_string, _, slug = path.name.replace('.md', '').partition('_')
     article.metadata['date'] = datetime.strptime(date_string, '%Y-%m-%d')
-    article.metadata['teaser'] = Markup(markdown(escape(article.metadata.get('teaser'))))
+    article.metadata['slug'] = slug
+    article.metadata['href'] = url_for('blog.article_detail',
+                                       year=article.metadata['date'].year,
+                                       month=article.metadata['date'].month,
+                                       day=article.metadata['date'].day,
+                                       slug=article.metadata['slug']
+                                       )
+    card_text = markdown(escape(article.metadata.get('teaser')))
+    # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
+    # so we hack it in here
+    card_text = add_class_to_tag(card_text, 'p', 'card-text')
+    content = markdown(escape(article.content))
+    content = add_class_to_tag(content, 'p', 'card-text')
+    article.metadata['teaser'] = Markup(card_text)
     # frontmatter.dump(article, path)
     return {
         'metadata': article.metadata,
-        'content': Markup(markdown(escape(article.content)))
+        'content': Markup(content)
     }
 
 
@@ -26,3 +44,10 @@ def index():
     # event_list = [re.search(r'(\d+)/(.+).yml', str(p)).groups() for p in paths]
     articles = [load_article(x) for x in paths][::-1]
     return render_template('blog/index.html', article_list=articles)
+
+
+@bp.route('/<int:year>/<int:month>/<int:day>/<string:slug>')
+def article_detail(year, month, day, slug):
+    path = Path('data/blog/articles/') / f'{year}-{month}-{day}_{slug}.md'
+    article = load_article(path)
+    return render_template('blog/article_detail.html', article=article)

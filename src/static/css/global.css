@@ -11,6 +11,17 @@
     color: #1d2124;
 }
 
+.card-title a, .card-title a:hover {
+    color: #212529;
+    text-decoration: none;
+}
+
+.full_article .teaser {
+    font-style: italic;
+    color: #5a6268;
+    margin-bottom: 1em;
+}
+
 .btn.github:hover {
     background-color: #000000;
 }

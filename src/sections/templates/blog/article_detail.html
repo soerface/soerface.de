@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card full_article">
+        <div class="card-header">
+            <small class="text-muted">Published on: {{ article.metadata.date.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <div class="card-body">
+            <h1 class="card-title">{{ article.metadata.title }}</h1>
+            <div class="teaser">{{ article.metadata.teaser }}</div>
+            {{ article.content }}
+            {#                    {{ article.metadata.date.year }}#}
+            {#                    {{ article.metadata.date.month }}#}
+            {#                    {{ article.metadata.date.day }}#}
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+{% endblock %}
