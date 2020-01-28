@@ -46,7 +46,7 @@ def index():
     return render_template('blog/index.html', article_list=articles)
 
 
-@bp.route('/<year>/<month>/<day>/<string:slug>')
+@bp.route('/<year>/<month>/<day>/<string:slug>/')
 def article_detail(year, month, day, slug):
     path = Path('data/blog/articles/') / f'{year}-{month}-{day}_{slug}.md'
     article = load_article(path)
