@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Blueprint, render_template, Markup
+from flask import Blueprint, render_template, Markup, escape
 from markdown import markdown
 import frontmatter
 from datetime import datetime
@@ -12,10 +12,11 @@ def load_article(path: Path):
     article = frontmatter.load(path)
     date_string = path.name.partition('_')[0]
     article.metadata['date'] = datetime.strptime(date_string, '%Y-%m-%d')
+    article.metadata['teaser'] = Markup(markdown(escape(article.metadata.get('teaser'))))
     # frontmatter.dump(article, path)
     return {
         'metadata': article.metadata,
-        'content': Markup(markdown(article.content))
+        'content': Markup(markdown(escape(article.content)))
     }
 
 
