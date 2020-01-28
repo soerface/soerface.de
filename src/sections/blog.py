@@ -20,8 +20,8 @@ def load_article(path: Path):
     article.metadata['slug'] = slug
     article.metadata['href'] = url_for('blog.article_detail',
                                        year=article.metadata['date'].year,
-                                       month=article.metadata['date'].month,
-                                       day=article.metadata['date'].day,
+                                       month=f'{article.metadata["date"].month:02}',
+                                       day=f'{article.metadata["date"].day:02}',
                                        slug=article.metadata['slug']
                                        )
     card_text = markdown(escape(article.metadata.get('teaser')))
@@ -46,7 +46,7 @@ def index():
     return render_template('blog/index.html', article_list=articles)
 
 
-@bp.route('/<int:year>/<int:month>/<int:day>/<string:slug>')
+@bp.route('/<year>/<month>/<day>/<string:slug>')
 def article_detail(year, month, day, slug):
     path = Path('data/blog/articles/') / f'{year}-{month}-{day}_{slug}.md'
     article = load_article(path)
