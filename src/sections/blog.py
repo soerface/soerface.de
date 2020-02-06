@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, Markup, escape, url_for
 from markdown import markdown
 import frontmatter
 from datetime import datetime
+from iconfonts import IconFontsExtension
 
 bp = Blueprint('blog', __name__, url_prefix='/blog', template_folder='templates')
 
@@ -28,7 +29,13 @@ def load_article(path: Path):
     # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
     # so we hack it in here
     card_text = add_class_to_tag(card_text, 'p', 'card-text')
-    content = markdown(escape(article.content))
+    # Available extensions at https://python-markdown.github.io/extensions/
+    # TODO: still some escaping issues, e.g. inside <pre> blocks no < or > possible...
+    content = markdown(escape(article.content), extensions=[
+        'markdown.extensions.extra',
+        'markdown.extensions.codehilite',
+        IconFontsExtension(prefix='amp;fa-', base='fab')
+    ]).replace('class="fab amp;fa-', 'class="fab fa-')
     content = add_class_to_tag(content, 'p', 'card-text')
     article.metadata['teaser'] = Markup(card_text)
     # frontmatter.dump(article, path)
