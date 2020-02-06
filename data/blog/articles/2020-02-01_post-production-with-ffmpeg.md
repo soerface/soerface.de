@@ -74,6 +74,6 @@ WORKING_DIR
     └── screen.mp4
 ```
 
-## 2: Extracting and normalizing audio
+## 2: Extract and normalize audio
 
 Script: &fa-github; [`2_extract_audio.sh`](https://github.com/flipdot/0xA-voc-toolchain/blob/master/2_extract_audio.sh)
