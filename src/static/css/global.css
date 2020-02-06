@@ -36,6 +36,11 @@ pre {
     margin-bottom: 0;
 }
 
+.btn-social-media {
+    width: 2.7em;
+    height: 2.5em;
+}
+
 .btn.github:hover {
     background-color: #000000;
 }
