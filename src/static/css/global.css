@@ -41,6 +41,28 @@ pre {
     height: 2.5em;
 }
 
+article img, .codehilite {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+article a[href*="github.com"]::before {
+    content: "\f09b";
+    font-family: "Font Awesome 5 Brands";
+    color: #000000;
+    margin-right: 0.2em;
+}
+
+article img {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    /* This little grey background is useful for screenshots of round-cornered window borders.
+       Combined with the image shadow, a white background would leave a little, sharp edge.
+    */
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .btn.github:hover {
     background-color: #000000;
 }

@@ -1,8 +1,8 @@
-import os
 from datetime import datetime
 
 from flask import Flask, render_template, request, Markup
 
+import env
 from sections import blog
 from markdown import markdown
 
@@ -10,9 +10,8 @@ blueprints = [
     blog.bp,
 ]
 
-github_repository = os.getenv('GITHUB_REPOSITORY')
-if github_repository and not os.getenv('CNAME'):
-    owner, sep, repo = github_repository.partition('/')
+if env.GITHUB_REPOSITORY and not env.CNAME:
+    owner, sep, repo = env.GITHUB_REPOSITORY.partition('/')
     app = Flask(__name__, static_url_path=f'/{repo}/static')
     for bp in blueprints:
         app.register_blueprint(bp, url_prefix=f'/{repo}')

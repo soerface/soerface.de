@@ -10,7 +10,9 @@
                 <div class="card-body">
                     <h1 class="card-title">{{ article.metadata.title }}</h1>
                     <div class="teaser">{{ article.metadata.teaser }}</div>
-                    {{ article.content }}
+                    <article>
+                        {{ article.content }}
+                    </article>
                     {#                    {{ article.metadata.date.year }}#}
                     {#                    {{ article.metadata.date.month }}#}
                     {#                    {{ article.metadata.date.day }}#}
