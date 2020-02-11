@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import Blueprint, render_template, Markup, escape, url_for, send_from_directory, send_file, abort
+from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort
 from markdown import markdown
 import frontmatter
 from datetime import datetime
