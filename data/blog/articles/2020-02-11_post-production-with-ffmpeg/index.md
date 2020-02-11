@@ -16,7 +16,13 @@ The final toolchain is available at
 [github.com/flipdot/0xA-voc-toolchain](https://github.com/flipdot/0xA-voc-toolchain/) (subject to change).
 
 It works by consecutively executing the numbered bash scripts. But first, set `INPUT_DIR` and
-`WORKING_DIR` in [settings.env](https://github.com/flipdot/0xA-voc-toolchain/blob/master/settings.env)
+`WORKING_DIR` in [settings.env](https://github.com/flipdot/0xA-voc-toolchain/blob/master/settings.env).
+Install all required packages:
+
+```console
+$ sudo apt install ffmpeg sox audacity mpv libxi-dev mesa-common-dev
+$ npm install -g https://github.com/transitive-bullshit/ffmpeg-concat.git#feature/optimize-frames
+```
 
 ```console
 $ git clone https://github.com/flipdot/0xA-voc-toolchain.git
@@ -26,7 +32,8 @@ $ ./1_preprocess_raw_files.sh
 $ ./2_extract_audio.sh
 $ ./3_align_inputs.sh
 $ ./4_create_time_marks.sh
-$ ./5
+$ ./5_combine_videos.sh
+$ ./6_add_intro_outro.sh
 ```
 
 Each script will iterate through all directories inside `INPUT_DIR` / `WORKING_DIR` and execute commands
@@ -218,3 +225,25 @@ And it will look like this:
 ![Rendered splitscreen](splitscreen.png)
 
 ## 6. Add intro and outro
+
+Script: [`6_add_intro_outro.sh`](https://github.com/flipdot/0xA-voc-toolchain/blob/master/6_add_intro_outro.sh)
+
+To finalize the video, we want to concat an intro and an outro to each file. FFmpeg filter graphs are
+very powerful, but it is pretty difficult to create simple transitions with them. Therefore, we will
+be using [ffmpeg-concat](https://github.com/transitive-bullshit/ffmpeg-concat) for this task. We need
+to use the `features/optimize-frames` branch - otherwise, tons of gigabytes will be consumed in our
+`/tmp` directory. Checkout this [pull request](https://github.com/transitive-bullshit/ffmpeg-concat/pull/23) –
+if it was merged, you can use the master version.
+
+`ffmpeg-concat` does also not keep the audio of the inputs
+([issue #4](https://github.com/transitive-bullshit/ffmpeg-concat/issues/4). We work around this by
+calling `ffmpeg` yet another time after concatenation, copying back our audio stream. Fortunately,
+this does not require de- and encoding of the video. We will also add an `intro.wav`, so we will
+get a fancy intro sound. This requires re-encoding of the audio, but compared to video-encoding
+this is quite fast.
+
+And there you have it – a final `output.mp4` consisting of the intro, talk with cam and screen recording,
+and outro.
+
+The talks will be published on [media.ccc.de](https://media.ccc.de) – I'll update this article
+as soon as the talks are public.
