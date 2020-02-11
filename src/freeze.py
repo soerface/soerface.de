@@ -9,6 +9,23 @@ from app import app
 def main():
     app.config['FREEZER_DESTINATION'] = '../build'
     freezer = Freezer(app)
+
+    # This allows explicit adding of routes that are not linked anywhere.
+    # Currently, we add a link in blog.load_article() function, so we don't need this.
+    # Maybe it will be useful sometime
+    #
+    # @freezer.register_generator
+    # def article_media():
+    #     yield {
+    #         'year': '2020',
+    #         'month': '02',
+    #         'day': '11',
+    #         'slug': 'post-production-with-ffmpeg',
+    #         'filename': 'audacity_opened.png',
+    #     }
+    #     articles = ARTICLE_BASE_PATH.glob('*')
+    # article_media.__name__ = 'blog.article_media'
+
     freezer.freeze()
     cname = os.getenv('CNAME')
     if cname:

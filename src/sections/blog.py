@@ -29,6 +29,14 @@ def load_article(path: Path):
                                        day=f'{article.metadata["date"].day:02}',
                                        slug=article.metadata['slug']
                                        )
+    article.metadata['media'] = [
+        url_for('blog.article_media',
+                year=article.metadata['date'].year,
+                month=f'{article.metadata["date"].month:02}',
+                day=f'{article.metadata["date"].day:02}',
+                slug=article.metadata['slug'],
+                filename=x.name
+                ) for x in path.glob('*')]
     card_text = markdown(escape(article.metadata.get('teaser')))
     # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
     # so we hack it in here
