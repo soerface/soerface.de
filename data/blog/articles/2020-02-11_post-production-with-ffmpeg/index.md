@@ -235,7 +235,7 @@ to use the `features/optimize-frames` branch - otherwise, tons of gigabytes will
 `/tmp` directory. Checkout this [pull request](https://github.com/transitive-bullshit/ffmpeg-concat/pull/23) –
 if it was merged, you can use the master version.
 
-`ffmpeg-concat` does also not keep the audio of the inputs
+`ffmpeg-concat` also does not keep the audio of the inputs
 ([issue #4](https://github.com/transitive-bullshit/ffmpeg-concat/issues/4)). We work around this by
 calling `ffmpeg` yet another time after concatenation, copying back our audio stream. Fortunately,
 this does not require de- and encoding of the video. We will also add an `intro.wav`, so we will

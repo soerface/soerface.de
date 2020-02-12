@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort
@@ -62,11 +63,16 @@ def get_article_path(year, month, day, slug) -> Path:
     return ARTICLE_BASE_PATH / f'{year}-{month}-{day}_{slug}'
 
 
+def load_article_list():
+    paths = ARTICLE_BASE_PATH.glob('*')
+    # TODO: this can throw index errors if a directory does not contain a date
+    sorted_paths = sorted(paths, key=lambda x: re.findall(r'\d{4}-\d{2}-\d{2}', x.name)[0])[::-1]
+    return sorted_paths
+
+
 @bp.route('/')
 def index():
-    paths = ARTICLE_BASE_PATH.glob('*')
-    # event_list = [re.search(r'(\d+)/(.+).yml', str(p)).groups() for p in paths]
-    articles = [load_article(x) for x in paths]
+    articles = [load_article(x) for x in load_article_list()]
     return render_template('blog/index.html', article_list=articles)
 
 
