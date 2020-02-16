@@ -21,6 +21,7 @@ Install all required packages:
 
 ```console
 $ sudo apt install ffmpeg sox audacity mpv libxi-dev mesa-common-dev
+$ nvm use 8
 $ npm install -g https://github.com/transitive-bullshit/ffmpeg-concat.git#feature/optimize-frames
 ```
 
