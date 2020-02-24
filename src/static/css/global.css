@@ -7,6 +7,20 @@
     color: #5a6268;
 }
 
+p a {
+    color: #212569;
+    text-decoration: none;
+    border-bottom: 1px dotted #212569;
+    transition: color 0.5s, border-bottom 0.5s;
+}
+
+p a:hover {
+    color: #2125f9;
+    text-decoration: none;
+    border-bottom: 1px solid #2125f9;
+    transition: color 0.5s, border-bottom 0.5s;
+}
+
 #pageFooter a {
     color: #1d2124;
 }
@@ -48,8 +62,11 @@ article img, .codehilite {
 article a[href*="github.com"]::before {
     content: "\f09b";
     font-family: "Font Awesome 5 Brands";
-    color: #000000;
     margin-right: 0.2em;
+}
+
+article a::before {
+    color: #000000;
 }
 
 article img {
