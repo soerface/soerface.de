@@ -9,8 +9,20 @@ teaser: >
 
 A while ago, we, the Chaos Computer Club Kassel, [flipdot e.V.](https://flipdot.org), organized a public
 event, called the [hackumenta](https://2019.hackumenta.de/). Our talks were recorded and we wanted to
-published them at [meda.ccc.de](https://media.ccc.de). Speaker and slides were separately recorded and
+published them at [meda.ccc.de](https://media.ccc.de/c/hackumenta19). Speaker and slides were separately recorded and
 need to be synced, merged, and cut, so I've created a little ffmpeg-toolchain.
+
+This is the result:
+
+<div style="height: 0; width: 100%; position: relative; padding-bottom: 56.25%; margin-bottom: 1em">
+    <iframe
+        width="100%"
+        height="100%"
+        src="https://media.ccc.de/v/hackumenta-23-opening/oembed"
+        allowfullscreen
+        style="position: absolute; border: 0">
+    </iframe>
+</div>
 
 The final toolchain is available at
 [github.com/flipdot/0xA-voc-toolchain](https://github.com/flipdot/0xA-voc-toolchain/) (subject to change).
@@ -246,5 +258,4 @@ this is quite fast.
 And there you have it – a final `output.mp4` consisting of the intro, talk with cam and screen recording,
 and outro.
 
-The talks will be published on [media.ccc.de](https://media.ccc.de) – I'll update this article
-as soon as the talks are public.
+The talks are available at [media.ccc.de/c/hackumenta19](https://media.ccc.de/c/hackumenta19).
