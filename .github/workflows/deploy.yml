@@ -17,14 +17,14 @@ jobs:
       with:
         python-version: 3.7
         architecture: x64
+    - name: Install pipenv
+      run: pip install pipenv
     - name: Install dependencies
-      run: pip install -r requirements.txt
-    - name: Install stylechecker
-      run: pip install flake8
+      run: pipenv sync
     - name: Run stylecheck
-      run: flake8 .
+      run: pipenv run flake8 .
     - name: Run tests
-      run: GITHUB_REPOSITORY="" nosetests --with-doctest -I "iconfonts\.py" .
+      run: GITHUB_REPOSITORY="" pipenv run nosetests --with-doctest -I "iconfonts\.py" .
   deploy:
     needs: build
     runs-on: ubuntu-18.04
