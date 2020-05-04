@@ -35,10 +35,12 @@ jobs:
       with:
         python-version: '3.7'
         architecture: x64
+    - name: Install pipenv
+      run: pip install pipenv
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: pipenv sync
     - name: Build static version
-      run: python src/freeze.py
+      run: pipenv run python src/freeze.py
       env:
         CNAME: soerface.de
     - name: Deploy to GitHub Pages
