@@ -249,4 +249,4 @@ Demonstration:
     <source src="demo.mp4" type="video/mp4">
 </video>
 
-The complete project source can be found on [github.com/soerface/django_pyjwt_example](https://github.com/soerface/django_pyjwt_example)
+The complete project source can be found on [soerface/django_pyjwt_example](https://github.com/soerface/django_pyjwt_example)
