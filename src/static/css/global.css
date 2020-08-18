@@ -55,12 +55,18 @@ pre {
     height: 2.5em;
 }
 
-article img, .codehilite {
+article img, .codehilite, article video {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
 }
 
 article a[href*="github.com"]::before {
     content: "\f09b";
+    font-family: "Font Awesome 5 Brands";
+    margin-right: 0.2em;
+}
+
+article a[href*="stackoverflow.com"]::before {
+    content: "\f16c";
     font-family: "Font Awesome 5 Brands";
     margin-right: 0.2em;
 }
