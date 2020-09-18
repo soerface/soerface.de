@@ -8,34 +8,33 @@ I like dark themes - but I also like light themes. It all depends on the situati
 Don't tell me it is enjoyable to code with a dark IDE while the sun is shining right at your display!
 
 Therefore I was searching for a *quick toggle* between two themes. And it is actually pretty simple.
-Add this to your `~/.bashrc` or `~/.zshrc` for **Linux Mint** (with Cinnamon):
+Add this to your `~/.bashrc` or `~/.zshrc` for **Linux Mint** (with Cinnamon) or **Ubuntu** (with Gnome Shell / Unity):
 
 ```shell
 function dark {
-    gsettings set org.cinnamon.desktop.wm.preferences theme 'Mint-Y-Dark'
-    gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark'
-    gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Dark'
-    gsettings set org.cinnamon.theme name 'Mint-Y-Dark'
+    if lsb_release -i | grep -q 'Linuxmint'; then
+        gsettings set org.cinnamon.desktop.wm.preferences theme 'Mint-Y-Dark'
+        gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark'
+        gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Dark'
+        gsettings set org.cinnamon.theme name 'Mint-Y-Dark'
+    fi
+    if lsb_release -i | grep -q 'Ubuntu'; then
+        gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
+    fi
 }
 
 function light {
-    gsettings set org.cinnamon.desktop.wm.preferences theme 'Mint-Y'
-    gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y'
-    gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y'
-    gsettings set org.cinnamon.theme name 'Mint-Y'
+    if lsb_release -i | grep -q 'Linuxmint'; then
+        gsettings set org.cinnamon.desktop.wm.preferences theme 'Mint-Y'
+        gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y'
+        gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y'
+        gsettings set org.cinnamon.theme name 'Mint-Y'
+    fi
+    if lsb_release -i | grep -q 'Ubuntu'; then
+        gsettings set org.gnome.desktop.interface gtk-theme 'Yaru'
+    fi
 }
 ``` 
-
-Or this for **Ubuntu** (with Gnome Shell / Unity):
-```shell
-function dark {
-    gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
-}
-
-function light {
-    gsettings set org.gnome.desktop.interface gtk-theme 'Yaru'
-}
-```
 
 Now open a new terminal and just type `light` or `dark`!
 
