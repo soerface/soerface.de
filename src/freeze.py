@@ -27,6 +27,8 @@ def main():
     # article_media.__name__ = 'blog.article_media'
 
     freezer.freeze()
+    with open(Path(freezer.root) / '.nojekyll', 'w') as f:
+        f.write('')
     cname = os.getenv('CNAME')
     if cname:
         with open(Path(freezer.root) / 'CNAME', 'w') as f:
