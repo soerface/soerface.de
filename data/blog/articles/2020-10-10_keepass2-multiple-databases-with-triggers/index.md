@@ -149,6 +149,10 @@ It will automatically sync `shared.kdbx` with `$HOME/shared_storage/shared.kdbx`
 
 When you open it again, it will ask for the password of `personal.kdbx`.
 
+<video width="100%" autoplay loop muted>
+    <source src="keepass-trigger-demo.mp4" type="video/mp4">
+</video>
+
 ## Tweaking it to your needs
 
 To use it for your own databases, you need to change a couple of things:
