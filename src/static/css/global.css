@@ -38,8 +38,11 @@ p a:hover {
 
 .codehilite {
     padding: 0.3em;
-    margin-bottom: 1em;
     font-size: 10pt;
+}
+
+.codehilite, video {
+    margin-bottom: 1em;
 }
 
 pre {

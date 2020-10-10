@@ -23,3 +23,9 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+    {% for script_name in article.metadata.scripts %}
+        <script src="{{ script_name }}"></script>
+    {% endfor %}
+{% endblock %}
