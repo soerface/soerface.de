@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>soerface</title>
     <link href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/pygments.css') }}" rel="stylesheet">
@@ -13,7 +13,6 @@
     {% for k, v in meta.items() -%}
         <meta name="{{ k }}" content="{{ v }}">
     {% endfor -%}
-    <meta charset="utf-8">
 
     {% include 'favicons.html' %}
     <meta name="msapplication-TileColor" content="#ffffff">
