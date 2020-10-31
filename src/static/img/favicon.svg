@@ -7,15 +7,8 @@
    width="160mm">
   <g
      transform="translate(0,-137)">
-    <rect
-       transform="rotate(45)"
-       style="fill:#0000a0"
-       y="40.305077"
-       x="153.44217"
-       height="113.13708"
-       width="113.13708" />
     <g
-       style="fill:#ededed"
+       style="fill:#000000"
        aria-label="s"
        scale="2"
        transform="matrix(1.7643263,0,0,1.7643263,-28.276456,-174.26172)">
