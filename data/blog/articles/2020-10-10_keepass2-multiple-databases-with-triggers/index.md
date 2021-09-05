@@ -47,9 +47,7 @@ We will use the synchronization feature of KeePass2 to handle conflicts properly
 The following XML document describes the triggers. Copy it to your clipboard:
 
 <div id="triggersXML" style="height: 10em; overflow: auto; margin: 1em 0; ">
-<button title="Copy to clipboard" data-toggle="tooltip" data-placement="left"
-        class="btn btn-outline-light btn-sm" style="margin: 1em; position: absolute; right: 2.5em" id="copyToClipboardButton">Copy
-</button>
+<button class="copy-to-clipboard"></button>
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <TriggerCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema"
