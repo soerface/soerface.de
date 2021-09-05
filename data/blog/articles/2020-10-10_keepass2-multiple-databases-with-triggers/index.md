@@ -4,7 +4,7 @@ teaser: >
     An underrated feature of KeePass2 is its trigger system. It allows a lot of custom behaviour.
     Let's use it to make working with multiple kdbx files enjoyable!
 scripts:
-    - copy-to-clipboard.js
+    - /static/js/copy-to-clipboard.js
 ---
 
 Sometimes I get asked why I still stick to KeePass2 instead of switching to KeePassXC:
@@ -46,7 +46,7 @@ We will use the synchronization feature of KeePass2 to handle conflicts properly
 
 The following XML document describes the triggers. Copy it to your clipboard:
 
-<div id="triggersXML" style="height: 10em; overflow: auto; margin: 1em 0; ">
+<div style="height: 10em; overflow: auto; margin: 1em 0; ">
 <button class="copy-to-clipboard"></button>
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
