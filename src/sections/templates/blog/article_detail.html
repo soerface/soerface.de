@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {% for stylesheet_name in article.metadata.stylesheets %}
+        <link rel="stylesheet" href="{{ stylesheet_name }}"/>
+    {% endfor %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
