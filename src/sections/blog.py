@@ -80,7 +80,11 @@ def index():
 def article_detail(year, month, day, slug):
     path = get_article_path(year, month, day, slug)
     article = load_article(path)
-    return render_template('blog/article_detail.html', article=article)
+    return render_template(
+        'blog/article_detail.html',
+        article=article,
+        page_title=article["metadata"]["title"]
+    )
 
 
 @bp.route('/<year>/<month>/<day>/<string:slug>/<path:filename>')

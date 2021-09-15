@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>soerface</title>
+    <title>{{ page_title + " -" if page_title else "" }} soerface</title>
     <link href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/pygments.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='JetBrainsMono-1.0.2/font.css') }}" rel="stylesheet">
