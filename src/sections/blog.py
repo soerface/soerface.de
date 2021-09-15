@@ -51,7 +51,7 @@ def load_article(path: Path):
         IconFontsExtension(prefix='fa-', base='fab')
     ]).replace('class="fab amp;fa-', 'class="fab fa-')
     content = add_class_to_tag(content, 'p', 'card-text')
-    article.metadata['teaser'] = Markup(card_text)
+    article.metadata['html_teaser'] = Markup(card_text)
     # frontmatter.dump(article, path)
     return {
         'metadata': article.metadata,
@@ -73,7 +73,11 @@ def load_article_list():
 @bp.route('/')
 def index():
     articles = [load_article(x) for x in load_article_list()]
-    return render_template('blog/index.html', article_list=articles)
+    return render_template(
+        "blog/index.html",
+        article_list=articles,
+        page_title="Blog",
+    )
 
 
 @bp.route('/<year>/<month>/<day>/<string:slug>/')
@@ -83,7 +87,10 @@ def article_detail(year, month, day, slug):
     return render_template(
         'blog/article_detail.html',
         article=article,
-        page_title=article["metadata"]["title"]
+        page_title=article["metadata"]["title"],
+        meta={
+            "description": article["metadata"].get("teaser"),
+        }
     )
 
 
