@@ -3,6 +3,8 @@ title: JWT with Django REST framework
 teaser: >
     Django REST framework already provides an easy way to issue JSON Web Tokens.
     But what if you only want to validate tokens issued by another server?
+scripts:
+    - /static/js/copy-to-clipboard.js
 ---
 
 With [Django REST framework](https://www.django-rest-framework.org/), you can easily
@@ -48,6 +50,8 @@ class JWTAuthentication(BaseAuthentication):
 Add your custom authentication class to the `DEFAULT_AUTHENTICATION_CLASSES` setting of DRF. We also add the default
 authentication classes so we will still be able to login via the webinterface. To do so, add those lines to `settings.py`:
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```python hl_lines="2 3 4 5 6"
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -60,6 +64,7 @@ REST_FRAMEWORK = {
     ]
 }
 ```
+</div>
 
 ## Add a public certificate
 
@@ -69,6 +74,8 @@ certificate directly to our `settings.py` – you may consider reading them from
 
 If you do not have a certificate, use OpenSSL to generate one:
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```shell
 # Generate a private key
 openssl genrsa -out private.pem -aes256 4096
@@ -77,6 +84,7 @@ openssl rsa -pubout -in private.pem -out public.pem
 # Print the public key
 cat public.pem
 ```
+</div>
 
 `settings.py`:
 
@@ -94,6 +102,8 @@ We will use [pyjwt](https://pyjwt.readthedocs.io/en/latest/) in our custom authe
 the token. All that is needed is essentially calling `jwt.decode(token, pub_key)`. Some sanity checks are made for
 proper error handling. Enforcing the JWT algorithm makes sure that the user can't choose another one
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```python hl_lines="10 17 19"
 from django.conf import settings
 import jwt  # pip install pyjwt
@@ -118,6 +128,7 @@ class JWTAuthentication(BaseAuthentication):
             raise AuthenticationFailed('Malformed token')
         print(token)
 ```
+</div>
 
 ### Bonus validation: Use JSON Schema
 
@@ -134,6 +145,8 @@ sections "Skipping Claim Verification" and "Requiring Optional Claims").
 This leaves me with an uneasy feeling to the options of pyjwt. Since JSON Schema also allows me to verify more than
 just the JWT claims, I will use it for extended validation:
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```python hl_lines="5 9 10 11 12 13 14 15 16 33"
 from django.conf import settings
 import jwt
@@ -175,6 +188,7 @@ class JWTAuthentication(BaseAuthentication):
             }, 400)
 
 ```
+</div>
 
 ## Create user accounts on the fly
 
@@ -184,6 +198,8 @@ user. Additionally, we emit the [`user_logged_in`](https://docs.djangoproject.co
 signal so Django and other parts of our project are notified accordingly. For example, Django will add a `last_login`
 timestamp to each user.
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```python hl_lines="41 42 43 44"
 from django.conf import settings
 import jwt
@@ -230,6 +246,7 @@ class JWTAuthentication(BaseAuthentication):
         user_logged_in.send(sender=JWTAuthentication, request=request, user=user)
         return user, None
 ```
+</div>
 
 ## Test everything
 
@@ -238,10 +255,13 @@ For simple testing, I've added a script that will generate a JWT for you. Check 
 
 Create a JWT and use curl to send it in a `Authorization: Bearer <token>` header:
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```shell
 JWT_TOKEN=$(./create_jwt.py hello)
 curl -sH "Authorization: Bearer $JWT_TOKEN" localhost:8000/users/
 ```
+</div>
 
 Demonstration:
 

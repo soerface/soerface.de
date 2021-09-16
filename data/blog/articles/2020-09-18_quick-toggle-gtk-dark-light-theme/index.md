@@ -2,6 +2,8 @@
 title: Quick toggle your GTK theme between light and dark
 teaser: >
     Want to use both, dark and light theme, but need a simple way to toggle between them? Search no more.
+scripts:
+    - /static/js/copy-to-clipboard.js
 ---
 
 I like dark themes - but I also like light themes. It all depends on the situation.
@@ -10,6 +12,8 @@ Don't tell me it is enjoyable to code with a dark IDE while the sun is shining r
 Therefore I was searching for a *quick toggle* between two themes. And it is actually pretty simple.
 Add this to your `~/.bashrc` or `~/.zshrc` for **Linux Mint** (with Cinnamon) or **Ubuntu** (with Gnome Shell / Unity):
 
+<div>
+<button class="copy-to-clipboard"></button>
 ```shell
 function dark {
     if lsb_release -i | grep -q 'Linuxmint'; then
@@ -35,6 +39,7 @@ function light {
     fi
 }
 ``` 
+</div>
 
 Now open a new terminal and just type `light` or `dark`!
 

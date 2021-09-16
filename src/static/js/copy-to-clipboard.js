@@ -2,7 +2,10 @@
 const buttons = document.getElementsByClassName("copy-to-clipboard")
 Array.from(buttons).forEach(button => {
     button.className = "btn btn-outline-light btn-sm"
-    button.style = "margin: 1em; position: absolute; right: 2.5em"
+    let rightDistance = "1.5em";
+    if (button.parentElement.scrollHeight > button.parentElement.clientHeight)
+        rightDistance = "2.5em";
+    button.style = "margin: 0.5em; position: absolute; right: " + rightDistance;
     button.title = "Copy to clipboard"
     button.textContent = "Copy"
     button.setAttribute("data-placement", "left")
