@@ -111,7 +111,14 @@ function renderConfiguratorCanvas() {
 }
 
 function drawWallpaperFragment(ctx, s) {
-    ctx.drawImage(s.wallpaper, s.x, s.y, s.w, s.h, s.x, s.y, s.w, s.h);
+    const [w, h] = getDrawableBackgroundSize();
+    const width_ratio = w / ctx.canvas.width;
+    const height_ratio = h / ctx.canvas.height;
+    const sx = s.x * width_ratio;
+    const sy = s.y * height_ratio;
+    const sw = s.w * width_ratio;
+    const sh = s.h * height_ratio;
+    ctx.drawImage(s.wallpaper, sx, sy, sw, sh, s.x, s.y, s.w, s.h);
 }
 
 function renderWallpaper() {
@@ -193,7 +200,7 @@ function resetSelection() {
     refresh()
 }
 
-function drawBackground(ctx) {
+function getDrawableBackgroundSize() {
     let w, h
     let screen_ratio = displayWidth / displayHeight
     let image_ratio = wallpaper.width / wallpaper.height
@@ -204,6 +211,11 @@ function drawBackground(ctx) {
         w = wallpaper.width
         h = w / screen_ratio
     }
+    return [w, h]
+}
+
+function drawBackground(ctx) {
+    const [w, h] = getDrawableBackgroundSize();
     ctx.drawImage(wallpaper, 0, 0, w, h, 0, 0, displayWidth, displayHeight);
 }
 
@@ -260,10 +272,10 @@ function hexToRgb(hex) {
 function applyColorFilter(color) {
     const canvas = document.createElement("canvas")
     const ctx = canvas.getContext("2d")
-    canvas.width = displayWidth
-    canvas.height = displayHeight
-    drawBackground(ctx)
-    const imageData = ctx.getImageData(0, 0, displayWidth, displayHeight);
+    canvas.width = wallpaper.width
+    canvas.height = wallpaper.height
+    ctx.drawImage(wallpaper, 0, 0)
+    const imageData = ctx.getImageData(0, 0, wallpaper.width, wallpaper.height);
     const pixels = imageData.data;
     const rgb_color = hexToRgb(color)
     for (let i=0; i < pixels.length; i += 4) {
