@@ -13,10 +13,13 @@
     {% for k, v in meta.items() -%}
         <meta name="{{ k }}" content="{{ v }}">
     {% endfor -%}
+    {% for k, v in meta_properties.items() -%}
+        <meta property="{{ k }}" content="{{ v }}">
+    {% endfor -%}
 
     {% include 'favicons.html' %}
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
     {% block head %}
     {% endblock %}
 </head>

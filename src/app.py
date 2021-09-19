@@ -49,7 +49,8 @@ def add_last_updated() -> dict:
 @app.context_processor
 def add_meta_tags() -> dict:
     return {
-        'meta': {}
+        "meta": {},
+        "meta_properties": {},
     }
 
 

@@ -73,10 +73,19 @@ def load_article_list():
 @bp.route('/')
 def index():
     articles = [load_article(x) for x in load_article_list()]
+    description = "Occasionally sharing things I learned"
     return render_template(
         "blog/index.html",
         article_list=articles,
         page_title="Blog",
+        meta={
+            "description": description,
+        },
+        meta_properties={
+            "og:description": description,
+            "og:title": "soerface' Blog",
+            "og:image": url_for("static", filename="img/profile_photo.jpg")
+        },
     )
 
 
@@ -84,12 +93,20 @@ def index():
 def article_detail(year, month, day, slug):
     path = get_article_path(year, month, day, slug)
     article = load_article(path)
+    title = article["metadata"].get("title")
+    teaser = tmp[:-1] if (tmp := article["metadata"].get("teaser"))[-1] == "\n" else tmp
+    image_url = article["metadata"].get("image", url_for("static", filename="img/profile_photo.jpg"))
     return render_template(
         'blog/article_detail.html',
         article=article,
-        page_title=article["metadata"]["title"],
+        page_title=title,
         meta={
-            "description": article["metadata"].get("teaser"),
+            "description": teaser,
+        },
+        meta_properties={
+            "og:description": teaser,
+            "og:title": title,
+            "og:image": image_url,
         }
     )
 
