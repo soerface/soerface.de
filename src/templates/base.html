@@ -25,13 +25,17 @@
 </head>
 <body class="bg-dark">
 
+{% block header %}
 {% include 'header.html' %}
+{% endblock %}
 
 <div class="container" id="mainContent">
     {% block content %}
     {{ raw_content }}
     {% endblock %}
+    {% block footer %}
     {% include 'footer.html' %}
+    {% endblock %}
 </div>
 
 <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>

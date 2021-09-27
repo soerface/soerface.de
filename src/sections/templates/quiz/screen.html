@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('quiz.static', filename='quiz.css') }}"/>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-light">Quiz</h1>
+    <div class="card" id="loading-card">
+        <div class="card-body text-center">
+            <p class="card-text">
+                <i class="fa fa-spinner fa-spin"></i>
+                Connecting to control panel at
+                <a href="{{ url_for('quiz.index') }}" target="_blank">{{ url_for('quiz.index', _external=True) }}</a>
+            </p>
+            <noscript>
+                <p class="card-text">Sorry, the quiz won't work without JavaScript</p>
+            </noscript>
+        </div>
+    </div>
+    <div id="quiz">
+        <div class="grid">
+            <div class="question card"><div class="card-body"><div class="card-title">Something very very real long big dick fasd fsad fasef </div> <div class="points">50</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Something</div> <div class="points">100</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Something</div> <div class="points">150</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Something</div> <div class="points">200</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">50</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">100</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">150</div></div></div>
+            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">200</div></div></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <div class="row mt-2 justify-content-md-center">
+        <div class="col col-sm-12 text-muted text-light">
+            <p class="text-light text-muted">Quiz at {{ url_for('quiz.index', _external=True) }}</p>
+            <pre id="debug-output" class="d-none text-light"></pre>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('quiz.static', filename='quiz_screen.js') }}"></script>
+{% endblock %}

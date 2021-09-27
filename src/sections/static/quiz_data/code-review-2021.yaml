@@ -1,0 +1,49 @@
+title: "Code Review 2021"
+categories:
+  SQL:
+    questions:
+      - points: 50
+      - points: 100
+      - points: 150
+      - points: 200
+  Guess The Output:
+    questions:
+      - points: 50
+        title: "parseInt()"
+        q: |
+          parseInt(500)
+          parseInt(50)
+          parseInt(5)
+          parseInt(0.5)
+          parseInt(0.05)
+          parseInt(0.005)
+          parseInt(0.0005)
+          parseInt(0.00005)
+          parseInt(0.000005)
+          parseInt(0.0000005)
+        a: |
+          500
+          50
+          5
+          0
+          0
+          0
+          0
+          0
+          0
+          5
+      - points: 100
+      - points: 150
+      - points: 200
+  Python:
+    questions:
+      - points: 50
+      - points: 100
+      - points: 150
+      - points: 200
+  Java:
+    questions:
+      - points: 50
+      - points: 100
+      - points: 150
+      - points: 200

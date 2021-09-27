@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('quiz.static', filename='quiz.css') }}"/>
+{% endblock %}
+
+{% block content %}
+    <noscript>
+        <div class="alert alert-danger">
+            The quiz won't work with your current browser configuration. Please <strong>enable JavaScript</strong>!
+        </div>
+    </noscript>
+    <div class="row text-light">
+        <div class="col-sm-8">
+            <h1>Quiz</h1>
+        </div>
+        <div class="col-sm-4 text-right">
+            <button class="btn btn-outline-danger" id="reset-quiz">Reset everything</button>
+        </div>
+    </div>
+    <div class="row text-light">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="quiz-select-box" class="col-form-label col-sm-4">Choose the quiz</label>
+                <div class="col-sm-8">
+                    <select class="custom-select" id="quiz-select-box">
+                        <option hidden disabled selected>Select a quiz</option>
+                        {% for quiz in quiz_options %}
+                            <option value="{{ quiz.filename }}">{{ quiz.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row d-none" id="two-screens-help">
+                <label class="col-form-label col-sm-4">You need at least two screens</label>
+                <div class="col-sm-8">
+                    <p>Open a second window which will contain the slides.
+                        It is meant for your audience, so move it to a big screen:
+                    </p>
+                    <button data-url="{{ url_for('quiz.screen') }}" id="open-screen"
+                            class="btn btn-outline-light">
+                        Open Window for 2nd Screen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#
+    {% for points in [50, 100, 150, 200] %}
+        <div class="row justify-content-center">
+            {% for category in ["Code Review", "Language", "Databases", "Guess The Output"] %}
+                <div class="col-md-3 d-flex">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h1 class="card-title">
+                                {{ category }}
+                            </h1>
+                            <hr>
+                            <h2 class="card-title">
+                                {{ points }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <hr>
+    {% endfor %}
+     #}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('quiz.static', filename='quiz_controller.js') }}"></script>
+{% endblock %}

@@ -3,11 +3,12 @@ from datetime import datetime
 from flask import Flask, render_template, request, Markup
 
 import env
-from sections import blog
+from sections import blog, quiz
 from markdown import markdown
 
 blueprints = [
     blog.bp,
+    quiz.bp,
 ]
 
 if env.GITHUB_REPOSITORY and not env.CNAME:
@@ -23,7 +24,7 @@ else:
 
 @app.context_processor
 def add_navigation() -> dict:
-    endpoints = [(f'{bp.name}.index', bp.name.title()) for bp in blueprints]
+    endpoints = [(f'{bp.name}.index', bp.name.title()) for bp in blueprints if bp.name != "quiz"]
     items = [{
         'active': request.endpoint.partition('.')[0] == endpoint.partition('.')[0],
         'endpoint': endpoint,
