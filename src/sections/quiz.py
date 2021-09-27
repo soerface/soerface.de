@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from flask import Blueprint, render_template, url_for
+from flask import Blueprint, render_template, url_for, Response
 import yaml
 
 bp = Blueprint(
@@ -14,9 +14,10 @@ bp = Blueprint(
 
 QUIZ_DATA_PATH = Path(__file__).parent / "static" / "quiz_data"
 
+
 def get_title_of_quiz(path: Path) -> str:
     with open(path) as f:
-        data = yaml.load(f)
+        data = yaml.load(f, Loader=yaml.SafeLoader)
     return data.get("title", path.name)
 
 
@@ -43,7 +44,7 @@ def index():
     )
 
 
-@bp.route("/screen")
+@bp.route("/screen/")
 def screen():
     return render_template("quiz/screen.html", page_title="Quiz Screen")
 
@@ -52,6 +53,6 @@ def screen():
 def data_as_json(filename):
     yaml_filename = filename + ".yaml"
     with open(QUIZ_DATA_PATH / yaml_filename) as f:
-        data = yaml.load(f)
+        data = yaml.load(f, Loader=yaml.SafeLoader)
 
-    return json.dumps(data)
+    return Response(json.dumps(data), mimetype="application/json")
