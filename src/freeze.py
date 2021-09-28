@@ -16,7 +16,7 @@ def main():
         owner, sep, repo = github_repository.partition("/")
         app.config["SERVER_NAME"] = repo
         app.config["PREFERRED_URL_SCHEME"] = "https"
-        
+
     freezer = Freezer(app)
 
     # This allows explicit adding of routes that are not linked anywhere.
