@@ -1,4 +1,17 @@
 title: "Foo Bar Quiz 3000"
 categories:
-  stuff:
-    title: "Dings"
+  C#:
+    questions:
+      - points: 50
+      - points: 100
+      - points: 150
+  Pascal:
+    questions:
+      - points: 50
+      - points: 100
+      - points: 150
+  COBOL:
+    questions:
+      - points: 50
+      - points: 100
+      - points: 150
