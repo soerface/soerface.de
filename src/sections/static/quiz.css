@@ -7,7 +7,7 @@
 #quiz-cards .question {
     margin: 0.5rem;
     width: 100%;
-    font-size: 2vh;
+    font-size: 3vh;
 }
 
 #quiz-cards .clickable {
@@ -28,8 +28,4 @@
 
 #quiz-cards .card-title, #quiz-cards .points {
     margin: 0 0.2rem;
-}
-
-#quiz-cards .points {
-    font-size: 4vh;
 }

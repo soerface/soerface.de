@@ -26,7 +26,7 @@ function createGrid(quizState, cardOnclickCallback) {
             cardTitle.textContent = category["title"] || category_slug
             const points = document.createElement("div")
             points.className = "points"
-            points.textContent = question["points"]
+            points.textContent = "🦆".repeat(question["points"])
             cardBody.appendChild(cardTitle)
             cardBody.appendChild(points)
             card.appendChild(cardBody)

@@ -73,7 +73,7 @@ function updateState(key, value) {
 }
 
 function onCardClick(category_slug, question_index) {
-    updateState(["categories", category_slug, "questions", question_index, "points"], 8000)
+    updateState(["categories", category_slug, "questions", question_index, "points"], 0)
 }
 
 
