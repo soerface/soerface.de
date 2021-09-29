@@ -16,7 +16,6 @@ function receiveCommand(ev) {
     switch (message.cmd) {
         case "getState":
             broadcastState();
-            sendCommand("quizFile", transientState["quizFile"])
             break
         case "screenRegistered":
             transientState["screenAvailable"] = true
@@ -37,25 +36,44 @@ function loadQuizState() {
 function saveQuizState() {
     localStorage.setItem("quizState", JSON.stringify(quizState))
     refreshUI()
+    document.getElementById("debug-output").textContent = JSON.stringify(quizState, null, 2)
+    document.getElementById("debug-output").classList.remove("d-none")
 }
 
 function downloadQuizFile(filepath) {
     fetch(filepath).then(res => res.text()).then(res => {
-        transientState["quizFile"] = JSON.parse(res)
-        sendCommand("quizFile", transientState["quizFile"])
+        updateState(null, JSON.parse(res))
     })
 }
 
+function _deepUpdateVariable(variable, keyPath, value) {
+    let [head, ...tail] = keyPath
+    if (tail.length > 0) {
+        _deepUpdateVariable(variable[head], tail, value)
+    } else {
+        variable[head] = value
+    }
+}
+
 function updateState(key, value) {
-    quizState[key] = value
+    if (key == null) {
+        Object.assign(quizState, value)
+    } else if (typeof key == "string") {
+        _deepUpdateVariable(quizState, key.split("."), value)
+    } else {
+        _deepUpdateVariable(quizState, key, value)
+    }
     broadcastState();
     if (key === "quizFile") {
         if (!transientState["screenAvailable"]) {
             sendCommand("findScreens");
         }
-        downloadQuizFile(value);
     }
     saveQuizState()
+}
+
+function onCardClick(category_slug, question_index) {
+    updateState(["categories", category_slug, "questions", question_index, "points"], 8000)
 }
 
 
@@ -75,11 +93,10 @@ function refreshUI() {
         }
     }
     document.getElementById("two-screens-help").classList.remove("d-none")
-    console.log(transientState)
-    if (!(transientState["screenAvailable"] && transientState["quizFile"])) {
+    if (!(transientState["screenAvailable"])) {
         return
     }
-    const grid = createGrid(transientState["quizFile"])
+    const grid = createGrid(quizState, onCardClick)
     quiz.innerHTML = ""
     quiz.appendChild(grid)
 }
@@ -92,13 +109,13 @@ document.getElementById("open-screen").onclick = ev => {
 
 document.getElementById("quiz-select-box").onchange = ev => {
     updateState("quizFile", ev.target.value)
+    downloadQuizFile(ev.target.value)
 }
 
 document.getElementById("reset-quiz").onclick = ev => {
     quizState = {}
     transientState = {}
     saveQuizState()
-    sendCommand("quizFile", transientState["quizFile"])
 }
 
 channel.onmessage = receiveCommand

@@ -1,16 +1,24 @@
-function createGrid(quizFile) {
+function createGrid(quizState, cardOnclickCallback) {
     const grid = document.createElement("div")
     grid.className = "grid"
-    for (let category_slug in quizFile["categories"]) {
-        let category = quizFile["categories"][category_slug]
+    if (!quizState) {
+        return grid
+    }
+    for (let category_slug in quizState["categories"]) {
+        let category = quizState["categories"][category_slug]
         const questions = category["questions"] || [];
-        for (let question of questions) {
+        for (let i=0; i<questions.length; i++) {
+            let question = questions[i]
             if (!question) {
                 continue
             }
             const card = document.createElement("div")
             card.classList.add("question")
             card.classList.add("card")
+            if (cardOnclickCallback) {
+                card.onclick = () => cardOnclickCallback(category_slug, i)
+                card.classList.add("clickable")
+            }
             const cardBody = document.createElement("div")
             cardBody.className = "card-body"
             const cardTitle = document.createElement("div")

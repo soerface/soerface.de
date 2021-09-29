@@ -1,6 +1,5 @@
 const channel = new BroadcastChannel('quiz_screen_state');
 let quizState = {}
-let quizFile = {}
 
 function sendCommand(cmd, payload="") {
     channel.postMessage(JSON.stringify({cmd, payload}))
@@ -17,16 +16,13 @@ function receiveCommand(ev) {
         case "currentState":
             quizState = message.payload
             break
-        case "quizFile":
-            quizFile = message.payload
-            break
     }
     refreshUI()
 }
 
 function refreshUI() {
-    document.getElementsByTagName("h1")[0].textContent = quizFile["title"] || "Quiz"
-    const grid = createGrid(quizFile)
+    document.getElementsByTagName("h1")[0].textContent = quizState["title"] || "Quiz"
+    const grid = createGrid(quizState)
     const quiz = document.getElementById("quiz-cards");
     quiz.innerHTML = ""
     quiz.appendChild(grid)
