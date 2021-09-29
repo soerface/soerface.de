@@ -21,18 +21,7 @@
             </noscript>
         </div>
     </div>
-    <div id="quiz">
-        <div class="grid">
-            <div class="question card"><div class="card-body"><div class="card-title">Something very very real long big dick fasd fsad fasef </div> <div class="points">50</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Something</div> <div class="points">100</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Something</div> <div class="points">150</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Something</div> <div class="points">200</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">50</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">100</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">150</div></div></div>
-            <div class="question card"><div class="card-body"><div class="card-title">Some Thing Else</div> <div class="points">200</div></div></div>
-        </div>
-    </div>
+    <div id="quiz-cards"></div>
 {% endblock %}
 
 {% block footer %}
@@ -45,5 +34,6 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src="{{ url_for('quiz.static', filename='quiz_common.js') }}"></script>
     <script src="{{ url_for('quiz.static', filename='quiz_screen.js') }}"></script>
 {% endblock %}

@@ -1,31 +1,31 @@
-#quiz .grid {
+#quiz-cards .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 1rem;
 }
 
-#quiz .question {
+#quiz-cards .question {
     margin: 0.5rem;
     width: 100%;
     font-size: 2vh;
 }
 
-#quiz .card-body {
+#quiz-cards .card-body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
 }
 
-#quiz .card-title {
+#quiz-cards .card-title {
     height: 100%;
     text-align: center;
 }
 
-#quiz .card-title, #quiz .points {
+#quiz-cards .card-title, #quiz-cards .points {
     margin: 0 0.2rem;
 }
 
-#quiz .points {
+#quiz-cards .points {
     font-size: 4vh;
 }

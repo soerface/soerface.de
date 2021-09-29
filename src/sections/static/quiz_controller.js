@@ -8,6 +8,7 @@ function broadcastState() {
 
 function sendCommand(cmd, payload="") {
     channel.postMessage(JSON.stringify({cmd, payload}))
+    refreshUI()
 }
 
 function receiveCommand(ev) {
@@ -15,13 +16,14 @@ function receiveCommand(ev) {
     switch (message.cmd) {
         case "getState":
             broadcastState();
-            sendCommand("quizFile", transientState["quiz"])
+            sendCommand("quizFile", transientState["quizFile"])
             break
         case "screenRegistered":
             transientState["screenAvailable"] = true
             console.log("Screen registered")
             break
     }
+    refreshUI()
 }
 
 function loadQuizState() {
@@ -39,8 +41,8 @@ function saveQuizState() {
 
 function downloadQuizFile(filepath) {
     fetch(filepath).then(res => res.text()).then(res => {
-        transientState["quiz"] = JSON.parse(res)
-        sendCommand("quizFile", transientState["quiz"])
+        transientState["quizFile"] = JSON.parse(res)
+        sendCommand("quizFile", transientState["quizFile"])
     })
 }
 
@@ -58,19 +60,28 @@ function updateState(key, value) {
 
 
 function refreshUI() {
-    const quiz_select = document.getElementById("quiz-select-box");
-    if (quizState["quizFile"]) {
-        for (let i in quiz_select.options) {
-            if (quizState["quizFile"] === quiz_select.options[i].value) {
-                quiz_select.selectedIndex = i
-                break
-            }
-        }
-        document.getElementById("two-screens-help").classList.remove("d-none")
-    } else {
-        quiz_select.selectedIndex = 0
+    const quizSelect = document.getElementById("quiz-select-box");
+    const quiz = document.getElementById("quiz-cards");
+    if (!quizState["quizFile"]) {
+        quizSelect.selectedIndex = 0
         document.getElementById("two-screens-help").classList.add("d-none")
+        quiz.innerHTML = ""
+        return
     }
+    for (let i in quizSelect.options) {
+        if (quizState["quizFile"] === quizSelect.options[i].value) {
+            quizSelect.selectedIndex = i
+            break
+        }
+    }
+    document.getElementById("two-screens-help").classList.remove("d-none")
+    console.log(transientState)
+    if (!(transientState["screenAvailable"] && transientState["quizFile"])) {
+        return
+    }
+    const grid = createGrid(transientState["quizFile"])
+    quiz.innerHTML = ""
+    quiz.appendChild(grid)
 }
 
 
@@ -87,7 +98,7 @@ document.getElementById("reset-quiz").onclick = ev => {
     quizState = {}
     transientState = {}
     saveQuizState()
-    sendCommand("quizFile", transientState["quiz"])
+    sendCommand("quizFile", transientState["quizFile"])
 }
 
 channel.onmessage = receiveCommand
