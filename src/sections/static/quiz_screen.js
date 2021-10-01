@@ -23,11 +23,9 @@ function receiveCommand(ev) {
 function createQuestionDetails(categorySlug, questionIndex) {
     let question = quizState["categories"][categorySlug]["questions"][questionIndex]
 
-    const row = tag("div", {className: "row"})
     const card = createCard(quizState["showAnswer"] ? question["a"] : question["q"], question["scoredBy"]);
     card.classList.add("expand")
-    row.appendChild(card)
-    return row
+    return card
 }
 
 function refreshUI() {
@@ -53,3 +51,5 @@ channel.onmessage = receiveCommand
 
 sendCommand("getState")
 sendCommand("screenRegistered")
+
+document.getElementById("mainContent").style["max-width"] = "none"
