@@ -21,9 +21,9 @@ let screens = [
 ]
 
 function readSettings() {
-    displayWidth = parseInt(document.getElementById("display_width").value)
-    displayHeight = parseInt(document.getElementById("display_height").value)
-    numScreens = parseInt(document.getElementById("num_screens").value)
+    displayWidth = Math.floor(document.getElementById("display_width").value)
+    displayHeight = Math.floor(document.getElementById("display_height").value)
+    numScreens = Math.floor(document.getElementById("num_screens").value)
 }
 
 function clampValues() {
@@ -37,10 +37,10 @@ function clampValues() {
         if (s.y + s.h > displayHeight) {
             s.y = displayHeight - s.h;
         }
-        s.x = parseInt(Math.max(s.x, 0))
-        s.y = parseInt(Math.max(s.y, 0))
-        s.w = parseInt(Math.max(s.w, MIN_SCREEN_WIDTH))
-        s.h = parseInt(Math.max(s.h, MIN_SCREEN_HEIGHT))
+        s.x = Math.floor(Math.max(s.x, 0))
+        s.y = Math.floor(Math.max(s.y, 0))
+        s.w = Math.floor(Math.max(s.w, MIN_SCREEN_WIDTH))
+        s.h = Math.floor(Math.max(s.h, MIN_SCREEN_HEIGHT))
     }
 }
 
@@ -96,7 +96,7 @@ function renderConfiguratorCanvas() {
         diagonal_2.lineTo(s.x + lw / 2, s.y + s.h - lw / 2)
         diagonal_2.lineTo(s.x + s.w - lw / 2, s.y + lw / 2)
 
-        ctx.lineWidth = parseInt(lw / 2);
+        ctx.lineWidth = Math.floor(lw / 2);
         ctx.stroke(diagonal_1)
         ctx.stroke(diagonal_2)
     }
@@ -263,9 +263,9 @@ function hexToRgb(hex) {
     // https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
-        r: parseInt(result[1], 16) / 255,
-        g: parseInt(result[2], 16) / 255,
-        b: parseInt(result[3], 16) / 255,
+        r: Math.floor(result[1], 16) / 255,
+        g: Math.floor(result[2], 16) / 255,
+        b: Math.floor(result[3], 16) / 255,
     } : null;
 }
 
@@ -279,7 +279,7 @@ function applyColorFilter(color) {
     const pixels = imageData.data;
     const rgb_color = hexToRgb(color)
     for (let i=0; i < pixels.length; i += 4) {
-        // const lightness = parseInt((pixels[i] + pixels[i+1] + pixels[i+2]) / 3)
+        // const lightness = Math.floor((pixels[i] + pixels[i+1] + pixels[i+2]) / 3)
         pixels[i] *= rgb_color.r
         pixels[i+1] *= rgb_color.g;
         pixels[i+2] *= rgb_color.b;
