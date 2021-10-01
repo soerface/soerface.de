@@ -20,12 +20,30 @@ function receiveCommand(ev) {
     refreshUI()
 }
 
+function createQuestionDetails(categorySlug, questionIndex) {
+    let question = quizState["categories"][categorySlug]["questions"][questionIndex]
+
+    const row = tag("div", {className: "row"})
+    const card = createCard(quizState["showAnswer"] ? question["a"] : question["q"]);
+    card.classList.add("expand")
+    row.appendChild(card)
+    return row
+}
+
 function refreshUI() {
     document.getElementsByTagName("h1")[0].textContent = quizState["title"] || "Quiz"
-    const grid = createGrid(quizState)
+
+    let quizContent
+    if (quizState["selectedQuestion"]) {
+        let [categorySlug, questionIndex] = quizState["selectedQuestion"]
+        if (quizState)
+        quizContent = createQuestionDetails(categorySlug, questionIndex)
+    } else {
+        quizContent = createGrid(quizState)
+    }
     const quiz = document.getElementById("quiz-cards");
     quiz.innerHTML = ""
-    quiz.appendChild(grid)
+    quiz.appendChild(quizContent)
 
     // document.getElementById("debug-output").textContent = JSON.stringify(quizFile, null, 2)
     // document.getElementById("debug-output").classList.remove("d-none")

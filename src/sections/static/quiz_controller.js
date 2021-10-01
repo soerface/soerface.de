@@ -36,8 +36,8 @@ function loadQuizState() {
 function saveQuizState() {
     localStorage.setItem("quizState", JSON.stringify(quizState))
     refreshUI()
-    document.getElementById("debug-output").textContent = JSON.stringify(quizState, null, 2)
-    document.getElementById("debug-output").classList.remove("d-none")
+    // document.getElementById("debug-output").textContent = JSON.stringify(quizState, null, 2)
+    // document.getElementById("debug-output").classList.remove("d-none")
 }
 
 function downloadQuizFile(filepath) {
@@ -72,8 +72,70 @@ function updateState(key, value) {
     saveQuizState()
 }
 
-function onCardClick(category_slug, question_index) {
-    updateState(["categories", category_slug, "questions", question_index, "points"], 0)
+function navigateTo(question) {
+    updateState("selectedQuestion", question)
+    updateState("showAnswer", false)
+    history.pushState({"selectedQuestion": question}, "", "")
+}
+
+function onCardClick(categorySlug, questionIndex) {
+    const question = [categorySlug, questionIndex];
+    navigateTo(question)
+}
+
+function createQuestionDetails(categorySlug, questionIndex) {
+    const questionStatePath = ["categories", categorySlug, "questions", questionIndex]
+    let question = quizState["categories"][categorySlug]["questions"][questionIndex]
+
+    const questionColumn = tag("div", {className: "col-md-6"})
+    questionColumn.appendChild(tag("h3", {textContent: "Question", className: "text-light"}))
+    questionColumn.appendChild(createCard(question["q"]))
+    const answerColumn = tag("div", {className: "col-md-6"})
+    answerColumn.appendChild(tag("h3", {textContent: "Answer", className: "text-light"}))
+    answerColumn.appendChild(createCard(question["a"]))
+
+    const cardRow = tag("div", {className: "row"})
+    cardRow.appendChild(questionColumn)
+    cardRow.appendChild(answerColumn)
+
+    function scoreForTeam(team) {
+        updateState(scoredByStatePath, question["scoredBy"] === team ? null : team)
+    }
+
+    const backButton = tag("button", {
+        className: "btn btn-lg btn-outline-light",
+        textContent: "‹ Back"
+    })
+    backButton.onclick = () => navigateTo(null)
+    const teamAPointsButton = tag("button", {
+        className: "btn btn-lg " + (question["scoredBy"] === "teamA" ? "btn-danger" : "btn-outline-danger"),
+        textContent: "Points for Team A",
+    });
+    const scoredByStatePath = questionStatePath.concat("scoredBy");
+    teamAPointsButton.onclick = () => scoreForTeam("teamA")
+    const toggleAnswerButton = tag("button", {
+        className: "btn btn-lg btn-light",
+        textContent: quizState["showAnswer"] ? "Hide answer" : "Show answer",
+    });
+    toggleAnswerButton.onclick = () => updateState("showAnswer", !quizState["showAnswer"])
+    const teamBPointsButton = tag("button", {
+        className: "btn btn-lg " + (question["scoredBy"] === "teamB" ? "btn-info" : "btn-outline-info"),
+        textContent: "Points for Team B",
+    });
+    teamBPointsButton.onclick = () => scoreForTeam("teamB")
+    const buttonGroup = tag("div", {className: "btn-group ml-3"})
+    buttonGroup.appendChild(teamAPointsButton)
+    buttonGroup.appendChild(toggleAnswerButton)
+    buttonGroup.appendChild(teamBPointsButton)
+
+    const buttonRow = tag("div", {className: "row d-flex justify-content-center m-3"})
+    buttonRow.appendChild(backButton)
+    buttonRow.appendChild(buttonGroup)
+
+    const wrapper = tag("div")
+    wrapper.appendChild(cardRow)
+    wrapper.appendChild(buttonRow)
+    return wrapper
 }
 
 
@@ -82,6 +144,7 @@ function refreshUI() {
     const quiz = document.getElementById("quiz-cards");
     if (!quizState["quizFile"]) {
         quizSelect.selectedIndex = 0
+        document.getElementById("configurator-settings").classList.remove("d-none")
         document.getElementById("two-screens-help").classList.add("d-none")
         quiz.innerHTML = ""
         return
@@ -94,11 +157,19 @@ function refreshUI() {
     }
     document.getElementById("two-screens-help").classList.remove("d-none")
     if (!(transientState["screenAvailable"])) {
+        document.getElementById("configurator-settings").classList.remove("d-none")
         return
     }
-    const grid = createGrid(quizState, onCardClick)
+    document.getElementById("configurator-settings").classList.add("d-none")
+    let quizContent;
+    if (quizState["selectedQuestion"]) {
+        let [categorySlug, questionIndex] = quizState["selectedQuestion"]
+        quizContent = createQuestionDetails(categorySlug, questionIndex)
+    } else {
+        quizContent = createGrid(quizState, onCardClick)
+    }
     quiz.innerHTML = ""
-    quiz.appendChild(grid)
+    quiz.appendChild(quizContent)
 }
 
 
@@ -113,11 +184,24 @@ document.getElementById("quiz-select-box").onchange = ev => {
 }
 
 document.getElementById("reset-quiz").onclick = ev => {
-    quizState = {}
     transientState = {}
-    saveQuizState()
+    quizState = {}
+    updateState(null, {})
+    history.replaceState(null, "", "")
+}
+
+window.onpopstate = function (event) {
+    if (event.state) {
+        updateState(null, event.state)
+    } else {
+        updateState("selectedQuestion", null)
+    }
 }
 
 channel.onmessage = receiveCommand
 sendCommand("controllerInit")
 loadQuizState()
+
+if (quizState["selectedQuestion"]) {
+    history.pushState({"selectedQuestion": quizState["selectedQuestion"]}, "", "")
+}

@@ -18,7 +18,7 @@
             <button class="btn btn-outline-danger" id="reset-quiz">Reset everything</button>
         </div>
     </div>
-    <div class="row text-light">
+    <div class="row text-light" id="configurator-settings">
         <div class="col-md-12">
             <div class="form-group row">
                 <label for="quiz-select-box" class="col-form-label col-sm-4">Choose the quiz</label>
@@ -45,11 +45,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="quiz-cards"></div>
-        </div>
-    </div>
+    <div id="quiz-cards"></div>
     {#
     {% for points in [50, 100, 150, 200] %}
         <div class="row justify-content-center">

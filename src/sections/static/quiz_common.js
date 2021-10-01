@@ -1,6 +1,9 @@
+function tag(tagName, options) {
+    return Object.assign(document.createElement(tagName), options)
+}
+
 function createGrid(quizState, cardOnclickCallback) {
-    const grid = document.createElement("div")
-    grid.className = "grid"
+    const grid = tag("div", {className: "grid"})
     if (!quizState) {
         return grid
     }
@@ -12,26 +15,30 @@ function createGrid(quizState, cardOnclickCallback) {
             if (!question) {
                 continue
             }
-            const card = document.createElement("div")
-            card.classList.add("question")
-            card.classList.add("card")
+            const cardTitle = tag("div", {
+                className: "card-title",
+                textContent: category["title"] || category_slug
+            })
+            const points = tag("div", {
+                className: "points",
+                textContent: "🦆".repeat(question["points"])
+            })
+            const card = createCard(cardTitle.outerHTML + points.outerHTML)
             if (cardOnclickCallback) {
                 card.onclick = () => cardOnclickCallback(category_slug, i)
                 card.classList.add("clickable")
             }
-            const cardBody = document.createElement("div")
-            cardBody.className = "card-body"
-            const cardTitle = document.createElement("div")
-            cardTitle.className = "card-title"
-            cardTitle.textContent = category["title"] || category_slug
-            const points = document.createElement("div")
-            points.className = "points"
-            points.textContent = "🦆".repeat(question["points"])
-            cardBody.appendChild(cardTitle)
-            cardBody.appendChild(points)
-            card.appendChild(cardBody)
+            card.classList.add("category")
             grid.appendChild(card)
         }
     }
     return grid
+}
+
+function createCard(html) {
+    const card = tag("div", {className: "card"})
+    const body = tag("div", {className: "card-body"})
+    body.innerHTML = html
+    card.appendChild(body)
+    return card
 }

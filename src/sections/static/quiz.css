@@ -14,7 +14,12 @@
     cursor: pointer;
 }
 
-#quiz-cards .card-body {
+.card.expand {
+    font-size: 3vh;
+    width: 100%;
+}
+
+#quiz-cards .category.card > .card-body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
