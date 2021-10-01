@@ -23,22 +23,28 @@ function createGrid(quizState, cardOnclickCallback) {
                 className: "points",
                 textContent: "🦆".repeat(question["points"])
             })
-            const card = createCard(cardTitle.outerHTML + points.outerHTML)
+            const card = createCard(cardTitle.outerHTML + points.outerHTML, question["scoredBy"])
             if (cardOnclickCallback) {
                 card.onclick = () => cardOnclickCallback(category_slug, i)
                 card.classList.add("clickable")
             }
             card.classList.add("category")
+            if (question["visited"]) {
+                card.classList.add("visited")
+            }
             grid.appendChild(card)
         }
     }
     return grid
 }
 
-function createCard(html) {
+function createCard(html, team=null) {
     const card = tag("div", {className: "card"})
     const body = tag("div", {className: "card-body"})
     body.innerHTML = html
     card.appendChild(body)
+    if (team) {
+        card.classList.add("scored-by-" + team)
+    }
     return card
 }

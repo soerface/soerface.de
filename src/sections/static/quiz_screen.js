@@ -24,7 +24,7 @@ function createQuestionDetails(categorySlug, questionIndex) {
     let question = quizState["categories"][categorySlug]["questions"][questionIndex]
 
     const row = tag("div", {className: "row"})
-    const card = createCard(quizState["showAnswer"] ? question["a"] : question["q"]);
+    const card = createCard(quizState["showAnswer"] ? question["a"] : question["q"], question["scoredBy"]);
     card.classList.add("expand")
     row.appendChild(card)
     return row

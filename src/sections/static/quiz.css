@@ -34,3 +34,16 @@
 #quiz-cards .card-title, #quiz-cards .points {
     margin: 0 0.2rem;
 }
+
+
+.category.card.visited {
+    background: linear-gradient(45deg, #ffffff 80%, var(--gray-dark));
+}
+
+.card.scored-by-teamA {
+    background: linear-gradient(45deg, #ffffff 80%, var(--danger)) !important;
+}
+
+.card.scored-by-teamB {
+    background: linear-gradient(45deg, #ffffff 80%, var(--info)) !important;
+}

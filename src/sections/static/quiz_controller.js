@@ -80,6 +80,7 @@ function navigateTo(question) {
 
 function onCardClick(categorySlug, questionIndex) {
     const question = [categorySlug, questionIndex];
+    updateState(["categories", categorySlug, "questions", questionIndex, "visited"], true)
     navigateTo(question)
 }
 
@@ -89,10 +90,15 @@ function createQuestionDetails(categorySlug, questionIndex) {
 
     const questionColumn = tag("div", {className: "col-md-6"})
     questionColumn.appendChild(tag("h3", {textContent: "Question", className: "text-light"}))
-    questionColumn.appendChild(createCard(question["q"]))
+    questionColumn.appendChild(createCard(question["q"], question["scoredBy"]))
     const answerColumn = tag("div", {className: "col-md-6"})
     answerColumn.appendChild(tag("h3", {textContent: "Answer", className: "text-light"}))
-    answerColumn.appendChild(createCard(question["a"]))
+    answerColumn.appendChild(createCard(question["a"], question["scoredBy"]))
+    if (!quizState["showAnswer"]) {
+        answerColumn.style["opacity"] = 0.5
+    } else {
+        questionColumn.style["opacity"] = 0.5
+    }
 
     const cardRow = tag("div", {className: "row"})
     cardRow.appendChild(questionColumn)
