@@ -120,8 +120,8 @@ function createQuestionDetails(categorySlug, questionIndex) {
     const scoredByStatePath = questionStatePath.concat("scoredBy");
     teamAPointsButton.onclick = () => scoreForTeam("teamA")
     const toggleAnswerButton = tag("button", {
-        className: "btn btn-lg btn-light",
-        textContent: quizState["showAnswer"] ? "Hide answer" : "Show answer",
+        className: "btn btn-lg " + (quizState["showAnswer"] ? "btn-light" : "btn-outline-light"),
+        textContent: "Show Answer",
     });
     toggleAnswerButton.onclick = () => updateState("showAnswer", !quizState["showAnswer"])
     const teamBPointsButton = tag("button", {
