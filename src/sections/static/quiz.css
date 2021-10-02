@@ -8,12 +8,12 @@
     cursor: pointer;
 }
 
-#quiz-cards .card.category, .card.expand {
+#quiz-cards .category.card, .card.expand {
     font-size: 3vh;
     width: 100%;
 }
 
-#quiz-cards .card.category {
+#quiz-cards .category.card {
     font-weight: bold;
 }
 
@@ -33,6 +33,27 @@
     /*margin: 0 0.2rem;*/
 }
 
+.points.card {
+    flex: 1;
+}
+
+#points-card-teamA {
+    margin-bottom: 0.5rem;
+}
+
+#points-card-teamB {
+    margin-top: 0.5rem;
+}
+
+.points.card .card-body {
+    font-size: 2vh;
+    background: var(--light);
+    text-align: left;
+}
+
+.points.card .card-header {
+    font-size: 2vw;
+}
 
 .category.card.visited {
     background: linear-gradient(45deg, #ffffff 80%, var(--gray-dark));

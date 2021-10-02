@@ -31,17 +31,20 @@ function createQuestionDetails(categorySlug, questionIndex) {
 function refreshUI() {
     document.getElementsByTagName("h1")[0].textContent = quizState["title"] || "Quiz"
 
-    let quizContent
-    if (quizState["selectedQuestion"]) {
+    const questionDetails = document.getElementById("question-details")
+    questionDetails.innerHTML = ""
+    if (!quizState["quizFile"]) {
+        document.getElementById("mainscreen").classList.add("d-none")
+    } else if (quizState["selectedQuestion"]) {
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
-        if (quizState)
-        quizContent = createQuestionDetails(categorySlug, questionIndex)
+        document.getElementById("mainscreen").classList.add("d-none")
+        questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
-        quizContent = createGrid(quizState)
+        document.getElementById("mainscreen").classList.remove("d-none")
+        const quiz = document.getElementById("quiz-cards");
+        quiz.innerHTML = ""
+        quiz.appendChild(createGrid(quizState))
     }
-    const quiz = document.getElementById("quiz-cards");
-    quiz.innerHTML = ""
-    quiz.appendChild(quizContent)
 
     // document.getElementById("debug-output").textContent = JSON.stringify(quizFile, null, 2)
     // document.getElementById("debug-output").classList.remove("d-none")

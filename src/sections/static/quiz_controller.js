@@ -80,8 +80,8 @@ function navigateTo(question) {
 
 function onCardClick(categorySlug, questionIndex) {
     const question = [categorySlug, questionIndex];
-    updateState(["categories", categorySlug, "questions", questionIndex, "visited"], true)
     navigateTo(question)
+    updateState(["categories", categorySlug, "questions", questionIndex, "visited"], true)
 }
 
 function createQuestionDetails(categorySlug, questionIndex) {
