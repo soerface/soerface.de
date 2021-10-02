@@ -166,12 +166,11 @@ function refreshUI() {
         return
     }
     document.getElementById("configurator-settings").classList.add("d-none")
-    let quizContent;
+    const questionDetails = document.getElementById("question-details")
+    questionDetails.innerHTML = ""
     if (quizState["selectedQuestion"]) {
         document.getElementById("main-screen").classList.add("d-none")
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
-        const questionDetails = document.getElementById("question-details");
-        questionDetails.innerHTML = ""
         questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
         document.getElementById("main-screen").classList.remove("d-none")
