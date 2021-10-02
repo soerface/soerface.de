@@ -147,6 +147,8 @@ function createQuestionDetails(categorySlug, questionIndex) {
 
 function refreshUI() {
     const quizSelect = document.getElementById("quiz-select-box");
+    const questionDetails = document.getElementById("question-details")
+    questionDetails.innerHTML = ""
     if (!quizState["quizFile"]) {
         quizSelect.selectedIndex = 0
         document.getElementById("configurator-settings").classList.remove("d-none")
@@ -166,8 +168,6 @@ function refreshUI() {
         return
     }
     document.getElementById("configurator-settings").classList.add("d-none")
-    const questionDetails = document.getElementById("question-details")
-    questionDetails.innerHTML = ""
     if (quizState["selectedQuestion"]) {
         document.getElementById("main-screen").classList.add("d-none")
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
