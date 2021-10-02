@@ -147,12 +147,11 @@ function createQuestionDetails(categorySlug, questionIndex) {
 
 function refreshUI() {
     const quizSelect = document.getElementById("quiz-select-box");
-    const quiz = document.getElementById("quiz-cards");
     if (!quizState["quizFile"]) {
         quizSelect.selectedIndex = 0
         document.getElementById("configurator-settings").classList.remove("d-none")
         document.getElementById("two-screens-help").classList.add("d-none")
-        quiz.innerHTML = ""
+        document.getElementById("main-screen").classList.add("d-none")
         return
     }
     for (let i in quizSelect.options) {
@@ -169,13 +168,19 @@ function refreshUI() {
     document.getElementById("configurator-settings").classList.add("d-none")
     let quizContent;
     if (quizState["selectedQuestion"]) {
+        document.getElementById("main-screen").classList.add("d-none")
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
-        quizContent = createQuestionDetails(categorySlug, questionIndex)
+        const questionDetails = document.getElementById("question-details");
+        questionDetails.innerHTML = ""
+        questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
-        quizContent = createGrid(quizState, onCardClick)
+        document.getElementById("main-screen").classList.remove("d-none")
+        refreshPointCards()
+
+        const quiz = document.getElementById("quiz-cards");
+        quiz.innerHTML = ""
+        quiz.appendChild(createGrid(quizState, onCardClick))
     }
-    quiz.innerHTML = ""
-    quiz.appendChild(quizContent)
 }
 
 

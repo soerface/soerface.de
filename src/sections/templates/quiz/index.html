@@ -45,7 +45,20 @@
             </div>
         </div>
     </div>
-    <div id="quiz-cards"></div>
+    <div class="row d-none" id="main-screen">
+        <div class="col-md-2 d-flex flex-column align-content-around text-center">
+            <div class="points card bg-danger" id="points-card-teamA">
+                <div class="card-header text-light">A: 0 Ducks</div>
+                <div class="card-body"></div>
+            </div>
+            <div class="points card bg-info" id="points-card-teamB">
+                <div class="card-header text-light">B: 0 Ducks</div>
+                <div class="card-body"></div>
+            </div>
+        </div>
+        <div class="col-md-10"><div id="quiz-cards"></div></div>
+    </div>
+    <div id="question-details"></div>
     {#
     {% for points in [50, 100, 150, 200] %}
         <div class="row justify-content-center">

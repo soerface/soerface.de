@@ -34,13 +34,16 @@ function refreshUI() {
     const questionDetails = document.getElementById("question-details")
     questionDetails.innerHTML = ""
     if (!quizState["quizFile"]) {
-        document.getElementById("mainscreen").classList.add("d-none")
+        document.getElementById("main-screen").classList.add("d-none")
     } else if (quizState["selectedQuestion"]) {
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
-        document.getElementById("mainscreen").classList.add("d-none")
+        document.getElementById("main-screen").classList.add("d-none")
         questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
-        document.getElementById("mainscreen").classList.remove("d-none")
+        document.getElementById("main-screen").classList.remove("d-none")
+
+        refreshPointCards()
+
         const quiz = document.getElementById("quiz-cards");
         quiz.innerHTML = ""
         quiz.appendChild(createGrid(quizState))

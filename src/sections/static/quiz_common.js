@@ -2,6 +2,19 @@ function tag(tagName, options) {
     return Object.assign(document.createElement(tagName), options)
 }
 
+function sumPointsForTeam(teamName) {
+    const categories = quizState["categories"];
+    if (!categories) {
+        return 0
+    }
+    const questions = Object.keys(categories).map((k, i) => categories[k]["questions"]).flat()
+    const pointsArray = questions.filter(q => q["scoredBy"] === teamName)
+    if (pointsArray.length > 0) {
+        return pointsArray.map(q => q["points"]).reduce((p, c) => p + c)
+    }
+    return 0
+}
+
 function createGrid(quizState, cardOnclickCallback) {
     const grid = tag("div", {className: "grid"})
     if (!quizState) {
@@ -47,4 +60,16 @@ function createCard(html, team=null) {
         card.classList.add("scored-by-" + team)
     }
     return card
+}
+
+function refreshPointCards() {
+    const pointsCardTeamA = document.getElementById("points-card-teamA")
+    const pointsCardTeamB = document.getElementById("points-card-teamB")
+
+    const  pointsTeamA = sumPointsForTeam("teamA")
+    const  pointsTeamB = sumPointsForTeam("teamB")
+    pointsCardTeamA.getElementsByClassName("card-header")[0].textContent = "A: " + pointsTeamA + " Ducks"
+    pointsCardTeamA.getElementsByClassName("card-body")[0].textContent = "🦆".repeat(pointsTeamA)
+    pointsCardTeamB.getElementsByClassName("card-header")[0].textContent = "B: " + pointsTeamB + " Ducks"
+    pointsCardTeamB.getElementsByClassName("card-body")[0].textContent = "🦆".repeat(pointsTeamB)
 }
