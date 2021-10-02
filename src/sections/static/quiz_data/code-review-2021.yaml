@@ -6,32 +6,40 @@ categories:
       - points: 2
       - points: 3
       - points: 4
-  Guess The Output:
+  JavaScript:
     questions:
       - points: 1
         title: "parseInt()"
         q: |
+          <p><strong>Guess the output and explain the result!</strong></p>
+          <pre>
+          parseInt(5000000000000000000000)
           parseInt(500)
-          parseInt(50)
-          parseInt(5)
-          parseInt(0.5)
-          parseInt(0.05)
-          parseInt(0.005)
           parseInt(0.0005)
-          parseInt(0.00005)
-          parseInt(0.000005)
           parseInt(0.0000005)
+          </pre>
         a: |
-          500
-          50
-          5
-          0
-          0
-          0
-          0
-          0
-          0
-          5
+          <p><strong>Guess the output and explain the result!</strong></p>
+          <pre>
+          parseInt(5000000000000000000000)      -> 5
+          parseInt(500)                         -> 500
+          parseInt(0.0005)                      -> 0
+          parseInt(0.0000005)                   -> 5
+          </pre>
+          <p><code>parseInt()</code> only accepts strings. Non-strings will be converted to string before being parsed:</p>
+          <pre>
+          (0.000005).toString()                 -> '0.000005'
+          (0.0000005).toString()                -> '5e-7'
+          (500000000000000000000).toString()    -> '500000000000000000000'
+          (5000000000000000000000).toString()   -> '5e+21'
+          </pre>
+          <p>Use <code>Math.floor</code> or <code>Math.trunc</code>
+          <ul>
+          <li><a href="https://blog.holz.nu/2021/05/05/0.html">https://blog.holz.nu/2021/05/05/0.html</a></li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt">
+            https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+          </a></li>
+          </ul
       - points: 2
       - points: 3
       - points: 4
