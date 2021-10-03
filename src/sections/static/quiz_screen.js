@@ -29,7 +29,8 @@ function createQuestionDetails(categorySlug, questionIndex) {
 }
 
 function refreshUI() {
-    document.getElementsByTagName("h1")[0].textContent = quizState["title"] || "Quiz"
+    const pageTitle = document.getElementsByTagName("h1")[0];
+    pageTitle.textContent = quizState["title"] || "Quiz"
 
     const questionDetails = document.getElementById("question-details")
     questionDetails.innerHTML = ""
@@ -37,6 +38,10 @@ function refreshUI() {
         document.getElementById("main-screen").classList.add("d-none")
     } else if (quizState["selectedQuestion"]) {
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
+        let question = quizState["categories"][categorySlug]["questions"][questionIndex]
+        if (question["title"]) {
+            pageTitle.textContent = question["title"]
+        }
         document.getElementById("main-screen").classList.add("d-none")
         questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {

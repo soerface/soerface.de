@@ -104,6 +104,7 @@ function createQuestionDetails(categorySlug, questionIndex) {
     cardRow.appendChild(questionColumn)
     cardRow.appendChild(answerColumn)
 
+    const scoredByStatePath = questionStatePath.concat("scoredBy");
     function scoreForTeam(team) {
         updateState(scoredByStatePath, question["scoredBy"] === team ? null : team)
     }
@@ -117,7 +118,6 @@ function createQuestionDetails(categorySlug, questionIndex) {
         className: "btn btn-lg " + (question["scoredBy"] === "teamA" ? "btn-danger" : "btn-outline-danger"),
         textContent: "Points for Team A",
     });
-    const scoredByStatePath = questionStatePath.concat("scoredBy");
     teamAPointsButton.onclick = () => scoreForTeam("teamA")
     const toggleAnswerButton = tag("button", {
         className: "btn btn-lg " + (quizState["showAnswer"] ? "btn-light" : "btn-outline-light"),
@@ -146,6 +146,9 @@ function createQuestionDetails(categorySlug, questionIndex) {
 
 
 function refreshUI() {
+    const pageTitle = document.getElementsByTagName("h1")[0];
+    pageTitle.textContent = quizState["title"] || "Quiz"
+
     const quizSelect = document.getElementById("quiz-select-box");
     const questionDetails = document.getElementById("question-details")
     questionDetails.innerHTML = ""
@@ -171,6 +174,10 @@ function refreshUI() {
     if (quizState["selectedQuestion"]) {
         document.getElementById("main-screen").classList.add("d-none")
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
+        let question = quizState["categories"][categorySlug]["questions"][questionIndex]
+        if (question["title"]) {
+            pageTitle.textContent = question["title"]
+        }
         questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
         document.getElementById("main-screen").classList.remove("d-none")
