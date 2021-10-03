@@ -56,13 +56,27 @@
 }
 
 .category.card.visited {
-    background: linear-gradient(45deg, #ffffff 80%, var(--gray-dark));
+    background: linear-gradient(45deg,
+        #fafafa 85%,
+        var(--gray) 85% 90%,
+        #fafafa 90%);
+    border: 1px solid var(--gray)
 }
 
 .card.scored-by-teamA {
-    background: linear-gradient(45deg, #ffffff 80%, var(--danger)) !important;
+    background: linear-gradient(45deg,
+        #fefbfb 85%,
+        var(--danger) 85% 90%,
+        #fefbfb 90%) !important;
+    border: 1px solid var(--danger) !important;
+    box-shadow: 0 0 15px var(--danger);
 }
 
 .card.scored-by-teamB {
-    background: linear-gradient(45deg, #ffffff 80%, var(--info)) !important;
+    background: linear-gradient(45deg,
+        #fafefe 85%,
+        var(--info) 85% 90%,
+        #fafefe 90%) !important;
+    border: 1px solid var(--info) !important;
+    box-shadow: 0 0 15px var(--info);
 }
