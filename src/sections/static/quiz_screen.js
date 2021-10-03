@@ -6,7 +6,7 @@ function sendCommand(cmd, payload="") {
 }
 
 function receiveCommand(ev) {
-    document.getElementById("loading-card").classList.add("d-none")
+    document.querySelector("#loading-card").classList.add("d-none")
     const message = JSON.parse(ev.data);
     switch (message.cmd) {
         case "findScreens":
@@ -29,33 +29,33 @@ function createQuestionDetails(categorySlug, questionIndex) {
 }
 
 function refreshUI() {
-    const pageTitle = document.getElementsByTagName("h1")[0];
+    const pageTitle = document.querySelector("h1");
     pageTitle.textContent = quizState["title"] || "Quiz"
 
-    const questionDetails = document.getElementById("question-details")
+    const questionDetails = document.querySelector("#question-details")
     questionDetails.innerHTML = ""
     if (!quizState["quizFile"]) {
-        document.getElementById("main-screen").classList.add("d-none")
+        document.querySelector("#main-screen").classList.add("d-none")
     } else if (quizState["selectedQuestion"]) {
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
         let question = quizState["categories"][categorySlug]["questions"][questionIndex]
         if (question["title"]) {
             pageTitle.textContent = question["title"]
         }
-        document.getElementById("main-screen").classList.add("d-none")
+        document.querySelector("#main-screen").classList.add("d-none")
         questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
-        document.getElementById("main-screen").classList.remove("d-none")
+        document.querySelector("#main-screen").classList.remove("d-none")
 
         refreshPointCards()
 
-        const quiz = document.getElementById("quiz-cards");
+        const quiz = document.querySelector("#quiz-cards");
         quiz.innerHTML = ""
         quiz.appendChild(createGrid(quizState))
     }
 
-    // document.getElementById("debug-output").textContent = JSON.stringify(quizFile, null, 2)
-    // document.getElementById("debug-output").classList.remove("d-none")
+    // document.querySelector("#debug-output").textContent = JSON.stringify(quizFile, null, 2)
+    // document.querySelector("#debug-output").classList.remove("d-none")
 }
 
 channel.onmessage = receiveCommand
@@ -63,4 +63,4 @@ channel.onmessage = receiveCommand
 sendCommand("getState")
 sendCommand("screenRegistered")
 
-document.getElementById("mainContent").style["max-width"] = "none"
+document.querySelector("#mainContent").style["max-width"] = "none"

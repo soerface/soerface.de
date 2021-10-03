@@ -36,8 +36,8 @@ function loadQuizState() {
 function saveQuizState() {
     localStorage.setItem("quizState", JSON.stringify(quizState))
     refreshUI()
-    // document.getElementById("debug-output").textContent = JSON.stringify(quizState, null, 2)
-    // document.getElementById("debug-output").classList.remove("d-none")
+    // document.querySelector("#debug-output").textContent = JSON.stringify(quizState, null, 2)
+    // document.querySelector("#debug-output").classList.remove("d-none")
 }
 
 function downloadQuizFile(filepath) {
@@ -146,17 +146,17 @@ function createQuestionDetails(categorySlug, questionIndex) {
 
 
 function refreshUI() {
-    const pageTitle = document.getElementsByTagName("h1")[0];
+    const pageTitle = document.querySelector("h1");
     pageTitle.textContent = quizState["title"] || "Quiz"
 
-    const quizSelect = document.getElementById("quiz-select-box");
-    const questionDetails = document.getElementById("question-details")
+    const quizSelect = document.querySelector("#quiz-select-box");
+    const questionDetails = document.querySelector("#question-details")
     questionDetails.innerHTML = ""
     if (!quizState["quizFile"]) {
         quizSelect.selectedIndex = 0
-        document.getElementById("configurator-settings").classList.remove("d-none")
-        document.getElementById("two-screens-help").classList.add("d-none")
-        document.getElementById("main-screen").classList.add("d-none")
+        document.querySelector("#configurator-settings").classList.remove("d-none")
+        document.querySelector("#two-screens-help").classList.add("d-none")
+        document.querySelector("#main-screen").classList.add("d-none")
         return
     }
     for (let i in quizSelect.options) {
@@ -165,14 +165,14 @@ function refreshUI() {
             break
         }
     }
-    document.getElementById("two-screens-help").classList.remove("d-none")
+    document.querySelector("#two-screens-help").classList.remove("d-none")
     if (!(transientState["screenAvailable"])) {
-        document.getElementById("configurator-settings").classList.remove("d-none")
+        document.querySelector("#configurator-settings").classList.remove("d-none")
         return
     }
-    document.getElementById("configurator-settings").classList.add("d-none")
+    document.querySelector("#configurator-settings").classList.add("d-none")
     if (quizState["selectedQuestion"]) {
-        document.getElementById("main-screen").classList.add("d-none")
+        document.querySelector("#main-screen").classList.add("d-none")
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
         let question = quizState["categories"][categorySlug]["questions"][questionIndex]
         if (question["title"]) {
@@ -180,27 +180,27 @@ function refreshUI() {
         }
         questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
-        document.getElementById("main-screen").classList.remove("d-none")
+        document.querySelector("#main-screen").classList.remove("d-none")
         refreshPointCards()
 
-        const quiz = document.getElementById("quiz-cards");
+        const quiz = document.querySelector("#quiz-cards");
         quiz.innerHTML = ""
         quiz.appendChild(createGrid(quizState, onCardClick))
     }
 }
 
 
-document.getElementById("open-screen").onclick = ev => {
+document.querySelector("#open-screen").onclick = ev => {
     let url = ev.target.dataset["url"]
     window.open(url, "_blank", "titlebar=no")
 }
 
-document.getElementById("quiz-select-box").onchange = ev => {
+document.querySelector("#quiz-select-box").onchange = ev => {
     updateState("quizFile", ev.target.value)
     downloadQuizFile(ev.target.value)
 }
 
-document.getElementById("reset-quiz").onclick = ev => {
+document.querySelector("#reset-quiz").onclick = ev => {
     transientState = {}
     quizState = {}
     updateState(null, {})

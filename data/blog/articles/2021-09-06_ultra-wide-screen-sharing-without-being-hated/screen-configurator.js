@@ -21,9 +21,9 @@ let screens = [
 ]
 
 function readSettings() {
-    displayWidth = Math.floor(document.getElementById("display_width").value)
-    displayHeight = Math.floor(document.getElementById("display_height").value)
-    numScreens = Math.floor(document.getElementById("num_screens").value)
+    displayWidth = Math.floor(document.querySelector("#display_width").value)
+    displayHeight = Math.floor(document.querySelector("#display_height").value)
+    numScreens = Math.floor(document.querySelector("#num_screens").value)
 }
 
 function clampValues() {
@@ -45,7 +45,7 @@ function clampValues() {
 }
 
 function renderVirtualScreenSettings() {
-    const ul = document.getElementById("virtual_screen_settings")
+    const ul = document.querySelector("#virtual_screen_settings")
     ul.innerHTML = "";
     for (let i = 0; i < numScreens; i++) {
         const s = screens[i]
@@ -72,7 +72,7 @@ function renderVirtualScreenSettings() {
 }
 
 function renderConfiguratorCanvas() {
-    const canvas = document.getElementById("configurator_canvas");
+    const canvas = document.querySelector("#configurator_canvas");
     const ctx = canvas.getContext("2d");
     canvas.width = displayWidth
     canvas.height = displayHeight
@@ -122,7 +122,7 @@ function drawWallpaperFragment(ctx, s) {
 }
 
 function renderWallpaper() {
-    const canvas = document.getElementById("wallpaper");
+    const canvas = document.querySelector("#wallpaper");
     const ctx = canvas.getContext("2d");
     canvas.width = displayWidth
     canvas.height = displayHeight
@@ -145,10 +145,10 @@ function renderWallpaper() {
 
 function renderCodeblocks() {
     const code_setmonitor = document
-        .getElementById("codeblock_setmonitor")
+        .querySelector("#codeblock_setmonitor")
         .getElementsByTagName("code")[0];
     const code_delmonitor = document
-        .getElementById("codeblock_delmonitor")
+        .querySelector("#codeblock_delmonitor")
         .getElementsByTagName("code")[0]
     let text_setmonitor = "function add_vscreens {\n"
     let text_delmonitor = "function del_vscreens {\n"
@@ -293,17 +293,17 @@ wallpaper.onload = ev => {
     for (const s of screens) {
         s.wallpaper = applyColorFilter(s.color)
     }
-    document.getElementById("wallpaper_url").className = "form-control"
+    document.querySelector("#wallpaper_url").className = "form-control"
     wallpaperEnabled = true;
     refresh();
 }
 wallpaper.onerror = err => {
-    document.getElementById("wallpaper_url").className = "form-control is-invalid"
+    document.querySelector("#wallpaper_url").className = "form-control is-invalid"
     wallpaperEnabled = false
     refresh()
 }
 wallpaper.crossOrigin = "Anonymous"
-wallpaper.src = document.getElementById("wallpaper_url").value
+wallpaper.src = document.querySelector("#wallpaper_url").value
 
 document.getElementById("display_width").oninput = refresh
 document.getElementById("display_height").oninput = refresh

@@ -63,13 +63,13 @@ function createCard(html, team=null) {
 }
 
 function refreshPointCards() {
-    const pointsCardTeamA = document.getElementById("points-card-teamA")
-    const pointsCardTeamB = document.getElementById("points-card-teamB")
+    const pointsCardTeamA = document.querySelector("#points-card-teamA")
+    const pointsCardTeamB = document.querySelector("#points-card-teamB")
 
     const  pointsTeamA = sumPointsForTeam("teamA")
     const  pointsTeamB = sumPointsForTeam("teamB")
-    pointsCardTeamA.getElementsByClassName("card-header")[0].textContent = "A: " + pointsTeamA + (pointsTeamA === 1 ? " Duck" : " Ducks")
-    pointsCardTeamA.getElementsByClassName("card-body")[0].textContent = "🦆".repeat(pointsTeamA)
-    pointsCardTeamB.getElementsByClassName("card-header")[0].textContent = "B: " + pointsTeamB + (pointsTeamA === 1 ? " Duck" : " Ducks")
-    pointsCardTeamB.getElementsByClassName("card-body")[0].textContent = "🦆".repeat(pointsTeamB)
+    pointsCardTeamA.querySelector(".card-header").textContent = "A: " + pointsTeamA + (pointsTeamA === 1 ? " Duck" : " Ducks")
+    pointsCardTeamA.querySelector(".card-body").textContent = "🦆".repeat(pointsTeamA)
+    pointsCardTeamB.querySelector(".card-header").textContent = "B: " + pointsTeamB + (pointsTeamA === 1 ? " Duck" : " Ducks")
+    pointsCardTeamB.querySelector(".card-body").textContent = "🦆".repeat(pointsTeamB)
 }
