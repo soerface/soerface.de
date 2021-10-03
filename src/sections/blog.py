@@ -9,7 +9,7 @@ from datetime import datetime
 import env
 from iconfonts import IconFontsExtension
 
-ARTICLE_BASE_PATH = env.BLOG_PATH / Path('articles/')
+ARTICLE_BASE_PATH = env.DATA_PATH / "blog/articles"
 
 bp = Blueprint('blog', __name__, url_prefix='/blog', template_folder='templates')
 

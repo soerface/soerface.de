@@ -3,6 +3,7 @@ from pathlib import Path
 
 from flask import Blueprint, render_template, url_for, Response
 import yaml
+import env
 
 bp = Blueprint(
     "quiz",
@@ -12,7 +13,7 @@ bp = Blueprint(
     static_folder="static",
 )
 
-QUIZ_DATA_PATH = Path(__file__).parent / "static" / "quiz_data"
+QUIZ_DATA_PATH = env.DATA_PATH / "quiz"
 
 
 def get_title_of_quiz(path: Path) -> str:
