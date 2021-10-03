@@ -13,6 +13,10 @@
     width: 100%;
 }
 
+.card.expand .codehilite {
+    font-size: unset;
+}
+
 #quiz-cards .category.card {
     font-weight: bold;
 }
