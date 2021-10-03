@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include "quiz/templates.html" %}
     <h1 class="text-light">Quiz</h1>
     <div class="card" id="loading-card">
         <div class="card-body text-center">
@@ -21,20 +22,7 @@
             </noscript>
         </div>
     </div>
-    <div class="row d-none" id="main-screen">
-        <div class="col-md-2 d-flex flex-column align-content-around text-center">
-            <div class="points card bg-danger" id="points-card-teamA">
-                <div class="card-header text-light">A: 0 Ducks</div>
-                <div class="card-body"></div>
-            </div>
-            <div class="points card bg-info" id="points-card-teamB">
-                <div class="card-header text-light">B: 0 Ducks</div>
-                <div class="card-body"></div>
-            </div>
-        </div>
-        <div class="col-md-10"><div id="quiz-cards"></div></div>
-    </div>
-    <div id="question-details"></div>
+    <div id="quiz-content"></div>
 {% endblock %}
 
 {% block footer %}

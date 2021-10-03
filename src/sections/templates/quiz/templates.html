@@ -1,0 +1,50 @@
+<template id="empty-card">
+    <div class="card">
+        <div class="card-body"></div>
+    </div>
+</template>
+
+<template id="empty-header-card">
+    <div class="card">
+        <div class="card-header"></div>
+        <div class="card-body"></div>
+    </div>
+</template>
+
+<template id="question-details">
+    <div>
+        <div class="row">
+            <div class="col col-md-6 question">
+                <h3 class="text-light">Question</h3>
+                <div class="card">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+            <div class="col col-md-6 answer">
+                <h3 class="text-light">Answer</h3>
+                <div class="card">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center m-3 action-buttons">
+            <button class="btn btn-lg btn-outline-light back">‹ Back</button>
+            <div class="btn-group ml-3">
+                <button class="btn btn-lg points-teamA">Points for Team A</button>
+                <button class="btn btn-lg show-answer">Show Answer</button>
+                <button class="btn btn-lg points-teamB">Points for Team B</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="category-overview">
+    <div class="row">
+        <div class="col col-md-2 points d-flex flex-column align-content-around text-center"></div>
+        <div class="col col-md-10 quiz-cards"></div>
+    </div>
+</template>
+
+<template id="screen-select-info">
+    <h2 class="text-light">Select a quiz at <a href="{{ url_for('quiz.index') }}" target="_blank">{{ url_for('quiz.index', _external=True) }}</a> </h2>
+</template>

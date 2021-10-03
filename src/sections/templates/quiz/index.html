@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include "quiz/templates.html" %}
     <noscript>
         <div class="alert alert-danger">
             The quiz won't work with your current browser configuration. Please <strong>enable JavaScript</strong>!
@@ -45,42 +46,9 @@
             </div>
         </div>
     </div>
-    <div class="row d-none" id="main-screen">
-        <div class="col-md-2 d-flex flex-column align-content-around text-center">
-            <div class="points card bg-danger" id="points-card-teamA">
-                <div class="card-header text-light">A: 0 Ducks</div>
-                <div class="card-body"></div>
-            </div>
-            <div class="points card bg-info" id="points-card-teamB">
-                <div class="card-header text-light">B: 0 Ducks</div>
-                <div class="card-body"></div>
-            </div>
-        </div>
-        <div class="col-md-10"><div id="quiz-cards"></div></div>
-    </div>
-    <div id="question-details"></div>
-    {#
-    {% for points in [50, 100, 150, 200] %}
-        <div class="row justify-content-center">
-            {% for category in ["Code Review", "Language", "Databases", "Guess The Output"] %}
-                <div class="col-md-3 d-flex">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h1 class="card-title">
-                                {{ category }}
-                            </h1>
-                            <hr>
-                            <h2 class="card-title">
-                                {{ points }}
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <hr>
-    {% endfor %}
-     #}
+
+    <div id="quiz-content"></div>
+
 {% endblock %}
 
 {% block footer %}

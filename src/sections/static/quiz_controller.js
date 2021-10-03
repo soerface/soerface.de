@@ -6,7 +6,7 @@ function broadcastState() {
     sendCommand("currentState", quizState);
 }
 
-function sendCommand(cmd, payload="") {
+function sendCommand(cmd, payload = "") {
     channel.postMessage(JSON.stringify({cmd, payload}))
     refreshUI()
 }
@@ -88,60 +88,44 @@ function createQuestionDetails(categorySlug, questionIndex) {
     const questionStatePath = ["categories", categorySlug, "questions", questionIndex]
     let question = quizState["categories"][categorySlug]["questions"][questionIndex]
 
-    const questionColumn = tag("div", {className: "col-md-6"})
-    questionColumn.appendChild(tag("h3", {textContent: "Question", className: "text-light"}))
-    questionColumn.appendChild(createCard(question["q"], question["scoredBy"]))
-    const answerColumn = tag("div", {className: "col-md-6"})
-    answerColumn.appendChild(tag("h3", {textContent: "Answer", className: "text-light"}))
-    answerColumn.appendChild(createCard(question["a"], question["scoredBy"]))
-    if (!quizState["showAnswer"]) {
-        answerColumn.style["opacity"] = 0.5
-    } else {
-        questionColumn.style["opacity"] = 0.5
-    }
+    const questionDetails = elementFromTemplate("question-details")
 
-    const cardRow = tag("div", {className: "row"})
-    cardRow.appendChild(questionColumn)
-    cardRow.appendChild(answerColumn)
+    if (question["scoredBy"]) {
+        questionDetails.querySelectorAll(".card").forEach(x => x.classList.add("scored-by-" + question["scoredBy"]))
+    }
+    const questionColumn = questionDetails.querySelector(".col.question");
+    const answerColumn = questionDetails.querySelector(".col.answer");
+
+    questionColumn.querySelector(".card-body").innerHTML = question["q"]
+    answerColumn.querySelector(".card-body").innerHTML = question["a"]
+
+    if (quizState["showAnswer"]) {
+        questionColumn.style["opacity"] = 0.5
+    } else {
+        answerColumn.style["opacity"] = 0.5
+    }
 
     const scoredByStatePath = questionStatePath.concat("scoredBy");
     function scoreForTeam(team) {
         updateState(scoredByStatePath, question["scoredBy"] === team ? null : team)
     }
+    function updateTeamButton(team, btnClass) {
+        const button = questionDetails.querySelector(".action-buttons .points-" + team);
+        button.onclick = () => scoreForTeam(team)
+        const scored = question["scoredBy"] === team;
+        button.classList.add("btn-" + (scored ? "" : "outline-") + btnClass)
+    }
 
-    const backButton = tag("button", {
-        className: "btn btn-lg btn-outline-light",
-        textContent: "‹ Back"
-    })
-    backButton.onclick = () => navigateTo(null)
-    const teamAPointsButton = tag("button", {
-        className: "btn btn-lg " + (question["scoredBy"] === "teamA" ? "btn-danger" : "btn-outline-danger"),
-        textContent: "Points for Team A",
-    });
-    teamAPointsButton.onclick = () => scoreForTeam("teamA")
-    const toggleAnswerButton = tag("button", {
-        className: "btn btn-lg " + (quizState["showAnswer"] ? "btn-light" : "btn-outline-light"),
-        textContent: "Show Answer",
-    });
-    toggleAnswerButton.onclick = () => updateState("showAnswer", !quizState["showAnswer"])
-    const teamBPointsButton = tag("button", {
-        className: "btn btn-lg " + (question["scoredBy"] === "teamB" ? "btn-info" : "btn-outline-info"),
-        textContent: "Points for Team B",
-    });
-    teamBPointsButton.onclick = () => scoreForTeam("teamB")
-    const buttonGroup = tag("div", {className: "btn-group ml-3"})
-    buttonGroup.appendChild(teamAPointsButton)
-    buttonGroup.appendChild(toggleAnswerButton)
-    buttonGroup.appendChild(teamBPointsButton)
+    const buttonBack = questionDetails.querySelector(".action-buttons .back");
+    const buttonShowAnswer = questionDetails.querySelector(".action-buttons .show-answer");
 
-    const buttonRow = tag("div", {className: "row d-flex justify-content-center m-3"})
-    buttonRow.appendChild(backButton)
-    buttonRow.appendChild(buttonGroup)
+    updateTeamButton("teamA", "danger")
+    updateTeamButton("teamB", "info")
+    buttonBack.onclick = () => navigateTo(null)
+    buttonShowAnswer.onclick = () => updateState("showAnswer", !quizState["showAnswer"])
+    buttonShowAnswer.classList.add("btn-" + (quizState["showAnswer"] ? "" : "outline-") + "light")
 
-    const wrapper = tag("div")
-    wrapper.appendChild(cardRow)
-    wrapper.appendChild(buttonRow)
-    return wrapper
+    return questionDetails
 }
 
 
@@ -149,14 +133,14 @@ function refreshUI() {
     const pageTitle = document.querySelector("h1");
     pageTitle.textContent = quizState["title"] || "Quiz"
 
+    const quizContentNode = document.querySelector("#quiz-content")
+    quizContentNode.innerHTML = ""
+
     const quizSelect = document.querySelector("#quiz-select-box");
-    const questionDetails = document.querySelector("#question-details")
-    questionDetails.innerHTML = ""
     if (!quizState["quizFile"]) {
         quizSelect.selectedIndex = 0
         document.querySelector("#configurator-settings").classList.remove("d-none")
         document.querySelector("#two-screens-help").classList.add("d-none")
-        document.querySelector("#main-screen").classList.add("d-none")
         return
     }
     for (let i in quizSelect.options) {
@@ -165,27 +149,22 @@ function refreshUI() {
             break
         }
     }
-    document.querySelector("#two-screens-help").classList.remove("d-none")
     if (!(transientState["screenAvailable"])) {
         document.querySelector("#configurator-settings").classList.remove("d-none")
+        document.querySelector("#two-screens-help").classList.remove("d-none")
         return
     }
     document.querySelector("#configurator-settings").classList.add("d-none")
     if (quizState["selectedQuestion"]) {
-        document.querySelector("#main-screen").classList.add("d-none")
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
         let question = quizState["categories"][categorySlug]["questions"][questionIndex]
         if (question["title"]) {
             pageTitle.textContent = question["title"]
         }
-        questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
+        const content = createQuestionDetails(categorySlug, questionIndex)
+        quizContentNode.appendChild(content)
     } else {
-        document.querySelector("#main-screen").classList.remove("d-none")
-        refreshPointCards()
-
-        const quiz = document.querySelector("#quiz-cards");
-        quiz.innerHTML = ""
-        quiz.appendChild(createGrid(quizState, onCardClick))
+        quizContentNode.appendChild(createCategoryOverview(onCardClick))
     }
 }
 
@@ -204,6 +183,7 @@ document.querySelector("#reset-quiz").onclick = ev => {
     transientState = {}
     quizState = {}
     updateState(null, {})
+    sendCommand("findScreens");
     history.replaceState(null, "", "")
 }
 

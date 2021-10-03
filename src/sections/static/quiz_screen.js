@@ -10,6 +10,7 @@ function receiveCommand(ev) {
     const message = JSON.parse(ev.data);
     switch (message.cmd) {
         case "findScreens":
+        case "controllerInit":
             sendCommand("getState")
             sendCommand("screenRegistered")
             break
@@ -23,8 +24,11 @@ function receiveCommand(ev) {
 function createQuestionDetails(categorySlug, questionIndex) {
     let question = quizState["categories"][categorySlug]["questions"][questionIndex]
 
-    const card = createCard(quizState["showAnswer"] ? question["a"] : question["q"], question["scoredBy"]);
+    const card = createCard(quizState["showAnswer"] ? question["a"] : question["q"]);
     card.classList.add("expand")
+    if (question["scoredBy"]) {
+        card.classList.add("scored-by-" + question["scoredBy"])
+    }
     return card
 }
 
@@ -32,26 +36,19 @@ function refreshUI() {
     const pageTitle = document.querySelector("h1");
     pageTitle.textContent = quizState["title"] || "Quiz"
 
-    const questionDetails = document.querySelector("#question-details")
-    questionDetails.innerHTML = ""
+    const quizContentNode = document.querySelector("#quiz-content")
+    quizContentNode.innerHTML = ""
     if (!quizState["quizFile"]) {
-        document.querySelector("#main-screen").classList.add("d-none")
+        quizContentNode.appendChild(elementFromTemplate("screen-select-info"))
     } else if (quizState["selectedQuestion"]) {
         let [categorySlug, questionIndex] = quizState["selectedQuestion"]
         let question = quizState["categories"][categorySlug]["questions"][questionIndex]
         if (question["title"]) {
             pageTitle.textContent = question["title"]
         }
-        document.querySelector("#main-screen").classList.add("d-none")
-        questionDetails.appendChild(createQuestionDetails(categorySlug, questionIndex))
+        quizContentNode.appendChild(createQuestionDetails(categorySlug, questionIndex))
     } else {
-        document.querySelector("#main-screen").classList.remove("d-none")
-
-        refreshPointCards()
-
-        const quiz = document.querySelector("#quiz-cards");
-        quiz.innerHTML = ""
-        quiz.appendChild(createGrid(quizState))
+        quizContentNode.appendChild(createCategoryOverview())
     }
 
     // document.querySelector("#debug-output").textContent = JSON.stringify(quizFile, null, 2)

@@ -2,6 +2,11 @@ function tag(tagName, options) {
     return Object.assign(document.createElement(tagName), options)
 }
 
+function elementFromTemplate(templateName) {
+    const template = document.querySelector("template#" + templateName)
+    return template.content.firstElementChild.cloneNode(true)
+}
+
 function sumPointsForTeam(teamName) {
     const categories = quizState["categories"];
     if (!categories) {
@@ -15,11 +20,8 @@ function sumPointsForTeam(teamName) {
     return 0
 }
 
-function createGrid(quizState, cardOnclickCallback) {
+function createGrid(cardOnclickCallback) {
     const grid = tag("div", {className: "grid"})
-    if (!quizState) {
-        return grid
-    }
     for (let category_slug in quizState["categories"]) {
         let category = quizState["categories"][category_slug]
         const questions = category["questions"] || [];
@@ -36,12 +38,15 @@ function createGrid(quizState, cardOnclickCallback) {
                 className: "points",
                 textContent: "🦆".repeat(question["points"])
             })
-            const card = createCard(cardTitle.outerHTML + points.outerHTML, question["scoredBy"])
+            const card = createCard(cardTitle.outerHTML + points.outerHTML)
             if (cardOnclickCallback) {
                 card.onclick = () => cardOnclickCallback(category_slug, i)
                 card.classList.add("clickable")
             }
             card.classList.add("category")
+            if (question["scoredBy"]) {
+                card.classList.add("scored-by-" + question["scoredBy"])
+            }
             if (question["visited"]) {
                 card.classList.add("visited")
             }
@@ -51,25 +56,32 @@ function createGrid(quizState, cardOnclickCallback) {
     return grid
 }
 
-function createCard(html, team=null) {
-    const card = tag("div", {className: "card"})
-    const body = tag("div", {className: "card-body"})
-    body.innerHTML = html
-    card.appendChild(body)
-    if (team) {
-        card.classList.add("scored-by-" + team)
+function createCard(bodyHtml, headerHtml=null) {
+    let card
+    if (headerHtml) {
+        card = elementFromTemplate("empty-header-card")
+        card.querySelector(".card-header").innerHTML = headerHtml
+    } else {
+        card = elementFromTemplate("empty-card")
     }
+    card.querySelector(".card-body").innerHTML = bodyHtml
     return card
 }
 
-function refreshPointCards() {
-    const pointsCardTeamA = document.querySelector("#points-card-teamA")
-    const pointsCardTeamB = document.querySelector("#points-card-teamB")
-
-    const  pointsTeamA = sumPointsForTeam("teamA")
-    const  pointsTeamB = sumPointsForTeam("teamB")
-    pointsCardTeamA.querySelector(".card-header").textContent = "A: " + pointsTeamA + (pointsTeamA === 1 ? " Duck" : " Ducks")
-    pointsCardTeamA.querySelector(".card-body").textContent = "🦆".repeat(pointsTeamA)
-    pointsCardTeamB.querySelector(".card-header").textContent = "B: " + pointsTeamB + (pointsTeamB === 1 ? " Duck" : " Ducks")
-    pointsCardTeamB.querySelector(".card-body").textContent = "🦆".repeat(pointsTeamB)
+function createCategoryOverview(onCardClick=null) {
+    function createPointCard(team, title, className) {
+        const points = sumPointsForTeam(team)
+        const ducks = points === 1 ? "Duck" : "Ducks"
+        const card = createCard("🦆".repeat(points), title + ": " + points + " " + ducks)
+        card.classList.add(className)
+        card.querySelector(".card-header").classList.add("text-light")
+        return card
+    }
+    const categoryOverview = elementFromTemplate("category-overview")
+    const pointsColumn = categoryOverview.querySelector(".col.points")
+    pointsColumn.appendChild(createPointCard("teamA", "A", "bg-danger"))
+    pointsColumn.appendChild(createPointCard("teamB", "B", "bg-info"))
+    const gridColumn = categoryOverview.querySelector(".col.quiz-cards")
+    gridColumn.appendChild(createGrid(onCardClick))
+    return categoryOverview
 }

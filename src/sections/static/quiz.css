@@ -1,14 +1,14 @@
-#quiz-cards .grid {
+.col.quiz-cards .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 1rem;
 }
 
-#quiz-cards .clickable {
+.col.quiz-cards .clickable {
     cursor: pointer;
 }
 
-#quiz-cards .category.card, .card.expand {
+.col.quiz-cards .category.card, .card.expand {
     font-size: 3vh;
     width: 100%;
 }
@@ -17,45 +17,41 @@
     font-size: unset;
 }
 
-#quiz-cards .category.card {
+.col.quiz-cards .category.card {
     font-weight: bold;
 }
 
-#quiz-cards .category.card > .card-body {
+.col.quiz-cards .category.card > .card-body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
 }
 
-#quiz-cards .card-title {
+.col.quiz-cards .card-title {
     height: 100%;
     text-align: center;
 }
 
-#quiz-cards .card-title, #quiz-cards .points {
-    /*margin: 0 0.2rem;*/
-}
-
-.points.card {
+.col.points .card {
     flex: 1;
 }
 
-#points-card-teamA {
+.col.points .card:first-child {
     margin-bottom: 0.5rem;
 }
 
-#points-card-teamB {
+.col.points .card:last-child {
     margin-top: 0.5rem;
 }
 
-.points.card .card-body {
+.col.points .card-body {
     font-size: 2vh;
     background: var(--light);
     text-align: left;
 }
 
-.points.card .card-header {
+.col.points .card-header {
     font-size: 3vh;
 }
 
