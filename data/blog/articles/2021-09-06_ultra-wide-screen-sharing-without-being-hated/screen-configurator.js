@@ -144,12 +144,8 @@ function renderWallpaper() {
 }
 
 function renderCodeblocks() {
-    const code_setmonitor = document
-        .querySelector("#codeblock_setmonitor")
-        .getElementsByTagName("code")[0];
-    const code_delmonitor = document
-        .querySelector("#codeblock_delmonitor")
-        .getElementsByTagName("code")[0]
+    const code_setmonitor = document.querySelector("#codeblock_setmonitor code")
+    const code_delmonitor = document.querySelector("#codeblock_delmonitor code")
     let text_setmonitor = "function add_vscreens {\n"
     let text_delmonitor = "function del_vscreens {\n"
     for (let i = 0; i < numScreens; i++) {
