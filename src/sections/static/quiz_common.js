@@ -68,8 +68,8 @@ function refreshPointCards() {
 
     const  pointsTeamA = sumPointsForTeam("teamA")
     const  pointsTeamB = sumPointsForTeam("teamB")
-    pointsCardTeamA.getElementsByClassName("card-header")[0].textContent = "A: " + pointsTeamA + " Ducks"
+    pointsCardTeamA.getElementsByClassName("card-header")[0].textContent = "A: " + pointsTeamA + (pointsTeamA === 1 ? " Duck" : " Ducks")
     pointsCardTeamA.getElementsByClassName("card-body")[0].textContent = "🦆".repeat(pointsTeamA)
-    pointsCardTeamB.getElementsByClassName("card-header")[0].textContent = "B: " + pointsTeamB + " Ducks"
+    pointsCardTeamB.getElementsByClassName("card-header")[0].textContent = "B: " + pointsTeamB + (pointsTeamA === 1 ? " Duck" : " Ducks")
     pointsCardTeamB.getElementsByClassName("card-body")[0].textContent = "🦆".repeat(pointsTeamB)
 }
