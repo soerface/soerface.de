@@ -70,6 +70,6 @@ function refreshPointCards() {
     const  pointsTeamB = sumPointsForTeam("teamB")
     pointsCardTeamA.querySelector(".card-header").textContent = "A: " + pointsTeamA + (pointsTeamA === 1 ? " Duck" : " Ducks")
     pointsCardTeamA.querySelector(".card-body").textContent = "🦆".repeat(pointsTeamA)
-    pointsCardTeamB.querySelector(".card-header").textContent = "B: " + pointsTeamB + (pointsTeamA === 1 ? " Duck" : " Ducks")
+    pointsCardTeamB.querySelector(".card-header").textContent = "B: " + pointsTeamB + (pointsTeamB === 1 ? " Duck" : " Ducks")
     pointsCardTeamB.querySelector(".card-body").textContent = "🦆".repeat(pointsTeamB)
 }
