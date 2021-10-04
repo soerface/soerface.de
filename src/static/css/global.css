@@ -7,6 +7,14 @@
     color: #5a6268;
 }
 
+q {
+    border-left: 8px solid #bbc0c4;
+    font-style: italic;
+    color: var(--gray);
+    display: block;
+    padding-left: 1em;
+}
+
 p a {
     color: #212569;
     text-decoration: none;
