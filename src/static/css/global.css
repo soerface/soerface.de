@@ -7,11 +7,10 @@
     color: #5a6268;
 }
 
-q {
+blockquote {
     border-left: 8px solid #bbc0c4;
     font-style: italic;
     color: var(--gray);
-    display: block;
     padding-left: 1em;
     background-color: var(--light);
 }
