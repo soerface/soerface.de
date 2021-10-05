@@ -3,6 +3,8 @@ from pathlib import Path
 
 from flask import Blueprint, render_template, url_for, Response
 import yaml
+from markdown import markdown
+
 import env
 
 bp = Blueprint(
@@ -55,5 +57,18 @@ def data_as_json(filename):
     yaml_filename = filename + ".yaml"
     with open(QUIZ_DATA_PATH / yaml_filename) as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
+
+    # TODO: jsonschema validation
+
+    def render_markdown(v):
+        return markdown(v, extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+        ])
+
+    for k, category in data["categories"].items():
+        for question in category["questions"]:
+            question["q"] = render_markdown(question.get("q", ""))
+            question["a"] = render_markdown(question.get("a", ""))
 
     return Response(json.dumps(data), mimetype="application/json")
