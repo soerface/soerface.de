@@ -20,7 +20,11 @@ def add_class_to_tag(text, tag, class_name):
 
 
 def load_article(path: Path):
-    article = frontmatter.load(path / 'index.md')
+    index_md = path / "index.md"
+    if not index_md.exists():
+        with open(index_md, 'w') as f:
+            f.write(generate_example_article(path))
+    article = frontmatter.load(index_md)
     date_string, _, slug = path.name.partition('_')
     article.metadata['date'] = datetime.strptime(date_string, '%Y-%m-%d')
     article.metadata['slug'] = slug
@@ -68,6 +72,17 @@ def load_article_list():
     # TODO: this can throw index errors if a directory does not contain a date
     sorted_paths = sorted(paths, key=lambda x: re.findall(r'\d{4}-\d{2}-\d{2}', x.name)[0])[::-1]
     return sorted_paths
+
+
+def generate_example_article(path: Path):
+    _, _, slug = path.name.partition('_')
+    title = slug.replace("-", " ").capitalize()
+    example_markdown = render_template("example_article.md", article={
+        "title": title,
+        "teaser": f"Open `{path}/index.md` to edit this article.",
+        "content": "Start writing your article here. Don't forget to add it to git!"
+    })
+    return example_markdown
 
 
 @bp.route('/')
