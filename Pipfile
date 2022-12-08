@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-certifi = "==2020.6.20"
+certifi = "==2022.12.7"
 click = "==7.1.2"
 itsdangerous = "==1.1.0"
 nose = "==1.3.7"
