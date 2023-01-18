@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 import os
 import shutil
 from pathlib import Path
@@ -7,7 +9,7 @@ from app import app
 
 
 def main():
-    app.config["FREEZER_DESTINATION"] = "../build"
+    app.config["FREEZER_DESTINATION"] = "build"
     cname = os.getenv("CNAME")
     if cname:
         app.config["SERVER_NAME"] = cname
