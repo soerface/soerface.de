@@ -3,7 +3,7 @@ from pathlib import Path
 
 import requests
 from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort, request, redirect, current_app
-from wtforms import StringField, BooleanField, TextAreaField, validators
+from wtforms import StringField, TextAreaField, validators
 from slugify import slugify
 from flask_wtf import FlaskForm
 from markdown import markdown
