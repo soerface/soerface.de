@@ -23,7 +23,10 @@ else:
         app.register_blueprint(bp)
 CSRFProtect(app)
 app.config.from_object("settings_default")
-app.config.from_object("settings")
+try:
+    app.config.from_object("settings")
+except ImportError:
+    pass
 
 
 @app.context_processor
