@@ -119,9 +119,9 @@ article img {
     border-color: #9e431c;
 }
 
-.btn.twitter:hover {
-    background-color: #1da1f2;
-    border-color: #0e6d99;
+.btn.mastodon:hover {
+    background-color: #191b22;
+    border-color: #111318;
 }
 
 .btn.telegram:hover {
