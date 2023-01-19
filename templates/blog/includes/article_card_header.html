@@ -1,0 +1,8 @@
+<div class="card-header d-flex justify-content-between align-items-center">
+        <h5>{% if article.metadata.teaser %}{{ article.metadata.title }}{% endif %}</h5>
+        <small class="text-muted ">
+            {{ article.metadata.date.strftime('%Y-%m-%d') }}
+            &nbsp;
+            <a href="{{ article.metadata.href }}" title="Permalink"><i class="fas fa-link"></i></a>
+        </small>
+</div>

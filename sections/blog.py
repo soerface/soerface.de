@@ -1,7 +1,10 @@
 import re
 from pathlib import Path
 
-from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort
+from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort, request, redirect, current_app
+from wtforms import StringField, BooleanField, TextAreaField, validators
+from slugify import slugify
+from flask_wtf import FlaskForm
 from markdown import markdown
 import frontmatter
 from datetime import datetime
@@ -22,8 +25,7 @@ def add_class_to_tag(text, tag, class_name):
 def load_article(path: Path):
     index_md = path / "index.md"
     if not index_md.exists():
-        with open(index_md, 'w') as f:
-            f.write(generate_example_article(path))
+        generate_example_article(path)
     article = frontmatter.load(index_md)
     date_string, _, slug = path.name.partition('_')
     article.metadata['date'] = datetime.strptime(date_string, '%Y-%m-%d')
@@ -42,10 +44,12 @@ def load_article(path: Path):
                 slug=article.metadata['slug'],
                 filename=x.name
                 ) for x in path.glob('*')]
-    card_text = markdown(escape(article.metadata.get('teaser')))
-    # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
-    # so we hack it in here
-    card_text = add_class_to_tag(card_text, 'p', 'card-text')
+    if teaser := article.metadata.get("teaser"):
+        card_text = markdown(escape(teaser))
+        # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
+        # so we hack it in here
+        card_text = add_class_to_tag(card_text, "p", "card-text")
+        article.metadata["html_teaser"] = Markup(card_text)
     # Available extensions at https://python-markdown.github.io/extensions/
     # WARNING: Markdown does not get escaped! We have more issues when escaping it, and having html inside our
     # markdown files can be quite useful...
@@ -55,7 +59,6 @@ def load_article(path: Path):
         IconFontsExtension(prefix='fa-', base='fab')
     ]).replace('class="fab amp;fa-', 'class="fab fa-')
     content = add_class_to_tag(content, 'p', 'card-text')
-    article.metadata['html_teaser'] = Markup(card_text)
     # frontmatter.dump(article, path)
     return {
         'metadata': article.metadata,
@@ -77,16 +80,42 @@ def load_article_list():
 def generate_example_article(path: Path):
     _, _, slug = path.name.partition('_')
     title = slug.replace("-", " ").capitalize()
-    example_markdown = render_template("example_article.md", article={
+    return generate_article(
+        path,
+        content="Start writing your article here. Don't forget to add it to git!",
+        title=title,
+        teaser=f"Open `{path}/index.md` to edit this article.",
+    )
+
+
+def generate_article(path: Path, content, title=None, teaser=None):
+    md = render_template("article_template.md", article={
         "title": title,
-        "teaser": f"Open `{path}/index.md` to edit this article.",
-        "content": "Start writing your article here. Don't forget to add it to git!"
+        "teaser": teaser,
+        "content": content
     })
-    return example_markdown
+    path.mkdir(parents=True, exist_ok=True)
+    with open(path / "index.md", "w") as f:
+        f.write(md)
 
 
-@bp.route('/')
+@bp.route("/", methods=["GET", "POST"])
 def index():
+    if current_app.config["FROZEN"]:
+        form = None
+    else:
+        form = NewArticleForm(request.form)
+        if form.validate():
+            now = datetime.now()
+            path = ARTICLE_BASE_PATH / f'{now.strftime("%Y-%m-%d")}_{form.slug}'
+            generate_article(path, form.content.data, title=form.title.data, teaser=form.teaser.data)
+            return redirect(url_for(
+                "blog.article_detail",
+                year=now.year,
+                month=f"{now.month:02}",
+                day=f"{now.day:02}",
+                slug=form.slug
+            ))
     articles = [load_article(x) for x in load_article_list()]
     description = "Occasionally sharing things I learned"
     return render_template(
@@ -101,6 +130,7 @@ def index():
             "og:title": "soerface' Blog",
             "og:image": url_for("static", filename="img/profile_photo.jpg")
         },
+        form=form,
     )
 
 
@@ -109,7 +139,9 @@ def article_detail(year, month, day, slug):
     path = get_article_path(year, month, day, slug)
     article = load_article(path)
     title = article["metadata"].get("title")
-    teaser = tmp[:-1] if (tmp := article["metadata"].get("teaser"))[-1] == "\n" else tmp
+    teaser = article["metadata"].get("teaser")
+    if teaser and teaser[-1] == "\n":
+        teaser = teaser[:-1]
     image_url = article["metadata"].get("image", url_for("static", filename="img/profile_photo.jpg"))
     return render_template(
         'blog/article_detail.html',
@@ -133,3 +165,15 @@ def article_media(year, month, day, slug, filename):
         return send_file(path / filename)
     except FileNotFoundError:
         abort(404)
+
+
+class NewArticleForm(FlaskForm):
+    title = StringField("Title")
+    teaser = TextAreaField("Teaser")
+    content = TextAreaField("Content", validators=[validators.DataRequired()])
+    # Thought about explicitly marking short articles, but going for "just leave out the teaser" for now
+    # short_article = BooleanField("Short article", default=True, render_kw={"checked": ""})
+
+    @property
+    def slug(self):
+        return slugify(self.title.data)

@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import Flask, render_template, request, Markup
+from flask_wtf.csrf import CSRFProtect
 
 import env
 from sections import blog, quiz
@@ -20,6 +21,9 @@ else:
     app = Flask(__name__)
     for bp in blueprints:
         app.register_blueprint(bp)
+CSRFProtect(app)
+app.config.from_object("settings")
+app.config.from_prefixed_env(prefix="APP_")
 
 
 @app.context_processor

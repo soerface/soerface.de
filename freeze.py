@@ -10,6 +10,7 @@ from app import app
 
 def main():
     app.config["FREEZER_DESTINATION"] = "build"
+    app.config["FROZEN"] = True
     cname = os.getenv("CNAME")
     if cname:
         app.config["SERVER_NAME"] = cname

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            {% if form %}
+                {% include "blog/includes/new_article_form.html" %}
+                <hr/>
+            {% endif %}
+            {% for article in article_list %}
+                {% if not article.metadata.html_teaser %}
+                    {% include "blog/includes/short_article.html" %}
+                {% else %}
+                    {% include "blog/includes/long_article_preview.html" %}
+                {% endif %}
+                {% if not loop.last %}
+                    <hr/>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
