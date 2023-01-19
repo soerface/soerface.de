@@ -1,6 +1,7 @@
 import re
 from pathlib import Path
 
+import requests
 from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort, request, redirect, current_app
 from wtforms import StringField, BooleanField, TextAreaField, validators
 from slugify import slugify
@@ -99,6 +100,23 @@ def generate_article(path: Path, content, title=None, teaser=None):
         f.write(md)
 
 
+def generate_title_from_content(data):
+    api_key = current_app.config["OPENAI_API_KEY"]
+    if not api_key:
+        return "untitled"
+    response = requests.post(
+        "https://api.openai.com/v1/completions",
+        headers={"authorization": f"Bearer {api_key}"},
+        json={
+            "model": "text-davinci-003",
+            "prompt": "Title of this blog article: ",
+            "suffix": data,
+        },
+    )
+    data = response.json()
+    return data["choices"][0]["text"].strip()
+
+
 @bp.route("/", methods=["GET", "POST"])
 def index():
     if current_app.config["FROZEN"]:
@@ -106,15 +124,19 @@ def index():
     else:
         form = NewArticleForm(request.form)
         if form.validate():
+            title = form.title.data
+            if not title:
+                title = generate_title_from_content(form.content.data)
             now = datetime.now()
-            path = ARTICLE_BASE_PATH / f'{now.strftime("%Y-%m-%d")}_{form.slug}'
-            generate_article(path, form.content.data, title=form.title.data, teaser=form.teaser.data)
+            slug = slugify(title)
+            path = ARTICLE_BASE_PATH / f'{now.strftime("%Y-%m-%d")}_{slug}'
+            generate_article(path, form.content.data, title=title, teaser=form.teaser.data)
             return redirect(url_for(
                 "blog.article_detail",
                 year=now.year,
                 month=f"{now.month:02}",
                 day=f"{now.day:02}",
-                slug=form.slug
+                slug=slug
             ))
     articles = [load_article(x) for x in load_article_list()]
     description = "Occasionally sharing things I learned"
@@ -173,7 +195,3 @@ class NewArticleForm(FlaskForm):
     content = TextAreaField("Content", validators=[validators.DataRequired()])
     # Thought about explicitly marking short articles, but going for "just leave out the teaser" for now
     # short_article = BooleanField("Short article", default=True, render_kw={"checked": ""})
-
-    @property
-    def slug(self):
-        return slugify(self.title.data)

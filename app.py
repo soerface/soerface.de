@@ -22,8 +22,8 @@ else:
     for bp in blueprints:
         app.register_blueprint(bp)
 CSRFProtect(app)
+app.config.from_object("settings_default")
 app.config.from_object("settings")
-app.config.from_prefixed_env(prefix="APP_")
 
 
 @app.context_processor
