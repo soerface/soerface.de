@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Flask, render_template, request, Markup, send_from_directory
+from flask import Flask, render_template, request, Markup
 from flask_wtf.csrf import CSRFProtect
 
 import env
