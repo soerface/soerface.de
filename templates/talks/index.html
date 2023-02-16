@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <ul>
+    {% for talk in talks %}
+        <li><a href="{{ url_for("talks." + talk.path) }}">{{ talk.date.strftime("%Y-%m-%d") }} – {{ talk.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}

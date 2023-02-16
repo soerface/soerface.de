@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>WMKS – Sentry</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/sentry.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+    <style>
+        .container {
+            display: flex;
+        }
+
+        .container.logos {
+            justify-content: space-around;
+        }
+
+        .container.logos > img {
+            flex: 1;
+        }
+
+        img.shadow {
+            filter: drop-shadow(0 0 15px #333333) drop-shadow(0 0 5px #fff);
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        table.platforms-integrations td {
+            border: 0;
+            padding: 0 0.5em;
+        }
+
+        .grid {
+            display: inline-grid;
+            grid-template-columns: repeat(5, 0.8fr);
+            grid-gap: 1.4em;
+            justify-items: center;
+            align-items: center;
+        }
+
+        .grid img {
+            display: flex;
+        }
+
+        img.boxed {
+            height: 650px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h1><img src="img/logos/sentry-wordmark.svg" alt="Sentry" width="500" alt="Sentry"/></h1>
+            <h4>Developer-first app monitoring platform</h4>
+            <aside class="notes">
+                <ul>
+                    <li>Letzter Webmontag: New Relic</li>
+                    <li>Sentry vor >10y kennengelernt</li>
+                    <li>Frage: "Was nutzt ihr?"</li>
+                </ul>
+            </aside>
+        </section>
+        <section>
+            <h3>📜 Logging? <span class="fragment">❌</span></h3>
+            <span class="fragment">
+                <h3>⚡ APM?</h3>
+            </span>
+            <span class="fragment">
+                <h3>🔥 Error + Crash Monitoring! </h3>
+            </span>
+            <aside class="notes">
+                APM=Application Performance Monitoring
+            </aside>
+        </section>
+        <section>
+            <table class="platforms-integrations">
+                <tr>
+                    <td><img src="img/logos/python.svg" alt="Python" width="100"/></td>
+                    <td><img src="img/logos/django.svg" alt="Django" width="75"/></td>
+                    <td><img src="img/logos/flask.svg" alt="Flask" width="75" class="shadow" /></td>
+                    <td><img src="img/logos/fastapi.svg" alt="FastAPI" width="75"/></td>
+                    <td><img src="img/logos/bottle.svg" alt="Bottle" width="75"/></td>
+                    <td><img src="img/logos/celery.svg" alt="Celery" width="75"/></td>
+                </tr>
+                <tr>
+                    <td><img src="img/logos/javascript.svg" alt="JavaScript" width="100"/></td>
+                    <td><img src="img/logos/nodejs.svg" alt="Node.js" width="75" class="shadow"/></td>
+                    <td><img src="img/logos/react.svg" alt="React" width="75"/></td>
+                    <td><img src="img/logos/nextjs.svg" alt="Next.js" width="75" class="shadow"/></td>
+                    <td><img src="img/logos/vue.svg" alt="Vue" width="75"/></td>
+                    <td><img src="img/logos/angular.svg" alt="Angular" width="75"/></td>
+                </tr>
+                <tr>
+                    <td><img src="img/logos/ruby.svg" alt="Ruby" width="100"/></td>
+                    <td><img src="img/logos/rails.svg" alt="Rails" width="60"/></td>
+                    <td><img src="img/logos/php.svg" alt="PHP" width="100"/></td>
+                    <td><img src="img/logos/laravel.svg" alt="Laravel" width="60"/></td>
+                    <td><img src="img/logos/java.svg" alt="Java" width="100"/></td>
+                    <td><img src="img/logos/spring.svg" alt="Spring" width="60"/></td>
+                </tr>
+                <tr>
+                    <td><img src="img/logos/cocoa.svg" alt="Cocoa" width="60" class="shadow"/></td>
+                    <td><img src="img/logos/swift.svg" alt="Swift" width="60"/></td>
+                    <td><img src="img/logos/android.svg" alt="Android" width="60"/></td>
+                    <td><img src="img/logos/kotlin.svg" alt="Kotlin" width="60"/></td>
+                    <td><img src="img/logos/c.svg" alt="C" width="60"/></td>
+                    <td><img src="img/logos/flutter.svg" alt="Flutter" width="60"/></td>
+                </tr>
+                <tr>
+                    <td><img src="img/logos/go.svg" alt="Go" width="60"/></td>
+                    <td><img src="img/logos/rust.svg" alt="Rust" width="60" class="shadow"/></td>
+                    <td><img src="img/logos/net.svg" alt="ASP.NET" width="60"/></td>
+                    <td><img src="img/logos/scala.svg" alt="Scala" width="60"/></td>
+                    <td><img src="img/logos/unity.svg" alt="Unity" width="60"/></td>
+                    <td><img src="img/logos/unreal.svg" alt="Unreal" width="60"/></td>
+                </tr>
+            </table>
+        </section>
+        <section>
+            <div class="grid">
+                <img src="img/logos/slack.svg" alt="Slack" width="100"/>
+                <img src="img/logos/teams.svg" alt="Microsoft Teams" width="100"/>
+                <img src="img/logos/pagerduty.svg" alt="PagerDuty" width="100"/>
+                <img src="img/logos/github.svg" alt="GitHub" width="100" class="shadow"/>
+                <img src="img/logos/gitlab.svg" alt="GitLab" width="100"/>
+                <img src="img/logos/vercel.svg" alt="Vercel" width="100" class="shadow"/>
+                <img src="img/logos/heroku.svg" alt="Heroku" width="100" class="shadow"/>
+                <img src="img/logos/netlify.svg" alt="Netlify" width="100"/>
+                <img src="img/logos/jira.svg" alt="Jira" width="100"/>
+                <img src="img/logos/trello.svg" alt="Trello" width="100"/>
+                <img src="img/logos/bitbucket.svg" alt="Bitbucket" width="100"/>
+                <img src="img/logos/datadog.svg" alt="Datadog" width="100"/>
+                <img src="img/logos/okta.svg" alt="Okta" width="100"/>
+                <img src="img/logos/segment.svg" alt="Segment" width="100"/>
+                <img src="img/logos/twilio.svg" alt="Twilio" width="100"/>
+            </div>
+        </section>
+        <section>
+            <section>
+                <h1>Setup</h1>
+                <aside class="notes">
+                    <ul>
+                        <li><a target="_blank" href="https://sentry.soerface.de/organizations/wmks/projects/">
+                            Projects
+                        </a></li>
+                        <li><a target="_blank" href="https://sentry.soerface.de/settings/wmks/projects/wmks-django/install/python-django/">
+                            Python SDK
+                        </a></li>
+                        <li><a target="_blank" href="https://sentry.soerface.de/settings/wmks/projects/wmks-react/install/javascript-react/">
+                            JavaScript SDK
+                        </a></li>
+                    </ul>
+                </aside>
+            </section>
+            <section>
+                <img src="img/screenshots/setup.png" alt="Setup" class="boxed" />
+            </section>
+            <section>
+                <img src="img/screenshots/configure-django.png" alt="Configure Django" class="boxed" />
+            </section>
+            <section>
+                <img src="img/screenshots/configure-react.png" alt="Configure React" class="boxed" />
+            </section>
+        </section>
+        <section>
+            <section>
+                <h1>Our first error</h1>
+            </section>
+            <section>
+                <img src="img/screenshots/django-division-by-zero.png" alt="Division by zero" class="boxed" />
+                <aside class="notes">
+                    Only for demo purposes on localhost!
+                </aside>
+            </section>
+            <section>
+                <img src="img/screenshots/issues-first-error.png" alt="List with first error" class="boxed" />
+                <aside class="notes">
+                    <a target="_blank" href="https://sentry.soerface.de/organizations/wmks/issues/143/">
+                        ZeroDivisionError
+                    </a>
+                    <ol>
+                        <li>Show context (code, HTTP)</li>
+                        <li>Show tags on next slide</li>
+                    </ol>
+                </aside>
+            </section>
+            <section>
+                <img src="img/screenshots/tags.png" alt="Tags" class="boxed" />
+                <aside class="notes">
+                    Next: Release Tagging
+                </aside>
+            </section>
+            <section>
+                <img src="img/screenshots/releases.png" alt="Release Tagging" class="boxed" />
+                <aside class="notes">
+                    Connect repo for suspicious commits, authors, etc.
+                </aside>
+            </section>
+            <section>
+                <img src="img/screenshots/releases-via-sdk.png" alt="Release Tagging via SDK" />
+            </section>
+            <section>
+                <img src="img/screenshots/issue-releases.png" alt="Releases plotted on issue detail page" class="boxed" />
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h3>Not only unhandled exceptions</h3>
+                <pre><code>
+def throw_dice(request):
+    number = random.randint(1, 10)
+    if number > 6:
+        logger.exception("Number is too high: %s", number)
+    return render(request, "dice.html", {"number": number})
+                </code></pre>
+                <aside class="notes">
+                    <ul>
+                        <li><a target="_blank" href="http://localhost:8000/dice/">http://localhost:8000/dice/</a></li>
+                        <li><a target="_blank" href="https://sentry.soerface.de/organizations/wmks/issues/">
+                        Issue list
+                        </a></li>
+                </aside>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h1>Errors in React</h1>
+                <pre><code>
+<div className="card">
+    <button onClick={() => methodDoesNotExist()}>
+        Break the world
+    </button>
+</div>
+                </code></pre>
+                <aside class="notes">
+                    <a target="_blank" href="https://sentry.soerface.de/organizations/wmks/issues/151/">
+                        ReferenceError
+                    </a>
+                </aside>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h1>Collaboration</h1>
+                <aside class="notes">
+                    <ul>
+                        <li><a target="_blank" href="https://sentry.soerface.de/settings/wmks/projects/wmks-django/ownership/">
+                            Issue owners
+                        </a></li>
+                        <li><a target="_blank" href="https://sentry.soerface.de/organizations/wmks/issues/143/activity/">
+                            Activity
+                        </a></li>
+                    </ul>
+                </aside>
+            </section>
+            <section>
+                <img src="img/screenshots/issue-owners.png" alt="Issue owners" class="boxed" />
+            </section>
+        </section>
+        <section>
+            <section>
+                <h1>Bringing FE & BE together</h1>
+                <aside class="notes">
+                    <ul>
+                        <li><pre>ngrok http 5173</pre></li>
+                    </ul>
+                </aside>
+            </section>
+        </section>
+        <section>
+            <h1>⚡ Performance Tracing</h1>
+            <aside class="notes">
+                <ul>
+                    <li>
+                        <a target="_blank" href="https://sentry.soerface.de/organizations/wmks/performance/">
+                            Performance overview
+                        </a>
+                    </li>
+                </ul>
+        </section>
+        <section>
+            <h1>Beta Features</h1>
+            <ul>
+                <li><a target="_blank" href="https://sentry.io/for/profiling/">Profiling</a></li>
+                <li><a target="_blank" href="https://sentry.io/for/session-replay/">Session Replay</a></li>
+                <li><a target="_blank" href="https://docs.sentry.io/product/crons/">Monitors</a></li>
+            </ul>
+            <aside class="notes">
+                <ul>
+                    <li>
+                    <a target="_blank" href="https://www.youtube.com/watch?v=sZwMmiwBwho&t=397s">
+                        Session Replay video
+                    </a>
+                    </li>
+                </ul>
+            </aside>
+        </section>
+        <section data-markdown>
+            # Pricing
+        </section>
+        <section>
+            <section>
+                SaaS: sentry.io
+
+                <div class="container">
+
+                    <div class="col" data-markdown>
+                        Developer tier:
+                        - $0/month
+                        - 1 user
+                        - 5k err/month
+                    </div>
+                    <div class="col" data-markdown>
+                        Team tier:
+                        - $29/month
+                        - ∞ users
+                        - 50k err/month
+                    </div>
+                    <div class="col">
+                        <p>Business tier:</p>
+                        <ul>
+                            <li>$89/month</li>
+                            <li>∞ users</li>
+                            <li>50k err/month</li>
+                            <li>More features:<small><ul>
+                                <li>SAML login</li>
+                                <li>Custom dashboards</li>
+                                <li>Advanced analytics</li>
+                                </ul>
+                            </small>
+                        </ul>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <a target="_blank" href="https://sentry.io/pricing/">https://sentry.io/pricing/</a>
+                </aside>
+            </section>
+            <section data-transition="none">
+                <img src="img/sentry-pricing-tiers/developer.png" alt="Developer tier"/>
+            </section>
+            <section data-transition="none">
+                <img src="img/sentry-pricing-tiers/team.png" alt="Team tier"/>
+            </section>
+            <section data-transition="none">
+                <img src="img/sentry-pricing-tiers/business.png" alt="Business tier"/>
+            </section>
+            <section data-transition="none">
+                <img src="img/sentry-pricing-tiers/enterprise.png" alt="Enterprise tier"/>
+            </section>
+        </section>
+        <section>
+            <h1>GDPR</h1>
+            <ul>
+                <li>Sentry.io claims to be compliant</li>
+                <li>But: Hosted on Google Cloud in Iowa, USA 🇺🇸</li>
+                <span class="fragment">
+                <li>Data Locality option just available for enterprise plans</li>
+                <li>Don't fool yourself: CLOUD Act allows US authorities to access your data from US companies no matter where it is stored</li>
+                </span>
+            </ul>
+        </section>
+        <section>
+            <section data-markdown>
+                # Self-hosted
+                - Sentry ❤️ Open Source
+                - No "Open Core" model
+                - Story: https://blog.sentry.io/2019/11/06/relicensing-sentry/
+            </section>
+            <section>
+                <blockquote><small>
+                <p>We have the following goals regarding our products and services:</p>
+                <ul>
+                    <li>Anyone should be able to run Sentry for themselves or their business.</li>
+                    <li>There should be no difference in features between our SaaS and our self-hosted offerings (no open-core model).</li>
+                    <li>There should be minimal limitations on usage of code; should be as free as possible.</li>
+                    <li>There should be protections from other companies selling our work without giving back.</li>
+                </ul>
+                </small></blockquote>
+            </section>
+            <section>
+                <h1>BSL</h1>
+                <span class="fragment">
+                    <ul>
+                        <li><em>Business Source License</em></li>
+                        <li>Invented by MariaDB Corporation</li>
+                        <li>Changes to <strong>Apache License, Version 2.0</strong> after <strong>3 years</strong></li>
+                        <li>Until then, the following restriction applies:</li>
+                    </ul>
+                </span>
+            </section>
+            <section>
+                <blockquote><small>
+                <p><strong>Additional Use Grant:</strong>
+                    You may make use of the Licensed Work, provided that you do
+                    not use the Licensed Work for an <strong>Application Monitoring
+                    Service.</strong>
+                </p>
+
+                <p>An "Application Monitoring Service" is a commercial offering
+                that allows third parties (other than your employees and
+                contractors) to access the functionality of the Licensed
+                Work so that such third parties directly benefit from the
+                error-reporting or application monitoring features of the
+                Licensed Work.</p>
+                </small></blockquote>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h3>Hardware Requirements</h3>
+                <img src="img/cpx21.png" alt="Hetzner CPX21"/>
+                <img src="img/htop.png" alt="system load"/>
+                <aside class="notes">
+                    Pfeift aus dem letzten Loch, lieber 8GB RAM, 4 Kerne
+                </aside>
+            </section>
+            <section>
+                <img src="img/docker-compose_ps.png" alt="docker-compose ps"/>
+                <!-- add a flexbox container, place elements in equal distances -->
+                <div class="container logos">
+                    <img class="shadow" src="img/logos/kafka.svg" alt="Apache Kafka" height="50"/>
+                    <img src="img/logos/memcached.svg" alt="Memcached" height="50"/>
+                    <img src="img/logos/nginx.svg" alt="Nginx" height="50"/>
+                    <img src="img/logos/postgresql.svg" alt="PostgreSQL" height="50"/>
+                    <img src="img/logos/redis.svg" alt="Redis" height="50"/>
+                    <img src="img/logos/zookeeper.svg" alt="Zookeeper" height="50"/>
+                </div>
+
+            </section>
+        </section>
+        <section>
+            <img src="img/logos/sentry-loader.svg" alt="Sentry" width="350px"/>
+        </section>
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+</script>
+</body>
+</html>

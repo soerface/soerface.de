@@ -1,16 +1,19 @@
 from datetime import datetime
 
-from flask import Flask, render_template, request, Markup
+from flask import Flask, render_template, request, Markup, send_from_directory
 from flask_wtf.csrf import CSRFProtect
 
 import env
-from sections import blog, quiz
+from sections import blog, quiz, talks
 from markdown import markdown
 
 blueprints = [
     blog.bp,
     quiz.bp,
+    talks.bp,
 ]
+
+hidden_blueprints = ["quiz", "talks"]
 
 if env.GITHUB_REPOSITORY and not env.CNAME:
     owner, sep, repo = env.GITHUB_REPOSITORY.partition('/')
@@ -31,7 +34,7 @@ except ImportError:
 
 @app.context_processor
 def add_navigation() -> dict:
-    endpoints = [(f'{bp.name}.index', bp.name.title()) for bp in blueprints if bp.name != "quiz"]
+    endpoints = [(f'{bp.name}.index', bp.name.title()) for bp in blueprints if bp.name not in hidden_blueprints]
     items = [{
         'active': request.endpoint.partition('.')[0] == endpoint.partition('.')[0],
         'endpoint': endpoint,
