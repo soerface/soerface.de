@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JWT with Django REST framework - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Django REST framework already provides an easy way to issue JSON Web Tokens. But what if you only want to validate tokens issued by another server?">
+    <meta property="og:description" content="Django REST framework already provides an easy way to issue JSON Web Tokens. But what if you only want to validate tokens issued by another server?">
+    <meta property="og:title" content="JWT with Django REST framework">
+    <meta property="og:image" content="/static/img/profile_photo.jpg">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    
+
+</head>
+<body class="bg-dark">
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">soerface</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/blog/">Blog</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container" id="mainContent">
+    
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="card full_article">
+                <div class="card-header">
+                    <small class="text-muted">Published on: 2020-08-18</small>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">JWT with Django REST framework</h1>
+                    <div class="teaser"><p class="card-text">Django REST framework already provides an easy way to issue JSON Web Tokens. But what if you only want to validate tokens issued by another server?</p></div>
+                    <article>
+                        <p class="card-text">With <a href="https://www.django-rest-framework.org/">Django REST framework</a>, you can easily
+build beautiful, well-documented APIs with an automatically generated developer interface - given you are already
+familiar with <a href="https://www.djangoproject.com/">Django</a>. It offers
+<a href="https://www.django-rest-framework.org/api-guide/authentication/">multiple authentication mechanisms</a> out of the box,
+and there are a couple of third party plugins available. One of them is
+<a href="https://github.com/SimpleJWT/django-rest-framework-simplejwt">SimpleJWT</a>, which does a great job if your goal is
+to let your server generate JWT and consume the tokens itself.</p>
+<p class="card-text">However, my use-case is a little different, having these requirements:</p>
+<ul>
+<li>A JWT issuing server already exists</li>
+<li>My Django application does not know the <strong>user accounts</strong> beforehand - they should be generated <strong>on-the-fly</strong></li>
+</ul>
+<p class="card-text">We start with an example application, Django and Django REST framework are already configured. It also has a route
+that returns a list of all users if you are logged in. You can get the source at
+<a href="https://github.com/soerface/django_pyjwt_example/tree/eb9a46ea8f1b4d99f2c0740dce13e984b5cbfeab">soerface/django_pyjwt_example@eb9a46e</a>.</p>
+<p class="card-text">It looks like this:</p>
+<video width="100%" autoplay loop muted>
+    <source src="api-explorer.mp4" type="video/mp4">
+</video>
+
+<h2>Add a custom authentication scheme</h2>
+<p class="card-text">To add our custom JWT authentication, we add a new python file <code>django_pyjwt_example/authentication.py</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">rest_framework.authentication</span> <span class="kn">import</span> <span class="n">BaseAuthentication</span><span class="p">,</span> <span class="n">get_authorization_header</span>
+
+
+<span class="k">class</span> <span class="nc">JWTAuthentication</span><span class="p">(</span><span class="n">BaseAuthentication</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># TODO: return tuple (user, auth) if authentication succeeds or None otherwise.</span>
+        <span class="c1">#       You can also raise AuthenticationFailed</span>
+        <span class="c1"># https://www.django-rest-framework.org/api-guide/authentication/#custom-authentication</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+
+
+<p class="card-text">Add your custom authentication class to the <code>DEFAULT_AUTHENTICATION_CLASSES</code> setting of DRF. We also add the default
+authentication classes so we will still be able to login via the webinterface. To do so, add those lines to <code>settings.py</code>:</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+<span class="hll">    <span class="s1">&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="hll">        <span class="s1">&#39;rest_framework.authentication.SessionAuthentication&#39;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s1">&#39;rest_framework.authentication.BasicAuthentication&#39;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s1">&#39;django_pyjwt_example.authentication.JWTAuthentication&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="p">],</span>
+</span>    <span class="s1">&#39;DEFAULT_PERMISSION_CLASSES&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;rest_framework.permissions.DjangoModelPermissions&#39;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+</div>
+
+<h2>Add a public certificate</h2>
+<p class="card-text">To validate the token we get from our clients, we need to check the tokens signature. For simplicity, we will add the
+certificate directly to our <code>settings.py</code> – you may consider reading them from the environment variables using
+<a href="https://stackoverflow.com/a/4907053/458274"><code>os.getenv(KEY)</code></a> or similar.</p>
+<p class="card-text">If you do not have a certificate, use OpenSSL to generate one:</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># Generate a private key</span>
+openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>private.pem<span class="w"> </span>-aes256<span class="w"> </span><span class="m">4096</span>
+<span class="c1"># Generate the corresponding public key</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-pubout<span class="w"> </span>-in<span class="w"> </span>private.pem<span class="w"> </span>-out<span class="w"> </span>public.pem
+<span class="c1"># Print the public key</span>
+cat<span class="w"> </span>public.pem
+</code></pre></div>
+
+
+</div>
+
+<p class="card-text"><code>settings.py</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">JWT_PUBLIC_KEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-----BEGIN PUBLIC KEY-----</span>
+<span class="s2">MIICIjANBgkq.....jh1K9Id5MCAwEAAQ==</span>
+<span class="s2">-----END PUBLIC KEY-----</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</code></pre></div>
+
+
+<h2>Validate a JWT</h2>
+<p class="card-text">We will use <a href="https://pyjwt.readthedocs.io/en/latest/">pyjwt</a> in our custom authentication class to decode and verify
+the token. All that is needed is essentially calling <code>jwt.decode(token, pub_key)</code>. Some sanity checks are made for
+proper error handling. Enforcing the JWT algorithm makes sure that the user can't choose another one</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">import</span> <span class="nn">jwt</span>  <span class="c1"># pip install pyjwt</span>
+<span class="kn">from</span> <span class="nn">rest_framework.authentication</span> <span class="kn">import</span> <span class="n">BaseAuthentication</span><span class="p">,</span> <span class="n">get_authorization_header</span>
+<span class="kn">from</span> <span class="nn">rest_framework.exceptions</span> <span class="kn">import</span> <span class="n">AuthenticationFailed</span>
+
+
+<span class="k">class</span> <span class="nc">JWTAuthentication</span><span class="p">(</span><span class="n">BaseAuthentication</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="hll">        <span class="n">auth</span> <span class="o">=</span> <span class="n">get_authorization_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</span>        <span class="c1"># An authorization with a JWT token typically starts with `Bearer`</span>
+        <span class="c1"># https://jwt.io/introduction/</span>
+        <span class="c1"># Only continue this authentication method if the header consists of</span>
+        <span class="c1"># the word &#39;Bearer&#39; and a token</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Bearer&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+<span class="hll">        <span class="n">_</span><span class="p">,</span> <span class="n">encoded_token</span> <span class="o">=</span> <span class="n">auth</span>
+</span>        <span class="k">try</span><span class="p">:</span>
+<span class="hll">            <span class="n">token</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoded_token</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">JWT_PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS512&#39;</span><span class="p">])</span>
+</span>        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AuthenticationFailed</span><span class="p">(</span><span class="s1">&#39;Malformed token&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+
+
+</div>
+
+<h3>Bonus validation: Use JSON Schema</h3>
+<p class="card-text"><a href="https://json-schema.org/">JSON Schema</a> provides a powerful way to validate json documents. It not only gives you a
+way to make sure certain keys are present, but also that they have the correct type. You can use it to make sure all
+tokens have a proper username and an expiration date.</p>
+<p class="card-text">According to <a href="https://pyjwt.readthedocs.io/en/latest/usage.html#requiring-presence-of-claims">pyjwt.readthedocs.io</a>
+it is possible to enforce the presence of keys by using the "options" parameter and giving it a list of keys.
+However, this had no effect. Further research showed that you need to use the <code>"require_exp": True</code> option
+(<a href="https://pypi.org/project/PyJWT/1.4.0/">pypi.org/project/PyJWT/1.4.0/</a>,
+sections "Skipping Claim Verification" and "Requiring Optional Claims").</p>
+<p class="card-text">This leaves me with an uneasy feeling to the options of pyjwt. Since JSON Schema also allows me to verify more than
+just the JWT claims, I will use it for extended validation:</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">from</span> <span class="nn">rest_framework.authentication</span> <span class="kn">import</span> <span class="n">BaseAuthentication</span><span class="p">,</span> <span class="n">get_authorization_header</span>
+<span class="kn">from</span> <span class="nn">rest_framework.exceptions</span> <span class="kn">import</span> <span class="n">AuthenticationFailed</span>
+<span class="hll"><span class="kn">import</span> <span class="nn">jsonschema</span>
+</span>
+
+<span class="k">class</span> <span class="nc">JWTAuthentication</span><span class="p">(</span><span class="n">BaseAuthentication</span><span class="p">):</span>
+<span class="hll">    <span class="n">token_schema</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="hll">        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="hll">            <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+</span><span class="hll">            <span class="s1">&#39;exp&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">}</span>
+</span><span class="hll">        <span class="p">},</span>
+</span><span class="hll">        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;exp&#39;</span><span class="p">]</span>
+</span><span class="hll">    <span class="p">}</span>
+</span>
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">auth</span> <span class="o">=</span> <span class="n">get_authorization_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="c1"># An authorization with a JWT token typically starts with `Bearer`</span>
+        <span class="c1"># https://jwt.io/introduction/</span>
+        <span class="c1"># Only continue this authentication method if the header consists of</span>
+        <span class="c1"># the word &#39;Bearer&#39; and a token</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Bearer&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">encoded_token</span> <span class="o">=</span> <span class="n">auth</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoded_token</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">JWT_PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS512&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AuthenticationFailed</span><span class="p">(</span><span class="s1">&#39;Malformed token&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+<span class="hll">            <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">JWTAuthentication</span><span class="o">.</span><span class="n">token_schema</span><span class="p">)</span>
+</span>        <span class="k">except</span> <span class="n">jsonschema</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AuthenticationFailed</span><span class="p">({</span>
+                <span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Invalid JWT schema: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">schema</span>
+            <span class="p">},</span> <span class="mi">400</span><span class="p">)</span>
+</code></pre></div>
+
+
+</div>
+
+<h2>Create user accounts on the fly</h2>
+<p class="card-text">This part is the easiest. We use the <a href="https://docs.djangoproject.com/en/3.1/ref/models/querysets/#get-or-create"><code>get_or_create()</code></a>
+method of the <a href="https://docs.djangoproject.com/en/3.1/topics/auth/default/#user-objects"><code>User</code></a> object to create a new
+user. Additionally, we emit the <a href="https://docs.djangoproject.com/en/3.1/ref/contrib/auth/#django.contrib.auth.signals.user_logged_in"><code>user_logged_in</code></a>
+signal so Django and other parts of our project are notified accordingly. For example, Django will add a <code>last_login</code>
+timestamp to each user.</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">get_user_model</span><span class="p">,</span> <span class="n">user_logged_in</span>
+<span class="kn">from</span> <span class="nn">rest_framework.authentication</span> <span class="kn">import</span> <span class="n">BaseAuthentication</span><span class="p">,</span> <span class="n">get_authorization_header</span>
+<span class="kn">from</span> <span class="nn">rest_framework.exceptions</span> <span class="kn">import</span> <span class="n">AuthenticationFailed</span>
+<span class="kn">import</span> <span class="nn">jsonschema</span>
+
+
+<span class="k">class</span> <span class="nc">JWTAuthentication</span><span class="p">(</span><span class="n">BaseAuthentication</span><span class="p">):</span>
+    <span class="n">token_schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;exp&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;exp&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">auth</span> <span class="o">=</span> <span class="n">get_authorization_header</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="c1"># An authorization with a JWT token typically starts with `Bearer`</span>
+        <span class="c1"># https://jwt.io/introduction/</span>
+        <span class="c1"># Only continue this authentication method if the header consists of</span>
+        <span class="c1"># the word &#39;Bearer&#39; and a token</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Bearer&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">encoded_token</span> <span class="o">=</span> <span class="n">auth</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoded_token</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">JWT_PUBLIC_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RS512&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DecodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AuthenticationFailed</span><span class="p">(</span><span class="s1">&#39;Malformed token&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">JWTAuthentication</span><span class="o">.</span><span class="n">token_schema</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">jsonschema</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AuthenticationFailed</span><span class="p">({</span>
+                <span class="s1">&#39;detail&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Invalid JWT schema: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">schema</span>
+            <span class="p">},</span> <span class="mi">400</span><span class="p">)</span>
+
+<span class="hll">        <span class="n">user</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">token</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+</span><span class="hll">        <span class="c1"># Sending a signal allows Django proper population of fields like last_login</span>
+</span><span class="hll">        <span class="n">user_logged_in</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">JWTAuthentication</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+</span><span class="hll">        <span class="k">return</span> <span class="n">user</span><span class="p">,</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+
+</div>
+
+<h2>Test everything</h2>
+<p class="card-text">For simple testing, I've added a script that will generate a JWT for you. Check it out:
+<a href="https://github.com/soerface/django_pyjwt_example/blob/5d511c5c4728b3412d7a7a5d2298d8df205a013a/create_jwt.py">create_jwt.py</a></p>
+<p class="card-text">Create a JWT and use curl to send it in a <code>Authorization: Bearer &lt;token&gt;</code> header:</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="nv">JWT_TOKEN</span><span class="o">=</span><span class="k">$(</span>./create_jwt.py<span class="w"> </span>hello<span class="k">)</span>
+curl<span class="w"> </span>-sH<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$JWT_TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>localhost:8000/users/
+</code></pre></div>
+
+
+</div>
+
+<p class="card-text">Demonstration:</p>
+<video width="100%" autoplay loop muted>
+    <source src="demo.mp4" type="video/mp4">
+</video>
+
+<p class="card-text">The complete project source can be found on <a href="https://github.com/soerface/django_pyjwt_example">soerface/django_pyjwt_example</a></p>
+                    </article>
+                    
+                    
+                    
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-2 justify-content-md-center d-sm-none">
+    <div class="col col-sm-12 col-md-6 col-lg-4 text-muted text-light">
+        
+            
+        
+    </div>
+</div>
+<hr>
+<div class="row" id="pageFooter">
+    <div class="col">
+        
+        
+        
+    </div>
+</div>
+    
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    
+        <script src="/static/js/copy-to-clipboard.js"></script>
+    
+
+</body>
+</html>

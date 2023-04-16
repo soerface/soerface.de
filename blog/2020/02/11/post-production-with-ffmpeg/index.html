@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Post-production with ffmpeg - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="`ffmpeg` may not be very intuitive to use – but it can remove a lot of repetitive work when using it in bash scripts. I&#39;ll show you how I automated syncing two videos, combining them, and adding an intro and outro to the result. [Audacity](https://www.audacityteam.org/), [mpv](https://mpv.io/) and [sox](http://sox.sourceforge.net/) are also part of the toolchain.">
+    <meta property="og:description" content="`ffmpeg` may not be very intuitive to use – but it can remove a lot of repetitive work when using it in bash scripts. I&#39;ll show you how I automated syncing two videos, combining them, and adding an intro and outro to the result. [Audacity](https://www.audacityteam.org/), [mpv](https://mpv.io/) and [sox](http://sox.sourceforge.net/) are also part of the toolchain.">
+    <meta property="og:title" content="Post-production with ffmpeg">
+    <meta property="og:image" content="/static/img/profile_photo.jpg">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    
+
+</head>
+<body class="bg-dark">
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">soerface</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/blog/">Blog</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container" id="mainContent">
+    
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="card full_article">
+                <div class="card-header">
+                    <small class="text-muted">Published on: 2020-02-11</small>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">Post-production with ffmpeg</h1>
+                    <div class="teaser"><p class="card-text"><code>ffmpeg</code> may not be very intuitive to use – but it can remove a lot of repetitive work when using it in bash scripts. I&#39;ll show you how I automated syncing two videos, combining them, and adding an intro and outro to the result. <a href="https://www.audacityteam.org/">Audacity</a>, <a href="https://mpv.io/">mpv</a> and <a href="http://sox.sourceforge.net/">sox</a> are also part of the toolchain.</p></div>
+                    <article>
+                        <p class="card-text">A while ago, we, the Chaos Computer Club Kassel, <a href="https://flipdot.org">flipdot e.V.</a>, organized a public
+event, called the <a href="https://2019.hackumenta.de/">hackumenta</a>. Our talks were recorded and we wanted to
+published them at <a href="https://media.ccc.de/c/hackumenta19">meda.ccc.de</a>. Speaker and slides were separately recorded and
+need to be synced, merged, and cut, so I've created a little ffmpeg-toolchain.</p>
+<p class="card-text">This is the result:</p>
+<div style="height: 0; width: 100%; position: relative; padding-bottom: 56.25%; margin-bottom: 1em">
+    <iframe
+        width="100%"
+        height="100%"
+        src="https://media.ccc.de/v/hackumenta-23-opening/oembed"
+        allowfullscreen
+        style="position: absolute; border: 0">
+    </iframe>
+</div>
+
+<p class="card-text">The final toolchain is available at
+<a href="https://github.com/flipdot/0xA-voc-toolchain/">github.com/flipdot/0xA-voc-toolchain</a> (subject to change).</p>
+<p class="card-text">It works by consecutively executing the numbered bash scripts. But first, set <code>INPUT_DIR</code> and
+<code>WORKING_DIR</code> in <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/settings.env">settings.env</a>.
+Install all required packages:</p>
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ffmpeg<span class="w"> </span>sox<span class="w"> </span>audacity<span class="w"> </span>mpv<span class="w"> </span>libxi-dev<span class="w"> </span>mesa-common-dev
+<span class="gp">$ </span>nvm<span class="w"> </span>use<span class="w"> </span><span class="m">8</span>
+<span class="gp">$ </span>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>https://github.com/transitive-bullshit/ffmpeg-concat.git#feature/optimize-frames
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/flipdot/0xA-voc-toolchain.git
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>0xA-voc-toolchain
+<span class="gp">$ </span>vim<span class="w"> </span>settings.env
+<span class="gp">$ </span>./1_preprocess_raw_files.sh
+<span class="gp">$ </span>./2_extract_audio.sh
+<span class="gp">$ </span>./3_align_inputs.sh
+<span class="gp">$ </span>./4_create_time_marks.sh
+<span class="gp">$ </span>./5_combine_videos.sh
+<span class="gp">$ </span>./6_add_intro_outro.sh
+</code></pre></div>
+
+
+<p class="card-text">Each script will iterate through all directories inside <code>INPUT_DIR</code> / <code>WORKING_DIR</code> and execute commands
+inside of them.</p>
+<h2>1. Preprocess raw files</h2>
+<p class="card-text">Script: <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/1_preprocess_raw_files.sh"><code>1_preprocess_raw_files.sh</code></a></p>
+<p class="card-text">Let's begin by taking a look at our raw video material:</p>
+<div class="codehilite"><pre><span></span><code>INPUT_DIR
+├── 01_Opening
+│   ├── cam.MP4
+│   ├── intro.mp4
+│   ├── screen_raw.avi
+│   └── title.txt
+├── 02_CUDA_Basics
+|   ├── cam_01.MP4
+|   ├── cam_02.MP4
+│   ├── intro.mp4
+|   ├── screen_raw.avi
+|   └── title.txt
+├── background.mp4
+└── outro.mp4
+</code></pre></div>
+
+
+<p class="card-text">Due to our recording setup, we ended up with multiple "cam_xx.MP4" files, depending on the length of the
+talk. Using <code>ffmpeg -f concat</code> together with a loop for the <code>-i</code> parameter allows us to combine all
+<code>cam_xx.MP4</code> files into a single <code>cam.mp4</code>.</p>
+<p class="card-text">Also, the screen recordings were uncompressed.
+<code>ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -c:v h264_vaapi</code> allows us to efficiently re-encode
+the recordings as H264.</p>
+<p class="card-text">Let's run the above commands by executing
+<a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/1_preprocess_raw_files.sh"><code>1_preprocess_raw_files.sh</code></a>.
+It will produce these files:</p>
+<div class="codehilite"><pre><span></span><code>WORKING_DIR
+├── 01_Opening
+│   ├── cam.mp4
+│   ├── intro.mp4
+│   └── screen.mp4
+├── 02_CUDA_Basics
+│   ├── cam.mp4
+│   ├── intro.mp4
+│   └── screen.mp4
+├── background.mp4
+└── outro.mp4
+</code></pre></div>
+
+
+<h2>2. Extract and normalize audio</h2>
+<p class="card-text">Script: <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/2_extract_audio.sh"><code>2_extract_audio.sh</code></a></p>
+<p class="card-text">The cam- and screen recordings are not in sync and need manual adjustment. To do this adjustment, we first
+need an audio file for each cam- and screen recording. By using <code>ffmpeg -vn</code>, we can remove the video track
+(“video no”).</p>
+<p class="card-text">To improve the volume of the recordings, we utilize <code>sox</code>. It normalizes every audiofile:
+<code>sox --norm $INPUT $OUTPUT</code>.</p>
+<p class="card-text">After executing <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/2_extract_audio.sh"><code>2_extract_audio.sh</code></a>,
+we have two new files for each video in our working tree:</p>
+<div class="codehilite"><pre><span></span><code>WORKING_DIR
+├── 01_Opening
+│   ├── cam_normalized.wav
+│   ├── screen_normalized.wav
+│   └── ...
+└── 02_CUDA_Basics
+    ├── cam_normalized.wav
+    ├── screen_normalized.wav
+    └── ...
+</code></pre></div>
+
+
+<h2>3. Align cam and screen recording</h2>
+<p class="card-text">Script: <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/3_align_inputs.sh"><code>3_align_inputs.sh</code></a></p>
+<p class="card-text">The manual adjustment of cam- and screen recording will be assisted by this script. It will start audacity
+for every talk, opening both wav-files in a single audacity project:</p>
+<p class="card-text"><img alt="Screenshot of audacity main window" src="audacity_opened.png" title="audacity project" /></p>
+<p class="card-text">In the upper track you can see the waveform of the cam recording, in the lower track the waveform of the
+screen recording. Select the “Time Shift Tool” by pressing <kbd>F5</kbd> or clicking on this button:</p>
+<p class="card-text"><img alt="Screenshot of the button which selects the &quot;Time Shift Tool&quot;" src="audacity_time_shift_tool.png" title="Time Shift Tool" /></p>
+<p class="card-text">Now, move the lower track with your cursor until it is aligned with upper track. Pay attention to strong
+peaks in the waveform, they make the alignment more easy. Playing both files and listening to the audio
+helps confirming a correct adjustment.</p>
+<p class="card-text"><img alt="Screenshot of aligned waveforms" src="audacity_aligned.png" title="Aligned waveforms" /></p>
+<p class="card-text">After aligning the tracks, you need to determine the offset. To do so, pick the “Selection Tool” by
+pressing <kbd>F1</kbd>, and click on the left edge of the second track. In the lower section of audacity,
+the offset is printed below the ”Start and End of Selection” label.</p>
+<p class="card-text"><img alt="Screenshot of timestamp selection" src="audacity_timestamp.png" title="Select the timestamp" /></p>
+<p class="card-text">Keep this timestamp in mind and close audacity. In your terminal, the script now prompts you for this
+timestamp. Enter it.</p>
+<p class="card-text"><img alt="Screenshot of terminal asking for a timestamp to be entered" src="enter_timestamp_offset.png" title="Prompt to enter timestamp" /></p>
+<p class="card-text">The timestamp you entered will be validated by a regular expression and saved to a text file:</p>
+<div class="codehilite"><pre><span></span><code>WORKING_DIR
+├── 01_Opening
+│   ├── screen_offset.txt
+│   └── ...
+└── 02_CUDA_Basics
+    ├── screen_offset.txt
+    └── ...
+</code></pre></div>
+
+
+<h2>4. Search for start and end of the talk</h2>
+<p class="card-text">Script: <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/4_create_time_marks.sh"><code>4_create_time_marks.sh</code></a></p>
+<p class="card-text">A bit more manual work is required. Between the start of the recording and the beginning of the talk are
+a couple of minutes that need to be removed. This script opens mpv with a timestamp in the OSD and asks
+you to search for the start of the talk.</p>
+<p class="card-text">These are useful hotkeys for mpv:</p>
+<ul>
+<li><kbd>,</kbd> – One frame backward</li>
+<li><kbd>.</kbd> – One frame forward</li>
+<li><kbd>[</kbd> – Decrease playback speed</li>
+<li><kbd>]</kbd> – Increase playback speed</li>
+</ul>
+<p class="card-text"><img alt="Screenshot of mpv with OSD message" src="mpv_talk_start.png" title="Search for the start of the talk" /></p>
+<p class="card-text">After you found the timestamp, close mpv. Once again, you will be asked to enter that timestamp. After
+you entered it, mpv will open again - but it will start playing from the timestamp you entered. This
+allows you to make sure that the timestamp is set correctly and no words are cut off.</p>
+<p class="card-text"><img alt="Screenshot of terminal asking for talk start timestamp" src="enter_timestamp_talk_start.png" title="Entering talk start with playback" /></p>
+<p class="card-text">The same procedure will be repeated for the end of the talk to get both timestamps. After you are done
+with all talks, your working directory will look like this:</p>
+<div class="codehilite"><pre><span></span><code>WORKING_DIR
+├── 01_Opening
+│   ├── talk_end.txt
+│   ├── talk_start.txt
+│   └── ...
+└── 02_CUDA_Basics
+    ├── talk_end.txt
+    ├── talk_start.txt
+    └── ...
+</code></pre></div>
+
+
+<h2>5. Create a splitscreen of both videos</h2>
+<p class="card-text">Script: <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/5_combine_videos.sh"><code>5_combine_videos.sh</code></a></p>
+<p class="card-text">With the timemarks inside our textfiles, we can now generate a splitscreen with both the cam and the
+screen recording, synchronized. We will also add a background animation, which was copied earlier from
+<code>$INPUT_DIR/background.mp4</code> to <code>$WORKING_DIR/background.mp4</code>.</p>
+<p class="card-text">In our case, we had one more issue with our recording setup: The audio embedded in the screen recording
+is not in-sync with the video of the screen recording. It has a constant delay of about 500ms. We can
+fix that by using <code>ffmpeg -itsoffset $SCREEN_AUDIO_OFFSET</code>. The offset variable is defined inside
+<code>settings.env</code>.</p>
+<p class="card-text">Execute <code>./5_combine_videos.sh</code> and lean back. Your working directory will contain a new file <code>combined.mp4</code>:</p>
+<div class="codehilite"><pre><span></span><code>WORKING_DIR
+├── 01_Opening
+│   ├── combined.mp4
+│   └── ...
+└── 02_CUDA_Basics
+    ├── combined.mp4
+    └── ...
+</code></pre></div>
+
+
+<p class="card-text">And it will look like this:</p>
+<p class="card-text"><img alt="Rendered splitscreen" src="splitscreen.png" /></p>
+<h2>6. Add intro and outro</h2>
+<p class="card-text">Script: <a href="https://github.com/flipdot/0xA-voc-toolchain/blob/master/6_add_intro_outro.sh"><code>6_add_intro_outro.sh</code></a></p>
+<p class="card-text">To finalize the video, we want to concat an intro and an outro to each file. FFmpeg filter graphs are
+very powerful, but it is pretty difficult to create simple transitions with them. Therefore, we will
+be using <a href="https://github.com/transitive-bullshit/ffmpeg-concat">ffmpeg-concat</a> for this task. We need
+to use the <code>features/optimize-frames</code> branch - otherwise, tons of gigabytes will be consumed in our
+<code>/tmp</code> directory. Checkout this <a href="https://github.com/transitive-bullshit/ffmpeg-concat/pull/23">pull request</a> –
+if it was merged, you can use the master version.</p>
+<p class="card-text"><code>ffmpeg-concat</code> also does not keep the audio of the inputs
+(<a href="https://github.com/transitive-bullshit/ffmpeg-concat/issues/4">issue #4</a>). We work around this by
+calling <code>ffmpeg</code> yet another time after concatenation, copying back our audio stream. Fortunately,
+this does not require de- and encoding of the video. We will also add an <code>intro.wav</code>, so we will
+get a fancy intro sound. This requires re-encoding of the audio, but compared to video-encoding
+this is quite fast.</p>
+<p class="card-text">And there you have it – a final <code>output.mp4</code> consisting of the intro, talk with cam and screen recording,
+and outro.</p>
+<p class="card-text">The talks are available at <a href="https://media.ccc.de/c/hackumenta19">media.ccc.de/c/hackumenta19</a>.</p>
+                    </article>
+                    
+                    
+                    
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-2 justify-content-md-center d-sm-none">
+    <div class="col col-sm-12 col-md-6 col-lg-4 text-muted text-light">
+        
+            
+        
+    </div>
+</div>
+<hr>
+<div class="row" id="pageFooter">
+    <div class="col">
+        
+        
+        
+    </div>
+</div>
+    
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+#wallpaper {
+    width: 100%;
+}
+
+input.resolution {
+    width: 5em;
+    margin: 0.2em;
+    display: inline;
+}
+
+#num_screens {
+    width: 3.5em;
+}
+
+#configurator_canvas {
+    width: 100%;
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Quiz Screen - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    <link rel="stylesheet" href="/quiz/static/quiz.css"/>
+
+</head>
+<body class="bg-dark">
+
+
+
+
+<div class="container" id="mainContent">
+    
+    <template id="empty-card">
+    <div class="card">
+        <div class="card-body"></div>
+    </div>
+</template>
+
+<template id="empty-header-card">
+    <div class="card">
+        <div class="card-header"></div>
+        <div class="card-body"></div>
+    </div>
+</template>
+
+<template id="question-details">
+    <div>
+        <div class="row">
+            <div class="col col-md-6 question">
+                <h3 class="text-light">Question</h3>
+                <div class="card">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+            <div class="col col-md-6 answer">
+                <h3 class="text-light">Answer</h3>
+                <div class="card">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center m-3 action-buttons">
+            <button class="btn btn-lg btn-outline-light back">‹ Back</button>
+            <div class="btn-group ml-3">
+                <button class="btn btn-lg points-teamA">Points for Team A</button>
+                <button class="btn btn-lg show-answer">Show Answer</button>
+                <button class="btn btn-lg points-teamB">Points for Team B</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="category-overview">
+    <div class="row">
+        <div class="col col-md-2 points d-flex flex-column align-content-around text-center"></div>
+        <div class="col col-md-10 quiz-cards"></div>
+    </div>
+</template>
+
+<template id="screen-select-info">
+    <h2 class="text-light">Select a quiz at <a href="/quiz/" target="_blank">https://soerface.de/quiz/</a> </h2>
+</template>
+    <h1 class="text-light">Quiz</h1>
+    <div class="card" id="loading-card">
+        <div class="card-body text-center">
+            <p class="card-text">
+                <i class="fa fa-spinner fa-spin"></i>
+                Connecting to control panel at
+                <a href="/quiz/" target="_blank">https://soerface.de/quiz/</a>
+            </p>
+            <noscript>
+                <p class="card-text">Sorry, the quiz won't work without JavaScript</p>
+            </noscript>
+        </div>
+    </div>
+    <div id="quiz-content"></div>
+
+    
+    <div class="row mt-2 justify-content-md-center">
+        <div class="col col-sm-12 text-muted text-light">
+            <p class="text-light text-muted">Quiz at https://soerface.de/quiz/</p>
+            <pre id="debug-output" class="d-none text-light"></pre>
+        </div>
+    </div>
+
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    <script src="/quiz/static/quiz_common.js"></script>
+    <script src="/quiz/static/quiz_screen.js"></script>
+
+</body>
+</html>

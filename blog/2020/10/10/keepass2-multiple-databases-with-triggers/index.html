@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>KeePass2: Working with multiple and shared databases - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="An underrated feature of KeePass2 is its trigger system. It allows a lot of custom behaviour. Let&#39;s use it to make working with multiple kdbx files enjoyable!">
+    <meta property="og:description" content="An underrated feature of KeePass2 is its trigger system. It allows a lot of custom behaviour. Let&#39;s use it to make working with multiple kdbx files enjoyable!">
+    <meta property="og:title" content="KeePass2: Working with multiple and shared databases">
+    <meta property="og:image" content="/static/img/profile_photo.jpg">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    
+
+</head>
+<body class="bg-dark">
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">soerface</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/blog/">Blog</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container" id="mainContent">
+    
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="card full_article">
+                <div class="card-header">
+                    <small class="text-muted">Published on: 2020-10-10</small>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">KeePass2: Working with multiple and shared databases</h1>
+                    <div class="teaser"><p class="card-text">An underrated feature of KeePass2 is its trigger system. It allows a lot of custom behaviour. Let&#39;s use it to make working with multiple kdbx files enjoyable!</p></div>
+                    <article>
+                        <p class="card-text">Sometimes I get asked why I still stick to KeePass2 instead of switching to KeePassXC:
+well, <a href="https://github.com/keepassxreboot/keepassxc/issues/1016">it does not support triggers</a>. And triggers allow you to
+achieve <a href="https://keepass.info/help/kb/trigger_examples.html">a lot of things</a>.</p>
+<p class="card-text">This is our scenario:</p>
+<ul>
+<li>You have a <strong>personal</strong> KeePass database</li>
+<li>You have a second database that is <strong>shared</strong> with others</li>
+<li>You do <strong>NOT</strong> want to <strong>enter multiple passwords</strong> when starting KeePass2</li>
+<li>You do want <strong>reliable synchronization</strong> between devices</li>
+</ul>
+<h2>Download example database</h2>
+<p class="card-text">Follow this tutorial by downloading the example databases. Place both files in the <strong>same directory</strong>:</p>
+<ul>
+<li><a href="personal.kdbx"><i class="fas fa-download"></i> personal.kdbx</a></li>
+<li><a href="shared.kdbx"><i class="fas fa-download"></i> shared.kdbx</a></li>
+</ul>
+<p class="card-text">The password for <code>personal.kdbx</code> is "<a href="https://xkcd.com/936/">correct horse battery staple</a>".</p>
+<h2>Mount a shared storage</h2>
+<p class="card-text">Let any tool take care of synchronizing files between different devices. I like to use simple sshfs:</p>
+<div class="codehilite"><pre><span></span><code>mkdir<span class="w"> </span>~/shared_storage
+sshfs<span class="w"> </span>myserver:<span class="w"> </span>~/shared_storage
+</code></pre></div>
+
+
+<p class="card-text"><small><a href="https://play.google.com/store/apps/details?id=keepass2android.keepass2android">Keepass2Android</a> supports ssh, too!</small></p>
+<p class="card-text">Place a copy of <code>shared.kdbx</code> at <code>~/shared_storage/shared.kdbx</code>.
+Never open files in the shared storage directly!
+We will use the synchronization feature of KeePass2 to handle conflicts properly.</p>
+<h2>Import triggers</h2>
+<p class="card-text">The following XML document describes the triggers. Copy it to your clipboard:</p>
+<div style="height: 10em; overflow: auto; margin: 1em 0; ">
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;TriggerCollection</span><span class="w"> </span><span class="na">xmlns:xsd=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>
+<span class="w">                   </span><span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;Triggers&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Trigger&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Guid&gt;</span>Fydplzl0QEyZnMJCI6LgNg==<span class="nt">&lt;/Guid&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Name&gt;</span>Open<span class="w"> </span>other<span class="w"> </span>databases<span class="w"> </span>from<span class="w"> </span>personal.kdbx<span class="nt">&lt;/Name&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Events&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Event&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>5f8TBoW4QYm5BvaeKztApw==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>3<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>personal.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Event&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/Events&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Conditions</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Actions&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Action&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>/UFV1XmPRPqrifL4cO+UuA==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>{DB_DIR}/shared.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>{REF:P@I:B2BEA12CA9A51B41A8B6C47AC4FD0389}<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>False<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Action&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Action&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>P7gzLdYWToeZBWTbFkzWJg==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>personal.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>0<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Action&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/Actions&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Trigger&gt;</span>
+<span class="w">        </span><span class="nt">&lt;Trigger&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Guid&gt;</span>I/1X1vS+akicNYt9+CJG3A==<span class="nt">&lt;/Guid&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Name&gt;</span>Sync<span class="w"> </span>shared.kdbx<span class="w"> </span>on<span class="w"> </span>close<span class="nt">&lt;/Name&gt;</span>
+<span class="w">            </span><span class="nt">&lt;TurnOffAfterAction&gt;</span>true<span class="nt">&lt;/TurnOffAfterAction&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Events&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Event&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>lPpw5bE/QSamTgZP2MNslQ==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>3<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>shared.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Event&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/Events&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Conditions&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Condition&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>y0qeNFaMTJWtZ00coQQZvA==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>%HOME%/shared_storage/shared.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Negate&gt;</span>false<span class="nt">&lt;/Negate&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Condition&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/Conditions&gt;</span>
+<span class="w">            </span><span class="nt">&lt;Actions&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Action&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>P7gzLdYWToeZBWTbFkzWJg==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>shared.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>0<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Action&gt;</span>
+<span class="w">                </span><span class="nt">&lt;Action&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;TypeGuid&gt;</span>Iq135Bd4Tu2ZtFcdArOtTQ==<span class="nt">&lt;/TypeGuid&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;Parameters&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter&gt;</span>%HOME%/shared_storage/shared.kdbx<span class="nt">&lt;/Parameter&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                        </span><span class="nt">&lt;Parameter</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;/Parameters&gt;</span>
+<span class="w">                </span><span class="nt">&lt;/Action&gt;</span>
+<span class="w">            </span><span class="nt">&lt;/Actions&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/Trigger&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/Triggers&gt;</span>
+<span class="nt">&lt;/TriggerCollection&gt;</span>
+</code></pre></div>
+
+
+</div>
+
+<p class="card-text">Import the triggers via "Tools -&gt; Triggers...", click on the lower left button "Tools" and select "Paste Triggers from Clipboard".</p>
+<video width="100%" autoplay loop muted>
+    <source src="keepass-import-triggers.mp4" type="video/mp4">
+</video>
+
+<h2>Try it!</h2>
+<p class="card-text">Open <code>personal.kdbx</code> with the password <em>"correct horse battery staple"</em>. It will automatically open <code>shared.kdbx</code> in a second tab.</p>
+<p class="card-text">Activate the first tab (<code>personal.kdbx</code>). Close KeePass.
+It will automatically sync <code>shared.kdbx</code> with <code>$HOME/shared_storage/shared.kdbx</code>.</p>
+<p class="card-text">When you open it again, it will ask for the password of <code>personal.kdbx</code>.</p>
+<video width="100%" autoplay loop muted>
+    <source src="keepass-trigger-demo.mp4" type="video/mp4">
+</video>
+
+<h2>Tweaking it to your needs</h2>
+<p class="card-text">To use it for your own databases, you need to change a couple of things:</p>
+<h3>Opening a database other than <code>shared.kdbx</code></h3>
+<ol>
+<li>Create an entry in your personal database which contains the password of your shared database</li>
+<li>After saving the entry, copy it's <strong>UUID</strong>. You can find it in the <em>"Properties"</em> tab</li>
+<li>Edit the trigger <em>"Open other databases from personal.kdbx"</em></li>
+<li>Select the tab <em>"Actions"</em></li>
+<li>Edit <em>"Open database file"</em><ul>
+<li><em>File/URL</em> must contain the correct path</li>
+<li>Password must contain a <strong><a href="https://keepass.info/help/base/fieldrefs.html#syntax">reference</a></strong> to
+  the password field in your personal.kdbx database. Replace <strong>B2B...389</strong> with the <strong>UUID</strong> of your
+  password entry.</li>
+</ul>
+</li>
+</ol>
+<h3>Syncing a database other than <code>~/shared_storage/shared.kdbx</code></h3>
+<ol>
+<li>Edit or copy the trigger <em>"Sync shared.kdbx on close"</em></li>
+<li>In all three tabs (<em>Events</em>, <em>Conditions</em>, <em>Actions</em>) you must change <code>shared.kdbx</code> to the name of your database file</li>
+</ol>
+<h3>Using a database name other than <code>personal.kdbx</code></h3>
+<p class="card-text">This isn't necessary, but you may prefer to call your database something else. If you do, follow these steps:</p>
+<ol>
+<li>Edit the trigger <em>"Open other databases from personal.kdbx"</em></li>
+<li>Select the tab <em>"Events"</em></li>
+<li>Change the <em>File/URL</em> comparison to fit your needs</li>
+<li>Select the tab "Actions"</li>
+<li>Change <em>"Activate database (select tab)"</em> to the name of your database</li>
+</ol>
+<h2>Caveats</h2>
+<ul>
+<li>Before closing KeePass, always select your personal database first.
+  The next time you open KeePass, it will ask for the password of your personal database.</li>
+<li>When opening multiple databases, make sure to use <em>"Activate database (select tab)"</em> after
+  you have opened a database to <strong>switch back</strong> to your personal database. Otherwise, the newly
+  opened database will be active.
+  <a href="https://keepass.info/help/base/fieldrefs.html#syntax">References</a> always refer to the
+  active database!</li>
+<li>When syncing with multiple databases on close, you may also need to <strong>switch back</strong> to the
+  personal database after you synced another one. The behaviour which tab gets selected is
+  a bit clunky.</li>
+</ul>
+                    </article>
+                    
+                    
+                    
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-2 justify-content-md-center d-sm-none">
+    <div class="col col-sm-12 col-md-6 col-lg-4 text-muted text-light">
+        
+            
+        
+    </div>
+</div>
+<hr>
+<div class="row" id="pageFooter">
+    <div class="col">
+        
+        
+        
+    </div>
+</div>
+    
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    
+        <script src="/static/js/copy-to-clipboard.js"></script>
+    
+
+</body>
+</html>

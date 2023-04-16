@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Quiz - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Quiz for coders">
+    <meta property="og:description" content="Quiz for coders">
+    <meta property="og:title" content="soerface&#39; Blog">
+    <meta property="og:image" content="/static/img/profile_photo.jpg">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    <link rel="stylesheet" href="/quiz/static/quiz.css"/>
+
+</head>
+<body class="bg-dark">
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">soerface</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/blog/">Blog</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container" id="mainContent">
+    
+    <template id="empty-card">
+    <div class="card">
+        <div class="card-body"></div>
+    </div>
+</template>
+
+<template id="empty-header-card">
+    <div class="card">
+        <div class="card-header"></div>
+        <div class="card-body"></div>
+    </div>
+</template>
+
+<template id="question-details">
+    <div>
+        <div class="row">
+            <div class="col col-md-6 question">
+                <h3 class="text-light">Question</h3>
+                <div class="card">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+            <div class="col col-md-6 answer">
+                <h3 class="text-light">Answer</h3>
+                <div class="card">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center m-3 action-buttons">
+            <button class="btn btn-lg btn-outline-light back">‹ Back</button>
+            <div class="btn-group ml-3">
+                <button class="btn btn-lg points-teamA">Points for Team A</button>
+                <button class="btn btn-lg show-answer">Show Answer</button>
+                <button class="btn btn-lg points-teamB">Points for Team B</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="category-overview">
+    <div class="row">
+        <div class="col col-md-2 points d-flex flex-column align-content-around text-center"></div>
+        <div class="col col-md-10 quiz-cards"></div>
+    </div>
+</template>
+
+<template id="screen-select-info">
+    <h2 class="text-light">Select a quiz at <a href="/quiz/" target="_blank">https://soerface.de/quiz/</a> </h2>
+</template>
+    <noscript>
+        <div class="alert alert-danger">
+            The quiz won't work with your current browser configuration. Please <strong>enable JavaScript</strong>!
+        </div>
+    </noscript>
+    <div class="row text-light">
+        <div class="col-sm-8">
+            <h1>Quiz</h1>
+        </div>
+        <div class="col-sm-4 text-right">
+            <button class="btn btn-outline-danger" id="reset-quiz">Reset everything</button>
+        </div>
+    </div>
+    <div class="row text-light" id="configurator-settings">
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="quiz-select-box" class="col-form-label col-sm-4">Choose the quiz</label>
+                <div class="col-sm-8">
+                    <select class="custom-select" id="quiz-select-box">
+                        <option hidden disabled selected>Select a quiz</option>
+                        
+                            <option value="/quiz/data/foobar-quiz-3000.json">Foo Bar Quiz 3000</option>
+                        
+                            <option value="/quiz/data/code-review-2021.json">Code Review 2021</option>
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row d-none" id="two-screens-help">
+                <label class="col-form-label col-sm-4">You need at least two screens</label>
+                <div class="col-sm-8">
+                    <p>Open a second window which will contain the slides.
+                        It is meant for your audience, so move it to a big screen:
+                    </p>
+                    <button data-url="/quiz/screen/" id="open-screen"
+                            class="btn btn-outline-light">
+                        Open Window for 2nd Screen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="quiz-content"></div>
+
+
+    
+<pre id="debug-output" class="d-none text-light"></pre>
+
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    <script src="/quiz/static/quiz_common.js"></script>
+    <script src="/quiz/static/quiz_controller.js"></script>
+
+</body>
+</html>

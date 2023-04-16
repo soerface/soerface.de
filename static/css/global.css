@@ -1,0 +1,135 @@
+#mainContent {
+    margin-top: 1rem;
+}
+
+#pageFooter {
+    font-size: small;
+    color: #5a6268;
+}
+
+blockquote {
+    border-left: 8px solid #bbc0c4;
+    font-style: italic;
+    color: var(--gray);
+    padding-left: 1em;
+    background-color: var(--light);
+}
+
+p a {
+    color: #212569;
+    text-decoration: none;
+    border-bottom: 1px dotted #212569;
+    transition: color 0.5s, border-bottom 0.5s;
+}
+
+p a:hover {
+    color: #2125f9;
+    text-decoration: none;
+    border-bottom: 1px solid #2125f9;
+    transition: color 0.5s, border-bottom 0.5s;
+}
+
+h2, h3 {
+    margin-top: 1em;
+}
+
+.copy-to-clipboard {
+    display: none;
+}
+
+#pageFooter a {
+    color: #1d2124;
+}
+
+.card-title a, .card-title a:hover {
+    color: #212529;
+    text-decoration: none;
+}
+
+.full_article .teaser {
+    font-style: italic;
+    color: #5a6268;
+    margin-bottom: 1em;
+}
+
+.codehilite {
+    padding: 0.3em;
+    font-size: 10pt;
+}
+
+.codehilite, video {
+    margin-bottom: 1em;
+}
+
+pre {
+    font-family: JetBrainsMono, monospace;
+}
+
+.codehilite pre {
+    margin-bottom: 0;
+}
+
+.btn-social-media {
+    width: 2.7em;
+    height: 2.5em;
+}
+
+article img, .codehilite, article video {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+article a[href*="github.com"]::before {
+    content: "\f09b";
+    font-family: "Font Awesome 5 Brands";
+    margin-right: 0.2em;
+}
+
+article a[href*="stackoverflow.com"]::before {
+    content: "\f16c";
+    font-family: "Font Awesome 5 Brands";
+    margin-right: 0.2em;
+}
+
+article a::before {
+    color: #000000;
+}
+
+article img {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    /* This little grey background is useful for screenshots of round-cornered window borders.
+       Combined with the image shadow, a white background would leave a little, sharp edge.
+    */
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn.github:hover {
+    background-color: #000000;
+}
+
+.btn.stackoverflow:hover {
+    background-color: #f48024;
+    border-color: #9e5217;
+}
+
+.btn.gitlab:hover {
+    background-color: #fa7035;
+    border-color: #9e431c;
+}
+
+.btn.mastodon:hover {
+    background-color: #191b22;
+    border-color: #111318;
+}
+
+.btn.telegram:hover {
+    background-color: #0088cc;
+    border-color: #00699d;
+}
+
+.btn.linkedin:hover {
+    background-color: #0073b1;
+    border-color: #003c5d;
+}

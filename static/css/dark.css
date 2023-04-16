@@ -1,0 +1,35 @@
+@media (prefers-color-scheme: dark) {
+    /*
+    :root {
+        --image-filter: grayscale(100%);
+    }
+
+    img:not([src*=".svg"]) {
+        filter: var(--image-filter);
+    }*/
+    .bg-dark {
+        background-color: #2d3237 !important;
+    }
+
+    body, .card-title a, .card-title a:hover {
+        color: #cecece;
+    }
+
+    p a {
+        color: #ceceee;
+        border-color: #ceceee;
+    }
+
+    p a:hover {
+        color: #8890EE;
+        border-color: #8890EE;
+    }
+
+    article a::before {
+        color: #cecece;
+    }
+
+    .card {
+        background-color: #2d2d2d;
+    }
+}

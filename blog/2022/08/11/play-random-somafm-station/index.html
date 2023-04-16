@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Play SomaFM from shell - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Simple shell alias to play your favorite internet radio.">
+    <meta property="og:description" content="Simple shell alias to play your favorite internet radio.">
+    <meta property="og:title" content="Play SomaFM from shell">
+    <meta property="og:image" content="/static/img/profile_photo.jpg">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    
+
+</head>
+<body class="bg-dark">
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">soerface</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/blog/">Blog</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container" id="mainContent">
+    
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="card full_article">
+                <div class="card-header">
+                    <small class="text-muted">Published on: 2022-08-11</small>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">Play SomaFM from shell</h1>
+                    <div class="teaser"><p class="card-text">Simple shell alias to play your favorite internet radio.</p></div>
+                    <article>
+                        <p class="card-text">Here is a simple shell script that allows you to simply play SomaFM stations from the command line.
+If you don't choose a station, it will automatically pick one at random.</p>
+<p class="card-text">It will also check if a 256k stream is available and play that instead of the standard 128k.</p>
+<p class="card-text">Requirements:</p>
+<ul>
+<li><code>mpv</code></li>
+<li><code>curl</code></li>
+</ul>
+<p class="card-text">Usage:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>soma<span class="w"> </span>--list<span class="w">         </span><span class="c1"># print all stations</span>
+$<span class="w"> </span>soma<span class="w"> </span>&lt;STATION_NAME&gt;<span class="w"> </span><span class="c1"># play particular station</span>
+$<span class="w"> </span>soma<span class="w">                </span><span class="c1"># play a random station</span>
+</code></pre></div>
+
+
+<p class="card-text">To use it, put this in your <code>~/.bashrc</code> or <code>~/.zshrc</code> file:</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="k">function</span><span class="w"> </span>soma<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="si">${</span><span class="nv">1</span><span class="p">+x</span><span class="si">}</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nv">radio</span><span class="o">=</span><span class="k">$(</span>shuf<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nv">$HOME</span>/dotfiles/soma-radios<span class="k">)</span><span class="p">;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nv">radio</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$radio</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;--list&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>cat<span class="w"> </span><span class="nv">$HOME</span>/dotfiles/soma-radios<span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">fi</span><span class="p">;</span>
+<span class="w">    </span><span class="nv">url</span><span class="o">=</span><span class="s2">&quot;https://somafm.com/</span><span class="nv">$radio</span><span class="s2">.pls&quot;</span>
+<span class="w">    </span><span class="nv">url256</span><span class="o">=</span><span class="s2">&quot;https://somafm.com/</span><span class="si">${</span><span class="nv">radio</span><span class="si">}</span><span class="s2">256.pls&quot;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>curl<span class="w"> </span>--head<span class="w"> </span>--silent<span class="w"> </span>--fail<span class="w"> </span><span class="nv">$url256</span><span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>mpv<span class="w"> </span><span class="nv">$url256</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span>mpv<span class="w"> </span><span class="nv">$url</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+</code></pre></div>
+
+
+</div>
+
+<p class="card-text">And also put the <a href="https://somafm.com/#alpha">list of stations</a> in <code>$HOME/dotfiles/soma-radios</code>.</p>
+<div style="height: 10em; overflow: auto; margin: 1em 0;">
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code>7soul
+beatblender
+bootliquor
+brfm
+cliqhop
+covers
+darkzone
+deepspaceone
+defcon
+digitalis
+dronezone
+dubstep
+fluid
+folkfwd
+groovesalad
+gsclassic
+illstreet
+indiepop
+live
+lush
+metal
+missioncontrol
+n5md
+poptron
+reggae
+scanner
+secretagent
+seventies
+sf1033
+sonicuniverse
+spacestation
+specials
+suburbsofgoa
+synphaera
+thetrip
+thistle
+u80s
+vaporwaves
+</code></pre></div>
+
+
+</div>
+
+<p class="card-text">Do not save the file with a trailing newline – otherwise you might play the radio station <em>"empty string"</em>.</p>
+<p class="card-text">Don't forget to <a href="https://somafm.com/support/">support SomaFM</a>!</p>
+                    </article>
+                    
+                    
+                    
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-2 justify-content-md-center d-sm-none">
+    <div class="col col-sm-12 col-md-6 col-lg-4 text-muted text-light">
+        
+            
+        
+    </div>
+</div>
+<hr>
+<div class="row" id="pageFooter">
+    <div class="col">
+        
+        
+        
+    </div>
+</div>
+    
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    
+        <script src="/static/js/copy-to-clipboard.js"></script>
+    
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+.col.quiz-cards .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1rem;
+}
+
+.col.quiz-cards .clickable {
+    cursor: pointer;
+}
+
+.col.quiz-cards .category.card, .card.expand {
+    font-size: 3vh;
+    width: 100%;
+}
+
+.card.expand .codehilite {
+    font-size: unset;
+}
+
+.col.quiz-cards .category.card {
+    font-weight: bold;
+}
+
+.col.quiz-cards .category.card > .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.col.quiz-cards .card-title {
+    height: 100%;
+    text-align: center;
+}
+
+.col.points .card {
+    flex: 1;
+}
+
+.col.points .card:first-child {
+    margin-bottom: 0.5rem;
+}
+
+.col.points .card:last-child {
+    margin-top: 0.5rem;
+}
+
+.col.points .card-body {
+    font-size: 2vh;
+    background: var(--light);
+    text-align: left;
+}
+
+.col.points .card-header {
+    font-size: 3vh;
+}
+
+.category.card.visited {
+    background: linear-gradient(45deg,
+        #fafafa 85%,
+        var(--gray) 85% 90%,
+        #fafafa 90%);
+    border: 1px solid var(--gray)
+}
+
+.card.scored-by-teamA {
+    background: linear-gradient(45deg,
+        #fefbfb 85%,
+        var(--danger) 85% 90%,
+        #fefbfb 90%) !important;
+    border: 1px solid var(--danger) !important;
+    box-shadow: 0 0 15px var(--danger);
+}
+
+.card.scored-by-teamB {
+    background: linear-gradient(45deg,
+        #fafefe 85%,
+        var(--info) 85% 90%,
+        #fafefe 90%) !important;
+    border: 1px solid var(--info) !important;
+    box-shadow: 0 0 15px var(--info);
+}

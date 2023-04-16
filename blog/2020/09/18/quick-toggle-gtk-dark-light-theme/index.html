@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Quick toggle your GTK theme between light and dark - soerface</title>
+    <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/pygments.css" rel="stylesheet">
+    <link href="/static/JetBrainsMono-1.0.2/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/bootstrap-4.3.1.min.css"/>
+    <link rel="stylesheet" href="/static/css/global.css"/>
+    <link rel="stylesheet" href="/static/css/dark.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Want to use both, dark and light theme, but need a simple way to toggle between them? Search no more.">
+    <meta property="og:description" content="Want to use both, dark and light theme, but need a simple way to toggle between them? Search no more.">
+    <meta property="og:title" content="Quick toggle your GTK theme between light and dark">
+    <meta property="og:image" content="/static/img/profile_photo.jpg">
+    
+<link rel="icon" type="image/svg+xml" sizes="any" href="/static/img/favicon.svg">
+
+    <meta name="msapplication-TileColor" content="#343a40">
+    <meta name="theme-color" content="#343a40">
+    
+    
+
+</head>
+<body class="bg-dark">
+
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">soerface</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/blog/">Blog</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container" id="mainContent">
+    
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="card full_article">
+                <div class="card-header">
+                    <small class="text-muted">Published on: 2020-09-18</small>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">Quick toggle your GTK theme between light and dark</h1>
+                    <div class="teaser"><p class="card-text">Want to use both, dark and light theme, but need a simple way to toggle between them? Search no more.</p></div>
+                    <article>
+                        <p class="card-text">I like dark themes - but I also like light themes. It all depends on the situation.
+Don't tell me it is enjoyable to code with a dark IDE while the sun is shining right at your display!</p>
+<p class="card-text">Therefore I was searching for a <em>quick toggle</em> between two themes. And it is actually pretty simple.
+Add this to your <code>~/.bashrc</code> or <code>~/.zshrc</code> for <strong>Linux Mint</strong> (with Cinnamon) or <strong>Ubuntu</strong> (with Gnome Shell / Unity):</p>
+<div>
+<button class="copy-to-clipboard"></button>
+
+<div class="codehilite"><pre><span></span><code><span class="k">function</span><span class="w"> </span>dark<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>lsb_release<span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s1">&#39;Linuxmint&#39;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.wm.preferences<span class="w"> </span>theme<span class="w"> </span><span class="s1">&#39;Mint-Y-Dark&#39;</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">&#39;Mint-Y-Dark&#39;</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.interface<span class="w"> </span>icon-theme<span class="w"> </span><span class="s1">&#39;Mint-Y-Dark&#39;</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.theme<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Mint-Y-Dark&#39;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>lsb_release<span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s1">&#39;Ubuntu&#39;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">&#39;Yaru-dark&#39;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+
+<span class="k">function</span><span class="w"> </span>light<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>lsb_release<span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s1">&#39;Linuxmint&#39;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.wm.preferences<span class="w"> </span>theme<span class="w"> </span><span class="s1">&#39;Mint-Y&#39;</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">&#39;Mint-Y&#39;</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.interface<span class="w"> </span>icon-theme<span class="w"> </span><span class="s1">&#39;Mint-Y&#39;</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.theme<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Mint-Y&#39;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>lsb_release<span class="w"> </span>-i<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s1">&#39;Ubuntu&#39;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">&#39;Yaru&#39;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+</code></pre></div>
+
+
+</div>
+
+<p class="card-text">Now open a new terminal and just type <code>light</code> or <code>dark</code>!</p>
+<video width="100%" autoplay loop muted>
+    <source src="toggle-cli.mp4" type="video/mp4">
+</video>
+
+<hr />
+<p class="card-text">I've got the idea from the Linux Mint welcome screen. It has a neat toggle for dark and light, but I didn't find any
+taskbar widget or something like that, so I took a quick look in the
+<a href="https://github.com/linuxmint/mintwelcome/blob/a2cb7ee48cb21c65f2fc96ea6c3953d0a43f3846/usr/lib/linuxmint/mintwelcome/mintwelcome.py#L271">source code of the welcome screen</a>.
+It was embarrassingly easy, just changing some GTK options with <code>gsettings</code> should have come to my mind earlier.
+But here are the options for you to simply copy and paste them, allowing you to change the theme easily with a single command.</p>
+<video width="100%" autoplay loop muted>
+    <source src="toggle-welcome-screen.mp4" type="video/mp4">
+</video>
+
+<p class="card-text">Enjoy!</p>
+                    </article>
+                    
+                    
+                    
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-2 justify-content-md-center d-sm-none">
+    <div class="col col-sm-12 col-md-6 col-lg-4 text-muted text-light">
+        
+            
+        
+    </div>
+</div>
+<hr>
+<div class="row" id="pageFooter">
+    <div class="col">
+        
+        
+        
+    </div>
+</div>
+    
+</div>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+
+
+    
+        <script src="/static/js/copy-to-clipboard.js"></script>
+    
+
+</body>
+</html>
