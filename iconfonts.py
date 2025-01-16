@@ -107,143 +107,93 @@ Use it in any personal or commercial project you want.
 
 import markdown
 import re
+from xml.etree.ElementTree import Element
 
 
 class IconFontsExtension(markdown.Extension):
     """IconFonts Extension for Python-Markdown."""
 
-    def __init__(self, *args, **kwargs):
-
-        # define default configs
+    def __init__(self, **kwargs):
+        # Define default configs
         self.config = {
             "prefix": ["icon-", "Custom class prefix."],
             "base": ["", "Base class added to each icon"],
             "prefix_base_pairs": [{}, "Prefix/base pairs"],
         }
+        # Set user configurations
+        super().__init__(**kwargs)
 
-        # Override defaults with user settings
-        # This is legacy code for versions older than 2.5.1.
-        if len(args):
-            for key, value in args[0]:
-                # convert strings to booleans
-                if value == "True":
-                    value = True
-                if value == "False":
-                    value = False
-                if value == "None":
-                    value = None
+    def add_inline(self, md, name, klass, pattern, config):
+        # compiled_pattern = re.compile(pattern)
+        processor = klass(pattern, md, config)
+        md.inlinePatterns.register(processor, name, 175)
 
-                self.setConfig(key, value)
-
-        # Override defaults with user settings
-        # This is not legacy code but is used instead of the super call below because we have to support the legacy version
-        if hasattr(self, "setConfigs"):
-            self.setConfigs(kwargs)
-
-        # We can use this instead of the legacy for loop to set the config above
-        # super(IconFontsExtension, self).__init__(*args, **kwargs)
-
-    def add_inline(self, md, name, klass, re, config):
-        pattern = klass(re, md, config)
-        md.inlinePatterns.add(name, pattern, "<reference")
-
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md):
         config = self.getConfigs()
-        # print("config" + str(config))
 
-        # Change prefix to what they had the in the config
-        # Capture "&icon-namehere;" or "&icon-namehere:2x;" or "&icon-namehere:2x,muted;"
-        # https://www.debuggex.com/r/weK9ehGY0HG6uKrg
+        # Define the regex for icons
         prefix = config["prefix"]
         icon_regex_start = r"&"
-        icon_regex_end = r"(?P<name>[a-zA-Z0-9-]+)(:(?P<mod>[a-zA-Z0-9-]+(,[a-zA-Z0-9-]+)*)?(:(?P<user_mod>[a-zA-Z0-9-]+(,[a-zA-Z0-9-]+)*)?)?)?;"
-        #                  ^---------------------^^ ^                    ^--------------^ ^ ^ ^                         ^--------------^ ^ ^ ^
-        #                                         | +-------------------------------------+ | +------------------------------------------+ | |
-        #                                         |                                         +----------------------------------------------+ |
-        #                                         +------------------------------------------------------------------------------------------+
-        # This is the full regex we use. Only reason we have pieces above is to easily change the prefix to something custom
+        icon_regex_end = (
+            r"(?P<name>[a-zA-Z0-9-]+)"
+            r"(:(?P<mod>[a-zA-Z0-9-]+(,[a-zA-Z0-9-]+)*)?)?"
+            r"(:(?P<user_mod>[a-zA-Z0-9-]+(,[a-zA-Z0-9-]+)*)?)?;"
+        )
         icon_regex = "".join([icon_regex_start, prefix, icon_regex_end])
 
-        # Register the global one
+        # Register the global pattern
         self.add_inline(md, "iconfonts", IconFontsPattern, icon_regex, config)
 
-        # Register each of the pairings
+        # Register each of the prefix/base pair patterns
         for _prefix, _base in config["prefix_base_pairs"].items():
-
-            _prefix_base = _prefix if _prefix[-1] != "-" else _prefix[:-1]
-
+            _prefix_base = _prefix.rstrip("-")
             icon_regex = "".join([icon_regex_start, _prefix, icon_regex_end])
-
             self.add_inline(
                 md,
-                "iconfonts_{}".format(_prefix_base),
+                f"iconfonts_{_prefix_base}",
                 IconFontsPattern,
                 icon_regex,
                 {"prefix": _prefix, "base": _base},
             )
 
 
-class IconFontsPattern(markdown.inlinepatterns.Pattern):
+class IconFontsPattern(markdown.inlinepatterns.InlineProcessor):
     def __init__(self, pattern, md, config):
-        # Pass the patterna and markdown instance
-        super(IconFontsPattern, self).__init__(pattern, md)
-
+        super().__init__(pattern)
+        self.md = md
         self.config = config
 
-    """ Return a <i> element with the necessary classes"""
-
-    def handleMatch(self, match):
-
-        # The dictionary keys come from named capture groups in the regex
+    def handleMatch(self, match, data):
         match_dict = match.groupdict()
 
         # Create the <i> element
-        el = markdown.util.etree.Element("i")
-
+        el = Element("i")
         base = self.config["base"]
         prefix = self.config["prefix"]
-
         icon_class_name = match_dict.get("name")
 
-        # Mods are modifier classes. The syntax in the markdown is:
-        # "&icon-namehere:2x;" and with multiple "&icon-spinner:2x,spin;"
-        mod_classes_string = ""
-        if match_dict.get("mod"):
-            # Make a string with each modifier like: "fa-2x fa-spin"
-            mod_classes_string = " ".join(
-                "{}{}".format(prefix, c) for c in match_dict.get("mod").split(",") if c
-            )
+        # Process modifier classes
+        mod_classes = [
+            f"{prefix}{c}" for c in (match_dict.get("mod") or "").split(",") if c
+        ]
+        mod_classes_string = " ".join(mod_classes)
 
-        # User mods are modifier classes that shouldn't be prefixed with
-        # prefix. The syntax in the markdown is:
-        # "&icon-namehere::red;" and with multiple "&icon-spinner::red,bold;"
-        user_mod_classes_string = ""
-        if match_dict.get("user_mod"):
-            # Make a string with each modifier like "red bold"
-            user_mod_classes_string = " ".join(
-                uc for uc in match_dict.get("user_mod").split(",") if uc
-            )
+        # Process user-defined modifier classes
+        user_mod_classes = [
+            c for c in (match_dict.get("user_mod") or "").split(",") if c
+        ]
+        user_mod_classes_string = " ".join(user_mod_classes)
 
-        if prefix != "":
-            icon_class = "{}{}".format(prefix, icon_class_name)
-        else:
-            icon_class = icon_class_name
+        # Final icon class
+        icon_class = f"{prefix}{icon_class_name}" if prefix else icon_class_name
+        classes = f"{base} {icon_class} {mod_classes_string} {user_mod_classes_string}".strip()
+        classes = re.sub(r"\s{2,}", " ", classes)  # Clean up whitespace
 
-        # Add the icon classes to the <i> element
-        classes = "{} {} {} {}".format(
-            base, icon_class, mod_classes_string, user_mod_classes_string
-        )
-
-        # Clean up classes
-        classes = classes.strip()
-        classes = re.sub(r"\s{2,}", " ", classes)
-
+        # Set attributes
         el.set("class", classes)
-        # This is for accessibility and text-to-speech browsers so they don't try to read it
         el.set("aria-hidden", "true")
-        return el
+        return el, match.start(), match.end()
 
 
-# http://pythonhosted.org/Markdown/extensions/api.html#makeextension
-def makeExtension(*args, **kwargs):
-    return IconFontsExtension(*args, **kwargs)
+def makeExtension(**kwargs):
+    return IconFontsExtension(**kwargs)

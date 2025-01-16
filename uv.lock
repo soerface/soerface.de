@@ -1,5 +1,5 @@
 version = 1
-requires-python = ">=3.13, <4"
+requires-python = ">=3.13"
 
 [[package]]
 name = "blinker"
@@ -196,11 +196,11 @@ wheels = [
 
 [[package]]
 name = "markdown"
-version = "3.2.2"
+version = "3.7"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/44/30/cb4555416609a8f75525e34cbacfc721aa5b0044809968b2cf553fd879c7/Markdown-3.2.2.tar.gz", hash = "sha256:1fafe3f1ecabfb514a5285fca634a53c1b32a81cb0feb154264d55bf2ff22c17", size = 299658 }
+sdist = { url = "https://files.pythonhosted.org/packages/54/28/3af612670f82f4c056911fbbbb42760255801b3068c48de792d354ff4472/markdown-3.7.tar.gz", hash = "sha256:2ae2471477cfd02dbbf038d5d9bc226d40def84b4fe2986e49b59b6b472bbed2", size = 357086 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/63/eaec2bd025ab48c754b55e8819af0f6a69e2b1e187611dd40cbbe101ee7f/Markdown-3.2.2-py3-none-any.whl", hash = "sha256:c467cd6233885534bf0fe96e62e3cf46cfc1605112356c4f9981512b8174de59", size = 88957 },
+    { url = "https://files.pythonhosted.org/packages/3f/08/83871f3c50fc983b88547c196d11cf8c3340e37c32d2e9d6152abe2c61f7/Markdown-3.7-py3-none-any.whl", hash = "sha256:7eb6df5690b81a1d7942992c97fad2938e956e79df20cbc6186e9c3a77b1c803", size = 106349 },
 ]
 
 [[package]]
@@ -418,7 +418,7 @@ requires-dist = [
     { name = "flask", specifier = ">=2.2,<3.0" },
     { name = "flask-wtf", specifier = ">=1.1.1,<2.0.0" },
     { name = "frozen-flask", specifier = ">=0.18,<1.0" },
-    { name = "markdown", specifier = "==3.2.2" },
+    { name = "markdown", specifier = "==3.7" },
     { name = "pygments", specifier = ">=2.14.0,<3.0.0" },
     { name = "pytest", specifier = ">=7.2.1,<8.0.0" },
     { name = "python-frontmatter", specifier = ">=1.0.0,<2.0.0" },
