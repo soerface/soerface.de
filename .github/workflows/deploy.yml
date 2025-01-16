@@ -40,7 +40,7 @@ jobs:
       id-token: write   # to verify the deployment originates from an appropriate sourc
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://soerface.de
 
     runs-on: ubuntu-latest
     steps:
