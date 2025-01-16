@@ -36,10 +36,8 @@ jobs:
       env:
         CNAME: soerface.de
     - name: Upload static files as artifact
-      id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
         path: build/
     - name: Deploy to GitHub Pages
-      id: deployment
       uses: actions/deploy-pages@v4
