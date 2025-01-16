@@ -7,24 +7,23 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: Setup python
-      uses: actions/setup-python@v1
+      uses: actions/setup-uv@v5
       with:
-        python-version: "3.10"
-        architecture: x64
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
+        enable-cache: true
+    - name: Install Python
+      run: uv python install
     - name: Install dependencies
-      run: poetry install
-    - name: Run stylecheck
-      run: poetry run flake8 .
+      run: uv sync
+    - name: Run hooks
+      run: uv run pre-commit run --all-files
     - name: Run tests
-      run: GITHUB_REPOSITORY="" poetry run pytest
+      run: GITHUB_REPOSITORY="" uv run pytest
     - name: Build static version
-      run: poetry run python freeze.py
+      run: uv run python freeze.py
       env:
         CNAME: soerface.de
     - name: Deploy to GitHub Pages

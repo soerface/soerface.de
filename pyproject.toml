@@ -1,29 +1,37 @@
-[tool.poetry]
-name = "soerface-de"
-version = "0.1.0"
-description = ""
-authors = ["Soeren Wegener"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-Flask = "^2.2"
-Frozen-Flask = "^0.18"
-Markdown = "==3.2.2"
-python-frontmatter = "^1.0.0"
-pytest = "^7.2.1"
-pygments = "^2.14.0"
-flake8 = "^6.0.0"
-flask-wtf = "^1.1.1"
-python-slugify = "^7.0.0"
-requests = "^2.28.2"
-
-
+[tool.pdm.build]
+includes = []
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 [tool.pytest.ini_options]
 pythonpath = [
   "."
+]
+
+[project]
+authors = [
+    {name = "Soeren Wegener"},
+]
+requires-python = "~=3.13"
+dependencies = [
+    "Flask<3.0,>=2.2",
+    "Frozen-Flask<1.0,>=0.18",
+    "Markdown==3.2.2",
+    "python-frontmatter<2.0.0,>=1.0.0",
+    "pytest<8.0.0,>=7.2.1",
+    "pygments<3.0.0,>=2.14.0",
+    "flake8<7.0.0,>=6.0.0",
+    "flask-wtf<2.0.0,>=1.1.1",
+    "python-slugify<8.0.0,>=7.0.0",
+    "requests<3.0.0,>=2.28.2",
+]
+name = "soerface-de"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
 ]

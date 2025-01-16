@@ -166,7 +166,7 @@ To use it for your own databases, you need to change a couple of things:
     - Password must contain a **[reference](https://keepass.info/help/base/fieldrefs.html#syntax)** to
       the password field in your personal.kdbx database. Replace **B2B...389** with the **UUID** of your
       password entry.
-      
+
 ### Syncing a database other than `~/shared_storage/shared.kdbx`
 
 1. Edit or copy the trigger *"Sync shared.kdbx on close"*

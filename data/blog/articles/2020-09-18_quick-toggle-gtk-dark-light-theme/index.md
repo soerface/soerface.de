@@ -38,7 +38,7 @@ function light {
         gsettings set org.gnome.desktop.interface gtk-theme 'Yaru'
     fi
 }
-``` 
+```
 </div>
 
 Now open a new terminal and just type `light` or `dark`!

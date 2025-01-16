@@ -2,7 +2,18 @@ import re
 from pathlib import Path
 
 import requests
-from flask import Blueprint, render_template, Markup, escape, url_for, send_file, abort, request, redirect, current_app
+from flask import (
+    Blueprint,
+    render_template,
+    Markup,
+    escape,
+    url_for,
+    send_file,
+    abort,
+    request,
+    redirect,
+    current_app,
+)
 from wtforms import StringField, TextAreaField, validators
 from slugify import slugify
 from flask_wtf import FlaskForm
@@ -15,12 +26,12 @@ from iconfonts import IconFontsExtension
 
 ARTICLE_BASE_PATH = env.DATA_PATH / "blog/articles"
 
-bp = Blueprint('blog', __name__, url_prefix='/blog', template_folder='templates')
+bp = Blueprint("blog", __name__, url_prefix="/blog", template_folder="templates")
 
 
 def add_class_to_tag(text, tag, class_name):
     # TODO: poor mans replacing, add a proper html parser
-    return text.replace(f'<{tag}>', f'<{tag} class="{class_name}">')
+    return text.replace(f"<{tag}>", f'<{tag} class="{class_name}">')
 
 
 def load_article(path: Path):
@@ -28,23 +39,27 @@ def load_article(path: Path):
     if not index_md.exists():
         generate_example_article(path)
     article = frontmatter.load(index_md)
-    date_string, _, slug = path.name.partition('_')
-    article.metadata['date'] = datetime.strptime(date_string, '%Y-%m-%d')
-    article.metadata['slug'] = slug
-    article.metadata['href'] = url_for('blog.article_detail',
-                                       year=article.metadata['date'].year,
-                                       month=f'{article.metadata["date"].month:02}',
-                                       day=f'{article.metadata["date"].day:02}',
-                                       slug=article.metadata['slug']
-                                       )
-    article.metadata['media'] = [
-        url_for('blog.article_media',
-                year=article.metadata['date'].year,
-                month=f'{article.metadata["date"].month:02}',
-                day=f'{article.metadata["date"].day:02}',
-                slug=article.metadata['slug'],
-                filename=x.name
-                ) for x in path.glob('*')]
+    date_string, _, slug = path.name.partition("_")
+    article.metadata["date"] = datetime.strptime(date_string, "%Y-%m-%d")
+    article.metadata["slug"] = slug
+    article.metadata["href"] = url_for(
+        "blog.article_detail",
+        year=article.metadata["date"].year,
+        month=f'{article.metadata["date"].month:02}',
+        day=f'{article.metadata["date"].day:02}',
+        slug=article.metadata["slug"],
+    )
+    article.metadata["media"] = [
+        url_for(
+            "blog.article_media",
+            year=article.metadata["date"].year,
+            month=f'{article.metadata["date"].month:02}',
+            day=f'{article.metadata["date"].day:02}',
+            slug=article.metadata["slug"],
+            filename=x.name,
+        )
+        for x in path.glob("*")
+    ]
     if teaser := article.metadata.get("teaser"):
         card_text = markdown(escape(teaser))
         # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
@@ -54,32 +69,34 @@ def load_article(path: Path):
     # Available extensions at https://python-markdown.github.io/extensions/
     # WARNING: Markdown does not get escaped! We have more issues when escaping it, and having html inside our
     # markdown files can be quite useful...
-    content = markdown(article.content, extensions=[
-        'markdown.extensions.extra',
-        'markdown.extensions.codehilite',
-        IconFontsExtension(prefix='fa-', base='fab')
-    ]).replace('class="fab amp;fa-', 'class="fab fa-')
-    content = add_class_to_tag(content, 'p', 'card-text')
+    content = markdown(
+        article.content,
+        extensions=[
+            "markdown.extensions.extra",
+            "markdown.extensions.codehilite",
+            IconFontsExtension(prefix="fa-", base="fab"),
+        ],
+    ).replace('class="fab amp;fa-', 'class="fab fa-')
+    content = add_class_to_tag(content, "p", "card-text")
     # frontmatter.dump(article, path)
-    return {
-        'metadata': article.metadata,
-        'content': Markup(content)
-    }
+    return {"metadata": article.metadata, "content": Markup(content)}
 
 
 def get_article_path(year, month, day, slug) -> Path:
-    return ARTICLE_BASE_PATH / f'{year}-{month}-{day}_{slug}'
+    return ARTICLE_BASE_PATH / f"{year}-{month}-{day}_{slug}"
 
 
 def load_article_list():
-    paths = ARTICLE_BASE_PATH.glob('*')
+    paths = ARTICLE_BASE_PATH.glob("*")
     # TODO: this can throw index errors if a directory does not contain a date
-    sorted_paths = sorted(paths, key=lambda x: re.findall(r'\d{4}-\d{2}-\d{2}', x.name)[0])[::-1]
+    sorted_paths = sorted(
+        paths, key=lambda x: re.findall(r"\d{4}-\d{2}-\d{2}", x.name)[0]
+    )[::-1]
     return sorted_paths
 
 
 def generate_example_article(path: Path):
-    _, _, slug = path.name.partition('_')
+    _, _, slug = path.name.partition("_")
     title = slug.replace("-", " ").capitalize()
     return generate_article(
         path,
@@ -90,11 +107,10 @@ def generate_example_article(path: Path):
 
 
 def generate_article(path: Path, content, title=None, teaser=None):
-    md = render_template("article_template.md", article={
-        "title": title,
-        "teaser": teaser,
-        "content": content
-    })
+    md = render_template(
+        "article_template.md",
+        article={"title": title, "teaser": teaser, "content": content},
+    )
     path.mkdir(parents=True, exist_ok=True)
     with open(path / "index.md", "w") as f:
         f.write(md)
@@ -130,14 +146,18 @@ def index():
             now = datetime.now()
             slug = slugify(title)
             path = ARTICLE_BASE_PATH / f'{now.strftime("%Y-%m-%d")}_{slug}'
-            generate_article(path, form.content.data, title=title, teaser=form.teaser.data)
-            return redirect(url_for(
-                "blog.article_detail",
-                year=now.year,
-                month=f"{now.month:02}",
-                day=f"{now.day:02}",
-                slug=slug
-            ))
+            generate_article(
+                path, form.content.data, title=title, teaser=form.teaser.data
+            )
+            return redirect(
+                url_for(
+                    "blog.article_detail",
+                    year=now.year,
+                    month=f"{now.month:02}",
+                    day=f"{now.day:02}",
+                    slug=slug,
+                )
+            )
     articles = [load_article(x) for x in load_article_list()]
     description = "Occasionally sharing things I learned"
     return render_template(
@@ -150,13 +170,13 @@ def index():
         meta_properties={
             "og:description": description,
             "og:title": "soerface' Blog",
-            "og:image": url_for("static", filename="img/profile_photo.jpg")
+            "og:image": url_for("static", filename="img/profile_photo.jpg"),
         },
         form=form,
     )
 
 
-@bp.route('/<year>/<month>/<day>/<string:slug>/')
+@bp.route("/<year>/<month>/<day>/<string:slug>/")
 def article_detail(year, month, day, slug):
     path = get_article_path(year, month, day, slug)
     article = load_article(path)
@@ -164,9 +184,11 @@ def article_detail(year, month, day, slug):
     teaser = article["metadata"].get("teaser")
     if teaser and teaser[-1] == "\n":
         teaser = teaser[:-1]
-    image_url = article["metadata"].get("image", url_for("static", filename="img/profile_photo.jpg"))
+    image_url = article["metadata"].get(
+        "image", url_for("static", filename="img/profile_photo.jpg")
+    )
     return render_template(
-        'blog/article_detail.html',
+        "blog/article_detail.html",
         article=article,
         page_title=title,
         meta={
@@ -176,11 +198,11 @@ def article_detail(year, month, day, slug):
             "og:description": teaser,
             "og:title": title,
             "og:image": image_url,
-        }
+        },
     )
 
 
-@bp.route('/<year>/<month>/<day>/<string:slug>/<path:filename>')
+@bp.route("/<year>/<month>/<day>/<string:slug>/<path:filename>")
 def article_media(year, month, day, slug, filename):
     path = get_article_path(year, month, day, slug)
     try:

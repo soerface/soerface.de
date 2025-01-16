@@ -57,5 +57,5 @@ def main():
         tmp_path.rename(freezer.root)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

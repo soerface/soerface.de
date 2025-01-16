@@ -16,7 +16,9 @@ talks = [
         "name": dirname.name.partition("_")[2],
         "path": str(dirname.relative_to(env.DATA_PATH / "talks")),
         "date": datetime.strptime(dirname.name.partition("_")[0], "%Y-%m-%d"),
-    } for dirname in (env.DATA_PATH / "talks").iterdir() if dirname.is_dir()
+    }
+    for dirname in (env.DATA_PATH / "talks").iterdir()
+    if dirname.is_dir()
 ]
 
 
