@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -26,26 +26,24 @@ jobs:
       run: uv run python freeze.py
       env:
         CNAME: soerface.de
+    - name: Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: build/
+
+  deploy:
+    needs: build
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate sourc
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+  runs-on: ubuntu-latest
+  steps:
     - name: Deploy to GitHub Pages
-      env:
-        # secrets.GITHUB_TOKEN is always available by default
-        # however, using it does not trigger a github pages build
-        # issue: https://github.community/t5/GitHub-Actions/Github-action-not-triggering-gh-pages-upon-push/td-p/26869
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # as long as the issue is not fixed, we need a custom token which
-        # you need to enter manually
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      run: |
-        git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
-        git config --global user.name "$GITHUB_ACTOR"
-        export REMOTE=$(git config remote.origin.url)
-        git checkout --orphan gh-pages
-        rsync -a \
-          --filter='P build' \
-          --filter='P .git/' \
-          --delete-excluded \
-          build/ .
-        rm -rf build/
-        git add -A
-        git commit -m "GitHub Actions build $(date -Iseconds)"
-        git push -fq "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" gh-pages
+      id: deployment
+      uses: actions/deploy-pages@v4
