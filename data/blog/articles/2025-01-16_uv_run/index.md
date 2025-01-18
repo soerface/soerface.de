@@ -7,7 +7,7 @@ scripts:
 No need anymore to use virtualenvs to quickly try a package out. Use:
 
 ```
-uv run --python 3.12 --with pandas ipython
+uv run --python 3.12 --with pandas python
 ```
 
 Via [https://valatka.dev/2025/01/12/on-killer-uv-feature.html](https://valatka.dev/2025/01/12/on-killer-uv-feature.html).
