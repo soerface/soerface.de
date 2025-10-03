@@ -1,25 +1,27 @@
 import re
 from pathlib import Path
+from urllib.parse import urlparse
+from datetime import datetime
 
+import frontmatter
 import requests
+from bs4 import BeautifulSoup
 from flask import (
     Blueprint,
-    render_template,
     Markup,
-    escape,
-    url_for,
-    send_file,
     abort,
-    request,
-    redirect,
     current_app,
+    escape,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
 )
-from wtforms import StringField, TextAreaField, validators
-from slugify import slugify
 from flask_wtf import FlaskForm
 from markdown import markdown
-import frontmatter
-from datetime import datetime
+from slugify import slugify
+from wtforms import StringField, TextAreaField, validators
 
 import env
 from iconfonts import IconFontsExtension
@@ -27,6 +29,22 @@ from iconfonts import IconFontsExtension
 ARTICLE_BASE_PATH = env.DATA_PATH / "blog/articles"
 
 bp = Blueprint("blog", __name__, url_prefix="/blog", template_folder="templates")
+
+
+def open_external_links_in_new_tab(html_content, domain="soerface.de"):
+    """
+    Parses the given HTML content, finds all anchor tags, and adds
+    target="_blank" to links pointing to a different domain.
+    """
+    soup = BeautifulSoup(html_content, "html.parser")
+    for a_tag in soup.find_all("a", href=True):
+        href = a_tag.get("href")
+        # Ensure the link is an absolute URL before parsing the domain
+        if href and href.startswith(("http://", "https://")):
+            parsed_url = urlparse(href)
+            if parsed_url.netloc != domain:
+                a_tag["target"] = "_blank"
+    return str(soup)
 
 
 def add_class_to_tag(text, tag, class_name):
@@ -65,6 +83,7 @@ def load_article(path: Path):
         # markdown() returns a paragraph. Paragraphs in a card should have the "card-text" class for better styling,
         # so we hack it in here
         card_text = add_class_to_tag(card_text, "p", "card-text")
+        card_text = open_external_links_in_new_tab(card_text)
         article.metadata["html_teaser"] = Markup(card_text)
     # Available extensions at https://python-markdown.github.io/extensions/
     # WARNING: Markdown does not get escaped! We have more issues when escaping it, and having html inside our
@@ -77,6 +96,10 @@ def load_article(path: Path):
             IconFontsExtension(prefix="fa-", base="fab"),
         ],
     ).replace('class="fab amp;fa-', 'class="fab fa-')
+
+    # Add target="_blank" to all external links
+    content = open_external_links_in_new_tab(content)
+
     content = add_class_to_tag(content, "p", "card-text")
     # frontmatter.dump(article, path)
     return {"metadata": article.metadata, "content": Markup(content)}
