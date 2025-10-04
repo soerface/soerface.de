@@ -11,6 +11,7 @@ dependencies = [
     "flask-wtf>=1.2.2",
     "frozen-flask>=1.0.2",
     "markdown>=3.9",
+    "pre-commit>=4.3.0",
     "pygments>=2.19.2",
     "pytest>=8.4.2",
     "python-frontmatter>=1.1.0",
