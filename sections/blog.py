@@ -8,10 +8,8 @@ import requests
 from bs4 import BeautifulSoup
 from flask import (
     Blueprint,
-    Markup,
     abort,
     current_app,
-    escape,
     redirect,
     render_template,
     request,
@@ -20,6 +18,7 @@ from flask import (
 )
 from flask_wtf import FlaskForm
 from markdown import markdown
+from markupsafe import Markup, escape
 from slugify import slugify
 from wtforms import StringField, TextAreaField, validators
 

@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from flask import Flask, render_template, request, Markup
+from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
+from markupsafe import Markup
 
 import env
 from sections import blog, quiz, talks
