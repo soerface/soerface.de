@@ -114,9 +114,9 @@ article img {
     border-color: #9e5217;
 }
 
-.btn.gitlab:hover {
-    background-color: #fa7035;
-    border-color: #9e431c;
+.btn.email:hover {
+    background-color: #25b36c;
+    border-color: #0a5736;
 }
 
 .btn.mastodon:hover {
