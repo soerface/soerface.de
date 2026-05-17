@@ -127,6 +127,8 @@
                     <tbody id="all-items-tbody"></tbody>
                 </table>
             </div>
+
+            <div id="nested-tables-container"></div>
         </div>
     </div>
 {% endblock %}
@@ -136,6 +138,7 @@
         // State variables
         let itemMapping = {};
         let plannerItemsData = [];
+        let nestedTablesData = [];
 
         // Elements
         const dropPlanner = document.getElementById('drop-planner');
@@ -192,9 +195,34 @@
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    // Extract items equivalent to jq '.items[].name'
                     if (data && data.items && Array.isArray(data.items)) {
-                        plannerItemsData = data.items.map(item => item.name).filter(name => name);
+                        plannerItemsData = [];
+                        nestedTablesData = [];
+                        const parentCounters = {};
+
+                        function traverse(itemsArray) {
+                            let currentLevelNames = [];
+                            itemsArray.forEach(item => {
+                                if (item.name) {
+                                    plannerItemsData.push(item.name);
+                                    currentLevelNames.push(item.name);
+                                }
+                                if (item.items && Array.isArray(item.items)) {
+                                    parentCounters[item.name] = (parentCounters[item.name] || 0) + 1;
+                                    const title = `${item.name} ${parentCounters[item.name]}`;
+
+                                    const childrenNames = traverse(item.items);
+                                    nestedTablesData.push({
+                                        title: title,
+                                        items: childrenNames
+                                    });
+                                }
+                            });
+                            return currentLevelNames;
+                        }
+
+                        traverse(data.items);
+
                         statusPlanner.textContent = `Loaded successfully! (${plannerItemsData.length} items found)`;
                         statusPlanner.className = 'status success';
                         generateLink();
@@ -288,6 +316,141 @@
                 tr.appendChild(tdCalculator);
 
                 allItemsTbody.appendChild(tr);
+            }
+
+            const trTotal = document.createElement('tr');
+            trTotal.style.borderTop = '2px solid rgba(255,255,255,0.5)';
+            trTotal.style.fontWeight = 'bold';
+
+            const tdTotalStatus = document.createElement('td');
+
+            const tdTotalCount = document.createElement('td');
+            tdTotalCount.style.padding = '8px 4px';
+            const totalSum = itemsArray.reduce((sum, item) => sum + item.count, 0);
+            tdTotalCount.textContent = `${totalSum}x`;
+
+            const tdTotalPlanner = document.createElement('td');
+            tdTotalPlanner.style.padding = '8px 4px';
+            tdTotalPlanner.textContent = 'Total Sum';
+
+            const tdTotalCalculator = document.createElement('td');
+
+            trTotal.appendChild(tdTotalStatus);
+            trTotal.appendChild(tdTotalCount);
+            trTotal.appendChild(tdTotalPlanner);
+            trTotal.appendChild(tdTotalCalculator);
+
+            allItemsTbody.appendChild(trTotal);
+
+            const nestedTablesContainer = document.getElementById('nested-tables-container');
+            if (nestedTablesContainer) {
+                nestedTablesContainer.innerHTML = '';
+                for (const tableData of nestedTablesData) {
+                    if (tableData.items.length === 0) continue;
+
+                    const counts = {};
+                    tableData.items.forEach(name => {
+                        counts[name] = (counts[name] || 0) + 1;
+                    });
+
+                    const sortedItems = Object.entries(counts).map(([name, count]) => {
+                        return {
+                            name: name,
+                            count: count,
+                            isMapped: !!itemMapping[name],
+                            mappedName: itemMapping[name] || '-'
+                        };
+                    }).sort((a, b) => b.count - a.count);
+
+                    const tableDiv = document.createElement('div');
+                    tableDiv.style.marginTop = '2rem';
+                    tableDiv.style.textAlign = 'left';
+                    tableDiv.style.background = 'rgba(0,0,0,0.2)';
+                    tableDiv.style.padding = '1rem';
+                    tableDiv.style.borderRadius = '8px';
+
+                    const h3 = document.createElement('h3');
+                    h3.textContent = tableData.title;
+                    tableDiv.appendChild(h3);
+
+                    const table = document.createElement('table');
+                    table.style.width = '100%';
+                    table.style.borderCollapse = 'collapse';
+                    table.style.textAlign = 'left';
+                    table.style.fontSize = '0.9em';
+
+                    const thead = document.createElement('thead');
+                    const trHead = document.createElement('tr');
+                    trHead.style.borderBottom = '1px solid rgba(255,255,255,0.3)';
+                    ['Status', 'Count', 'Planner Name', 'Calculator Name'].forEach(text => {
+                        const th = document.createElement('th');
+                        th.style.padding = '8px 4px';
+                        th.textContent = text;
+                        trHead.appendChild(th);
+                    });
+                    thead.appendChild(trHead);
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+
+                    let subTotalSum = 0;
+                    for (const item of sortedItems) {
+                        subTotalSum += item.count;
+                        const tr = document.createElement('tr');
+                        if (!item.isMapped) {
+                            tr.style.color = '#f57c00';
+                        } else {
+                            tr.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                        }
+
+                        const tdStatus = document.createElement('td');
+                        tdStatus.style.padding = '8px 4px';
+                        tdStatus.textContent = item.isMapped ? '✅' : '⚠️';
+
+                        const tdCount = document.createElement('td');
+                        tdCount.style.padding = '8px 4px';
+                        tdCount.textContent = `${item.count}x`;
+
+                        const tdPlanner = document.createElement('td');
+                        tdPlanner.style.padding = '8px 4px';
+                        tdPlanner.textContent = item.name;
+
+                        const tdCalculator = document.createElement('td');
+                        tdCalculator.style.padding = '8px 4px';
+                        tdCalculator.textContent = item.mappedName;
+
+                        tr.appendChild(tdStatus);
+                        tr.appendChild(tdCount);
+                        tr.appendChild(tdPlanner);
+                        tr.appendChild(tdCalculator);
+
+                        tbody.appendChild(tr);
+                    }
+
+                    const subTrTotal = document.createElement('tr');
+                    subTrTotal.style.borderTop = '2px solid rgba(255,255,255,0.5)';
+                    subTrTotal.style.fontWeight = 'bold';
+
+                    const subTdTotalStatus = document.createElement('td');
+                    const subTdTotalCount = document.createElement('td');
+                    subTdTotalCount.style.padding = '8px 4px';
+                    subTdTotalCount.textContent = `${subTotalSum}x`;
+                    const subTdTotalPlanner = document.createElement('td');
+                    subTdTotalPlanner.style.padding = '8px 4px';
+                    subTdTotalPlanner.textContent = 'Total Sum';
+                    const subTdTotalCalculator = document.createElement('td');
+
+                    subTrTotal.appendChild(subTdTotalStatus);
+                    subTrTotal.appendChild(subTdTotalCount);
+                    subTrTotal.appendChild(subTdTotalPlanner);
+                    subTrTotal.appendChild(subTdTotalCalculator);
+
+                    tbody.appendChild(subTrTotal);
+
+                    table.appendChild(tbody);
+                    tableDiv.appendChild(table);
+                    nestedTablesContainer.appendChild(tableDiv);
+                }
             }
 
             resultContainer.style.display = 'block';
