@@ -112,6 +112,11 @@
             <h2>Your Calculator Link is Ready!</h2>
             <p>We processed your layout and counted all items.</p>
             <a id="result-link" href="#" target="_blank">Open Resource Calculator</a>
+
+            <div id="items-summary" style="margin-top: 2rem; text-align: left; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                <h3>Items Found:</h3>
+                <ul id="all-items-list" style="list-style-type: none; padding-left: 0;"></ul>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -206,12 +211,15 @@
 
             // 2. Map planner names to calculator names
             const mappedCounts = {};
-            for (const [plannerName, count] of Object.entries(itemCounts)) {
-                // If a mapping exists, use it. Otherwise, fallback to lowercase without spaces
-                const mappedName = itemMapping[plannerName] || plannerName.toLowerCase().replace(/\s+/g, '');
+            const unmappedItems = {};
 
-                // Aggregate counts (handles multiple planner items mapping to the same calculator item)
-                mappedCounts[mappedName] = (mappedCounts[mappedName] || 0) + count;
+            for (const [plannerName, count] of Object.entries(itemCounts)) {
+                if (itemMapping[plannerName]) {
+                    const mappedName = itemMapping[plannerName];
+                    mappedCounts[mappedName] = (mappedCounts[mappedName] || 0) + count;
+                } else {
+                    unmappedItems[plannerName] = count;
+                }
             }
 
             // 3. Construct URL parameters
@@ -222,6 +230,38 @@
             // 4. Update the DOM
             const finalUrl = `https://resourcecalculator.com/stardew%20valley/#${params}`;
             resultLink.href = finalUrl;
+
+            const allItemsList = document.getElementById('all-items-list');
+            allItemsList.innerHTML = '';
+
+            // Convert to array for sorting
+            const itemsArray = Object.entries(itemCounts).map(([plannerName, count]) => {
+                return {
+                    name: plannerName,
+                    count: count,
+                    isMapped: !!itemMapping[plannerName]
+                };
+            });
+
+            // Sort: Warnings (!isMapped) first, then by count descending
+            itemsArray.sort((a, b) => {
+                if (a.isMapped === b.isMapped) {
+                    return b.count - a.count;
+                }
+                return a.isMapped ? 1 : -1;
+            });
+
+            for (const item of itemsArray) {
+                const li = document.createElement('li');
+                if (item.isMapped) {
+                    li.textContent = `✅ ${item.count}x ${item.name}`;
+                } else {
+                    li.textContent = `⚠️ ${item.count}x ${item.name} (not mapped to calculator)`;
+                    li.style.color = '#f57c00';
+                }
+                allItemsList.appendChild(li);
+            }
+
             resultContainer.style.display = 'block';
         }
     </script>
