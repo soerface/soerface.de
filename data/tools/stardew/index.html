@@ -1,35 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stardew Valley Planner to Calculator</title>
+{% extends "base.html" %}
+
+{% set page_title = "Stardew Valley" %}
+
+{% block head %}
     <style>
         :root {
             --primary-color: #4CAF50;
-            --bg-color: #f4f4f9;
-            --text-color: #333;
             --border-color: #ccc;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 2rem;
-            line-height: 1.6;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-        }
-
         .drop-zone {
-            background-color: white;
+            {#background-color: white;#}
             border: 2px dashed var(--border-color);
             border-radius: 8px;
             padding: 3rem 2rem;
@@ -37,11 +18,12 @@
             cursor: pointer;
             transition: border-color 0.3s, background-color 0.3s;
             margin-bottom: 2rem;
+            color: #fff;
         }
 
         .drop-zone.dragover {
             border-color: var(--primary-color);
-            background-color: #e8f5e9;
+            background-color: #555;
         }
 
         .drop-zone p {
@@ -52,7 +34,7 @@
 
         .drop-zone span {
             font-size: 0.9em;
-            color: #666;
+            color: #999;
         }
 
         input[type="file"] {
@@ -60,12 +42,12 @@
         }
 
         #result-container {
-            background-color: white;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 2rem;
             text-align: center;
             display: none; /* Hidden until link is generated */
+            color: #fff;
         }
 
         #result-link {
@@ -83,6 +65,8 @@
 
         #result-link:hover {
             background-color: #45a049;
+            text-decoration: none;
+            color: white;
         }
 
         .status {
@@ -94,27 +78,45 @@
         .status.success {
             color: #388e3c;
         }
+
+        /* Override body styles since we are inside a base template container */
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
     </style>
-</head>
-<body>
+{% endblock %}
 
-    <h1>Stardew Planner to Calculator</h1>
+{% block content %}
+    <div style="max-width: 600px; margin: 0 auto; padding: 2rem; line-height: 1.6;">
+        <h1>Stardew Planner to Calculator</h1>
+        <p>
+            Converts a JSON export from <a target="_blank" href="https://stardewplanner.com/">stardewplanner.com</a> to an item
+            collection for a stardew calculator.
+        </p>
+        <p>
+            Your data stays on our machine.
+        </p>
 
-    <!-- Planner File Drop Zone -->
-    <div class="drop-zone" id="drop-planner">
-        <p>Upload Planner JSON</p>
-        <span>Drag & Drop the <b>Planner JSON</b> here or click to browse</span>
-        <input type="file" id="input-planner" accept=".json">
-        <div id="status-planner" class="status">Waiting for file...</div>
+        <!-- Planner File Drop Zone -->
+        <div class="drop-zone" id="drop-planner">
+            <p>Upload Planner JSON</p>
+            <span>Drag & Drop the <b>Planner JSON</b> here or click to browse</span>
+            <input type="file" id="input-planner" accept=".json">
+            <div id="status-planner" class="status"></div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="result-container">
+            <h2>Your Calculator Link is Ready!</h2>
+            <p>We processed your layout and counted all items.</p>
+            <a id="result-link" href="#" target="_blank">Open Resource Calculator</a>
+        </div>
     </div>
+{% endblock %}
 
-    <!-- Result Area -->
-    <div id="result-container">
-        <h2>Your Calculator Link is Ready!</h2>
-        <p>We processed your layout and counted all items.</p>
-        <a id="result-link" href="#" target="_blank">Open Resource Calculator</a>
-    </div>
-
+{% block scripts %}
     <script>
         // State variables
         let itemMapping = {};
@@ -128,7 +130,7 @@
         const resultLink = document.getElementById('result-link');
 
         // Fetch mapping file on load
-        fetch('item_mapping.json')
+        fetch('{{ url_for("tools.stardew_static", filename="item_mapping.json")}}')
             .then(response => {
                 if (!response.ok) throw new Error('Mapping file not found');
                 return response.json();
@@ -223,5 +225,4 @@
             resultContainer.style.display = 'block';
         }
     </script>
-</body>
-</html>
+{% endblock %}
