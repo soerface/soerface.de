@@ -254,12 +254,8 @@
                 };
             });
 
-            // Sort: Warnings (!isMapped) first, then by count descending
             itemsArray.sort((a, b) => {
-                if (a.isMapped === b.isMapped) {
-                    return b.count - a.count;
-                }
-                return a.isMapped ? 1 : -1;
+                return b.count - a.count;
             });
 
             for (const item of itemsArray) {
