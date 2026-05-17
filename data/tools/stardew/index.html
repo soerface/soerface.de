@@ -85,50 +85,72 @@
             color: var(--primary-color);
             margin-bottom: 2rem;
         }
+
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 1200px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            width: 100%;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
-    <div style="max-width: 600px; margin: 0 auto; padding: 2rem; line-height: 1.6;">
-        <h1>Stardew Planner to Calculator</h1>
-        <p>
-            Converts a JSON export from <a target="_blank" href="https://stardewplanner.com/">stardewplanner.com</a> to an item
-            collection for a stardew calculator.
-        </p>
-        <p>
-            Your data stays on our machine.
-        </p>
+    <div style="padding: 2rem; line-height: 1.6;">
+        <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+            <h1>Stardew Planner to Calculator</h1>
+            <p>
+                Converts a JSON export from <a target="_blank" href="https://stardewplanner.com/">stardewplanner.com</a> to an item
+                collection for a stardew calculator.
+            </p>
+            <p>
+                Your data stays on our machine.
+            </p>
 
-        <!-- Planner File Drop Zone -->
-        <div class="drop-zone" id="drop-planner">
-            <p>Upload Planner JSON</p>
-            <span>Drag & Drop the <b>Planner JSON</b> here or click to browse</span>
-            <input type="file" id="input-planner" accept=".json">
-            <div id="status-planner" class="status"></div>
+            <!-- Planner File Drop Zone -->
+            <div class="drop-zone" id="drop-planner">
+                <p>Upload Planner JSON</p>
+                <span>Drag & Drop the <b>Planner JSON</b> here or click to browse</span>
+                <input type="file" id="input-planner" accept=".json">
+                <div id="status-planner" class="status"></div>
+            </div>
         </div>
 
         <!-- Result Area -->
         <div id="result-container">
-            <h2>Your Calculator Link is Ready!</h2>
-            <p>We processed your layout and counted all items.</p>
-            <a id="result-link" href="#" target="_blank">Open Resource Calculator</a>
-
-            <div id="items-summary" style="margin-top: 2rem; text-align: left; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
-                <h3>Items Found:</h3>
-                <table id="all-items-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.3);">
-                            <th style="padding: 8px 4px;">Status</th>
-                            <th style="padding: 8px 4px;">Count</th>
-                            <th style="padding: 8px 4px;">Planner Name</th>
-                            <th style="padding: 8px 4px;">Calculator Name</th>
-                        </tr>
-                    </thead>
-                    <tbody id="all-items-tbody"></tbody>
-                </table>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2>Your Calculator Link is Ready!</h2>
+                <p>We processed your layout and counted all items.</p>
+                <a id="result-link" href="#" target="_blank">Open Resource Calculator</a>
             </div>
 
-            <div id="nested-tables-container"></div>
+            <div class="masonry-grid" id="all-tables-container">
+                <div class="masonry-item">
+                    <div id="items-summary" style="text-align: left; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                        <h3>Items Found:</h3>
+                        <table id="all-items-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.3);">
+                                    <th style="padding: 8px 4px;">Status</th>
+                                    <th style="padding: 8px 4px;">Count</th>
+                                    <th style="padding: 8px 4px;">Planner Name</th>
+                                    <th style="padding: 8px 4px;">Calculator Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-items-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -342,9 +364,10 @@
 
             allItemsTbody.appendChild(trTotal);
 
-            const nestedTablesContainer = document.getElementById('nested-tables-container');
-            if (nestedTablesContainer) {
-                nestedTablesContainer.innerHTML = '';
+            const allTablesContainer = document.getElementById('all-tables-container');
+            document.querySelectorAll('.masonry-item.nested-table').forEach(el => el.remove());
+
+            if (allTablesContainer) {
                 for (const tableData of nestedTablesData) {
                     if (tableData.items.length === 0) continue;
 
@@ -362,8 +385,10 @@
                         };
                     }).sort((a, b) => b.count - a.count);
 
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'masonry-item nested-table';
+
                     const tableDiv = document.createElement('div');
-                    tableDiv.style.marginTop = '2rem';
                     tableDiv.style.textAlign = 'left';
                     tableDiv.style.background = 'rgba(0,0,0,0.2)';
                     tableDiv.style.padding = '1rem';
@@ -449,7 +474,8 @@
 
                     table.appendChild(tbody);
                     tableDiv.appendChild(table);
-                    nestedTablesContainer.appendChild(tableDiv);
+                    colDiv.appendChild(tableDiv);
+                    allTablesContainer.appendChild(colDiv);
                 }
             }
 
