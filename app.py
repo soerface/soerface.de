@@ -5,13 +5,14 @@ from flask_wtf.csrf import CSRFProtect
 from markupsafe import Markup
 
 import env
-from sections import blog, quiz, talks
+from sections import blog, quiz, talks, tools
 from markdown import markdown
 
 blueprints = [
     blog.bp,
     quiz.bp,
     talks.bp,
+    tools.bp,
 ]
 
 hidden_blueprints = ["quiz", "talks"]
