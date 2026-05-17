@@ -2,8 +2,10 @@
     "apple": "apple",
     "apricot": "apricot",
     "bee_house": "beehouse",
+    "bean": "beanstarter",
     "big_shed": "bigshed",
     "blue_jazz": "bluejazz",
+    "blue_grass": "bluegrassstarter",
     "cauliflower": "cauliflower",
     "cherry": "cherry",
     "chicken_statue": "chickenstatue",
@@ -17,8 +19,10 @@
     "farm_computer": "farmcomputer",
     "fish_pond": "fishpond",
     "garden_pot": "gardenpot",
+    "grass": "grasstarter",
     "gold_clock": "goldclock",
     "gravel_path": "gravelpath",
+    "hoe_dirt": "hoe",
     "iridium_sprinkler": "iridiumsprinkler",
     "iron_fence": "ironfence",
     "island_obelisk": "islandobelisk",
@@ -46,5 +50,6 @@
     "weathered_floor": "weatheredfloor",
     "well": "well",
     "wood_lamp_post": "woodlamppost",
+    "wood_chest": "chest",
     "workbench": "workbench"
 }

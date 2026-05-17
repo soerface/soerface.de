@@ -115,7 +115,17 @@
 
             <div id="items-summary" style="margin-top: 2rem; text-align: left; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
                 <h3>Items Found:</h3>
-                <ul id="all-items-list" style="list-style-type: none; padding-left: 0;"></ul>
+                <table id="all-items-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9em;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.3);">
+                            <th style="padding: 8px 4px;">Status</th>
+                            <th style="padding: 8px 4px;">Count</th>
+                            <th style="padding: 8px 4px;">Planner Name</th>
+                            <th style="padding: 8px 4px;">Calculator Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-items-tbody"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -231,15 +241,16 @@
             const finalUrl = `https://resourcecalculator.com/stardew%20valley/#${params}`;
             resultLink.href = finalUrl;
 
-            const allItemsList = document.getElementById('all-items-list');
-            allItemsList.innerHTML = '';
+            const allItemsTbody = document.getElementById('all-items-tbody');
+            allItemsTbody.innerHTML = '';
 
             // Convert to array for sorting
             const itemsArray = Object.entries(itemCounts).map(([plannerName, count]) => {
                 return {
                     name: plannerName,
                     count: count,
-                    isMapped: !!itemMapping[plannerName]
+                    isMapped: !!itemMapping[plannerName],
+                    mappedName: itemMapping[plannerName] || '-'
                 };
             });
 
@@ -252,14 +263,35 @@
             });
 
             for (const item of itemsArray) {
-                const li = document.createElement('li');
-                if (item.isMapped) {
-                    li.textContent = `✅ ${item.count}x ${item.name}`;
+                const tr = document.createElement('tr');
+                if (!item.isMapped) {
+                    tr.style.color = '#f57c00';
                 } else {
-                    li.textContent = `⚠️ ${item.count}x ${item.name} (not mapped to calculator)`;
-                    li.style.color = '#f57c00';
+                    tr.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
                 }
-                allItemsList.appendChild(li);
+
+                const tdStatus = document.createElement('td');
+                tdStatus.style.padding = '8px 4px';
+                tdStatus.textContent = item.isMapped ? '✅' : '⚠️';
+
+                const tdCount = document.createElement('td');
+                tdCount.style.padding = '8px 4px';
+                tdCount.textContent = `${item.count}x`;
+
+                const tdPlanner = document.createElement('td');
+                tdPlanner.style.padding = '8px 4px';
+                tdPlanner.textContent = item.name;
+
+                const tdCalculator = document.createElement('td');
+                tdCalculator.style.padding = '8px 4px';
+                tdCalculator.textContent = item.mappedName;
+
+                tr.appendChild(tdStatus);
+                tr.appendChild(tdCount);
+                tr.appendChild(tdPlanner);
+                tr.appendChild(tdCalculator);
+
+                allItemsTbody.appendChild(tr);
             }
 
             resultContainer.style.display = 'block';
